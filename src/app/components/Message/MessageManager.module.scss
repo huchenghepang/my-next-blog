@@ -1,0 +1,14 @@
+.Message-Manager{
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    z-index: 10000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    align-items: center;
+    pointer-events: none
+}
+
+

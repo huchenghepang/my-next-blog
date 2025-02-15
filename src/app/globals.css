@@ -2,20 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 自定义文本选中颜色 */
+::selection {
+  background-color: #56bad6;
+  /* 选中时的背景色 */
+  color: #ffffff;
+  /* 选中时的文本颜色 */
 }

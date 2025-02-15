@@ -1,0 +1,150 @@
+.button {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 24px;
+  height: 40px;
+  border: none;
+  background-color: #b7bdc4;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 4px;
+  display: inline-flex;  
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap; /* 防止文本换行 */
+  transition: all 0.3s ease;
+  box-shadow: none; /* 初始时不显示光圈 */
+}
+
+.wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 15px rgba(66, 190, 228, 0.8);
+  animation: wave-animation 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes wave-animation {
+  from {
+    transform: scale(0);
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.8);  /* 初始发光效果 */
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+    box-shadow: 0 0 50px rgba(0, 123, 255, 0);  /* 扩展时的发光效果 */
+  }
+}
+
+/* 光圈效果 */
+.button:focus {
+  box-shadow: 0 0 20px rgba(138, 181, 228, 0.8); /* 点击时按钮外的光圈 */
+  animation: ring-animation 0.8s forwards;  /* 动画的名字和时长 */
+}
+
+.button:active {
+  box-shadow: 0 0 30px rgba(101, 158, 219, 0.8), 0 0 50px rgba(0, 123, 255, 0.6);
+}
+
+/* 光圈扩展动画 */
+@keyframes ring-animation {
+  from {
+    box-shadow: 0 0 20px rgba(63, 196, 230, 0.8);
+  }
+  to {
+    box-shadow: 0 0 50px rgba(0, 123, 255, 0);
+  }
+}
+
+/* focused: 按钮点击时的效果 */
+.focused {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* primary 类型按钮 */
+.primary {
+  background-color: #4788ce;
+  color: #fff;
+  border: none;
+}
+
+.primary:hover {
+  background-color: #4b91db;
+}
+
+/* default 类型按钮 */
+.default {
+  background-color: #f0f0f0;
+  color: #000;
+  border: 1px solid #dcdcdc;
+}
+
+.default:hover {
+  background-color: #e0e0e0;
+}
+
+/* text 类型按钮 */
+.text {
+  background: none;
+  color: #63abd4;
+  border: none;
+  padding: 0;
+}
+
+.text:hover {
+  text-decoration: underline;
+}
+
+/* link 类型按钮 */
+.link {
+  background: none;
+  color: #007bff;
+  border: none;
+  padding: 0;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* dashed 类型按钮 */
+.dashed {
+  background: none;
+  color: #000;
+  border: 1px dashed #007bff;
+  padding: 8px 16px;
+}
+
+.dashed:hover {
+  background-color: #f5f5f5;
+}
+
+
+.large {
+  height: 48px;
+  font-size: 16px;
+}
+
+.default {
+  height: 40px;
+  font-size: 14px;
+}
+
+.small {
+  height: 32px;
+  font-size: 12px;
+}
+
+
+.mini {
+  height: 24px;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
