@@ -16,7 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = { 
   title:"天空之城",
   description: "护城河的天空之城",
-  keywords:["技术","博客","文章"]
+  keywords:["技术","博客","文章"],
+  manifest:"/site.webmanifest",
+  icons:"./favicon.ico"
 };
 
 

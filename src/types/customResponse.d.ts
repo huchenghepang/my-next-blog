@@ -6,11 +6,11 @@ import { ErrorStatusCodeValues, HttpStatusCodeValues } from './response';
 
 
 /* 通用的响应 */
-interface CustomResponse {
+interface CustomResponse<D = unknown> {
     success: boolean;
     code: number;
     message: string;
-    data: unknown; 
+    data: D; 
     timestamp: string;
     requestId: string;
     detail?: string | null;

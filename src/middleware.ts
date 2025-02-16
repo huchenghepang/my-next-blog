@@ -9,7 +9,7 @@ const allowedOrigins = ["http://localhost:4000"];
 
 // API 限流存储（简单示例）
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
-const RATE_LIMIT = 5; // 5 次请求
+const RATE_LIMIT = 10; // 5 次请求
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 分钟
 
 

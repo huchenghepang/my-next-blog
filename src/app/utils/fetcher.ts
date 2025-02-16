@@ -11,37 +11,87 @@ type ContentType =
     | 'application/xml'
     | 'text/xml'
     | 'application/octet-stream';
+
+// 定义 FetchHeaders
+type FetchHeaders =
+    | Headers
+    | HeaderObject
+    | string[][];
+
+// 预定义常见 Header 类型（允许 `string | number | boolean`，但最终要转换成字符串）
+interface HeaderObject {
+    // 通用 Header
+    Accept?: string;
+    Authorization?: string;
+    'Cache-Control'?: string;
+    Connection?: 'keep-alive' | 'close' | string;
+    'Content-Length'?: number;
+    'Content-Type'?: ContentType;
+    Cookie?: string;
+    Date?: string;
+    Expect?: string;
+    Forwarded?: string;
+    Host?: string;
+    Referer?: string;
+    'User-Agent'?: string;
+
+    // CORS 相关
+    Origin?: string;
+    'Access-Control-Request-Method'?: string;
+    'Access-Control-Request-Headers'?: string;
+
+    // 自定义和调试 Header
+    'X-Requested-With'?: string;
+    'X-Forwarded-For'?: string;
+    'X-Forwarded-Host'?: string;
+    'X-Forwarded-Proto'?: string;
+    'X-Correlation-ID'?: string;
+    'X-Trace-ID'?: string;
+    
+    // 允许额外 Header（索引签名）
+    [key: string]: string | number | boolean | undefined;
+}
+
+
 interface FetcherOptions extends Omit<RequestInit, 'headers' | 'method'> {
     method?: HttpMethod; // 限制method为特定的HTTP方法
-    headers?: Record<string, string | number | boolean>;
+    headers?: FetchHeaders  ;
     contentType?: ContentType; // 内容类型
 }
 
-export async function fetcher<T = CustomResponse>(
+export async function fetcher<D = unknown>(
     url: string,
     options?: FetcherOptions
-): Promise<T> {
-    const { contentType = "application/json", method = 'GET', ...restOptions } = options || {}; // 默认 method 为 GET
-    const headers: Record<string, string> = {
-        "Content-Type": contentType , // 默认使用application/json
+): Promise<{ response: Response; data: D | null}> {
+    const { contentType = "application/json", method = "GET", ...restOptions } = options || {};
+
+    const headers: HeadersInit = {
+        "Content-Type": contentType,
         ...restOptions?.headers,
-    };
+    } as unknown as HeadersInit;
 
     const res = await fetch(url, {
-        method, // 使用传递的method值
+        method,
         ...restOptions,
         headers,
     });
 
-    if (!res.ok) {
-        logger.error({ message: "请求有问题，响应了不正确的资源" });
+    let data: D | null;
+
+    try {
+        const contentType = res.headers.get("content-type");
+        if (contentType?.includes("application/json")) {
+            data = (await res.json()) as D;
+        } else if (contentType?.includes("text")) {
+            data = (await res.text()) as D;
+        } else {
+            data = (await res.blob()) as D; // 其他情况，可能是文件流
+        }
+    } catch (error) {
+        data = null ; // 失败时，返回 `null` 并强制类型转换
     }
 
-    if (!res) {
-        logger.error({ message: "请求有问题，没有接收到响应" });
-    }
-
-    return res.json() as Promise<T>;
+    return { response: res, data };
 }
 
 export async function fetcherWithRetry<T>(

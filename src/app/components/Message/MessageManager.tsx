@@ -1,11 +1,11 @@
 "use client";
+import { MessageComponentIcon } from "@/types/iconfont";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { MessageComponentIcon } from "@/types/iconfont";
-
-import MessageManagerContainer from "./MessageManagerContainer";
 import IconFont from "../Iconfont/Iconfont";
+import MessageManagerContainer from "./MessageManagerContainer";
 
+// 定义 MessageItem 类型
 export interface MessageItem {
   id: number;
   message: string;
@@ -39,14 +39,13 @@ class MessageManager {
     this.root = createRoot(container);
     this.root.render(
       <MessageManagerContainer
-        destroyCallback={this.destroy}
         registerCallback={this.registerAddMessageCallback}
-      />,
+      />
     );
   }
 
   private registerAddMessageCallback = (
-    callback: React.Dispatch<React.SetStateAction<MessageItem[]>>,
+    callback: React.Dispatch<React.SetStateAction<MessageItem[]>>
   ) => {
     this.addMessageCallback = callback;
 
@@ -69,28 +68,10 @@ class MessageManager {
       this.messageQueue.push(message);
     }
   }
-
-  // 移除 MessageManager 实例及其渲染的容器
-  public destroy = () => {
-    setTimeout(() => {
-      if (this.root) {
-        this.root.unmount();
-        this.root = null;
-      }
-
-      if (this.container) {
-        document.body.removeChild(this.container);
-        this.container = null;
-      }
-
-      this.addMessageCallback = null;
-      this.messageQueue = []; // 清空消息队列
-    }, 0);
-  };
 }
 
 // 单例导出
-let messageManager = new MessageManager();
+let messageManager: MessageManager | null = null;
 
 export const showMessage = ({
   type,
@@ -101,7 +82,7 @@ export const showMessage = ({
   text: string;
   duration?: number;
 }) => {
-  if (!messageManager.container) {
+  if (!messageManager) {
     messageManager = new MessageManager(); // 重新初始化
   }
 
@@ -127,7 +108,7 @@ export const showMessage = ({
   }
 
   messageManager.addMessage({
-    message: text,                            
+    message: text,
     duration,
     style,
     Icon: <IconFont name={iconName}></IconFont>,
@@ -135,4 +116,3 @@ export const showMessage = ({
 };
 
 export default messageManager;
-

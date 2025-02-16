@@ -19,7 +19,7 @@ export default function ToolTips() {
     <div className="fixed bottom-20 right-20 space-y-3">
       <ul className="space-y-3">
         {/* 联系我按钮 */}
-        <li className="group flex items-center space-x-2 cursor-pointer">
+        <li className="group  flex items-center  space-x-2 cursor-pointer">
           <IoIosContact
             className="text-3xl group-hover:text-yellow-600 transition-all"
             size={36}

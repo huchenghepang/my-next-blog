@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useCallback, useMemo, useState } from "react";
 import Message from "./Message";
 import { MessageItem } from "./MessageManager";
@@ -6,10 +6,9 @@ import MessageManagerStyle from "./MessageManager.module.scss";
 // React 组件部分，用于状态管理和渲染
 const MessageManagerContainer: React.FC<{
   registerCallback: (
-    callback: React.Dispatch<React.SetStateAction<MessageItem[]>>
+    callback: React.Dispatch<React.SetStateAction<MessageItem[]>>,
   ) => void;
-  destroyCallback: () => void;
-}> = ({ registerCallback, destroyCallback }) => {
+}> = ({ registerCallback }) => {
   const [messages, setMessages] = useState<MessageItem[]>([]);
 
   // 注册消息更新回调
@@ -21,13 +20,12 @@ const MessageManagerContainer: React.FC<{
     (id: number) => {
       setMessages((prevMessages) => {
         if (prevMessages.length === 1) {
-          destroyCallback();
           return [];
         }
         return prevMessages.filter((msg) => msg.id !== id);
       });
     },
-    [destroyCallback]
+    [],
   );
 
   return useMemo(
@@ -46,8 +44,10 @@ const MessageManagerContainer: React.FC<{
         ))}
       </div>
     ),
-    [messages, handleRemoveMessage]
+    [messages, handleRemoveMessage],
   );
 };
+
+
 
 export default MessageManagerContainer;

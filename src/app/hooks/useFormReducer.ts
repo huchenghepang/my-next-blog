@@ -76,8 +76,6 @@ export const useFormReducer = <T extends Record<string, string>, K extends strin
      */
     const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>, fieldName?: K) => {
         const { name, value } = e.target;
-        console.log('name',value);
-        
         const field = fieldName || name; // 如果传入了自定义字段名称，则使用自定义名称，否则使用默认的 `name`对应的字段。
         dispatch({ type: "UPDATE_FIELD", name: field, value });
     }, []);
