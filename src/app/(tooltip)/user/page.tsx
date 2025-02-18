@@ -24,11 +24,12 @@ export default async function Page() {
   }
   
 
-  const isTogglerRole = await validatePermission(38, 58);
+  const isTogglerRole = await validatePermission(1, 2);
   return (
     <div className={userStyle["user-container"]}>
       <IconfontJavaScript scriptName="message_iconfont"></IconfontJavaScript>
-      <h2>用户名{session.user?.account}</h2>
+      <h2>用户名:{session.user?.account}</h2>
+      <h2>角色:{session.user?.currentRole?.role_name}</h2>
       <p>这个是动态生成的带有类名的组件。</p>
       <LogoutButton></LogoutButton>
       {isTogglerRole && <Button>切换用户角色</Button>}

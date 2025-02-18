@@ -18,7 +18,7 @@ export const POST = createApiHandler(async (req) => {
 
         /* 读取判断用户是否存在*/
         const user = await prisma.user_info.findFirst({where:{
-            account:data.account
+            account:data.account,
         }})
         if (!user) return sendError({ errorMessage: "账号或者用户不存在" });
         const {password,account,user_id} = user
@@ -28,9 +28,17 @@ export const POST = createApiHandler(async (req) => {
         }
         const isSucceess = compareSync(data.password,password)
         if (!isSucceess) return sendError({ errorMessage: "当前密码不正确" })
+
+        const roles = await prisma.userRoles.findFirst({
+            where: { user_id: user_id },
+            include: { Roles: true },
+            orderBy: { role_id: 'asc' },  // 按 roleID 升序排序
+            take: 1,  // 只取最小的一个
+        });
+        
         /* 生成sessionID */
         const sessionId = generateSessionId()
-        const isSaveSuccess = await  saveSession(sessionId,{expires:config.expireSessionTime,data:{user:{account:account,userId:user_id}}})    
+        const isSaveSuccess = await  saveSession(sessionId,{expires:config.expireSessionTime,data:{user:{account:account,userId:user_id,currentRole:{role_id:roles?.role_id,role_name:roles?.Roles.role_name}}}})    
         if (!isSaveSuccess) return sendError({ errorMessage: "登录失败" });
 
         const res = sendResponse({message:"登录成功",data:{user:{...user,password:undefined}}})

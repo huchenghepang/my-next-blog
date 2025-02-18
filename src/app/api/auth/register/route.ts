@@ -38,6 +38,13 @@ export const POST = createApiHandler(async (req) => {
                 avatar:"https://www.gravatar.com/avatar/00000000000000000000000000000000?d=robohash"
             }
         })
+        /* 分配默认的角色 */
+        await prisma.userRoles.create({
+            data:{
+                user_id: userId,
+                role_id:2
+            }
+        })
         return sendResponse({ message: "注册成功" })
     } catch (error) {
         logger.error({ error: error as Error, message: "注册失败" });

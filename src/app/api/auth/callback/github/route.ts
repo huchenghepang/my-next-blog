@@ -90,6 +90,13 @@ export const GET = createApiHandler(async (req) => {
                     password: ""
                 }
             })
+            /* 分配默认的角色 */
+            await prisma.userRoles.create({
+                data: {
+                    user_id: userID,
+                    role_id: 2
+                }
+            })
             if(!user) return sendError({errorMessage:"登录GitHub失败"})
             
         }
