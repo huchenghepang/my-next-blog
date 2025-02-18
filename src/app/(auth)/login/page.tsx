@@ -4,13 +4,13 @@ import { useState } from "react";
 import { BsGithub } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-import IconfontJavaScript from "@/app/components/Iconfont/IconfontJavaScript";
-import { showMessage } from "@/app/components/Message/MessageManager";
-import { useFormReducer } from "@/app/hooks/useFormReducer";
+import Button from "@/components/Button/Button";
+import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
+import { showMessage } from "@/components/Message/MessageManager";
+import { useFormReducer } from "@/hooks/useFormReducer";
 import { CustomResponse } from "@/types/customResponse";
-import { signIn } from "next-auth/react";
 import loginStyle from "./Login.module.scss";
-  
+
 // 根据文件名生成组件
 const LoginPage = () => {
   const [isGithubLogin, setIsGithubLogin] = useState(false);
@@ -62,15 +62,19 @@ const LoginPage = () => {
     setErrors("");
   };
 
+  /* github登录 */
+  const githubLogin = async () => {
+    window.location.href = "/api/auth/github";
+  };
+
   return (
     <div className={loginStyle["Login-Container"]}>
       <IconfontJavaScript scriptName="message_iconfont"></IconfontJavaScript>
       {isGithubLogin ? (
         <div className={loginStyle["Github-Login"]}>
           <h2 className={loginStyle["Login-Title"]}>GitHub 登录</h2>
-          <button className={loginStyle["Github-Button"]} onClick={()=>signIn("github",{callbackUrl:"/user"})}>
-            使用 GitHub 登录
-          </button>
+          <button onClick={()=>window.location.href ="/api/auth/github"} className={loginStyle['Github-Button']}>GitHub 登录</button>
+
           <button
             onClick={toggleLoginMethod}
             type="button"
@@ -119,7 +123,14 @@ const LoginPage = () => {
             登录
           </button>
           <div className={loginStyle["Login-Bottom"]}>
-            <a>忘记密码？</a>
+            <Button
+              type="link"
+              size="mini"
+              href="/register"
+              classNames={[`bg-slate-500`]}
+            >
+              还没有账号？注册
+            </Button>
             <button
               onClick={toggleLoginMethod}
               type="button"

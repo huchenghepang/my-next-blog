@@ -1,5 +1,6 @@
+import ToolTips from "@/components/Tooltips/Tooltips";
 import { ReactNode } from "react";
-import ToolTips from "../components/Tooltips/Tooltips";
+
 
 export default function LayoutWithToolTip({
   children,

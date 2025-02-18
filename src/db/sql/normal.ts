@@ -1,6 +1,6 @@
 import { Tables } from './../../types/mysql.d';
 
-import { createError } from "@/app/utils/createError";
+import { createError } from "@/utils/createError";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import pool from "../mysql";
 

@@ -1,7 +1,7 @@
 /* 配置MySQL连接  */
 
 
-import logger from '@/app/utils/logger';
+import logger from '@/utils/logger';
 import mysql, { PoolOptions, RowDataPacket } from 'mysql2/promise';
 import config from './config';
 

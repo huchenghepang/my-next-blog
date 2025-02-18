@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { sendError } from "./app/utils/responseHandler/responseHandler";
+import { sendError } from "./utils/responseHandler/responseHandler";
 
 
 

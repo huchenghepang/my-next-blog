@@ -1,20 +1,18 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { ProductResponse } from "../../../product";
-  const productPath = resolve(process.cwd(), "mock", "product.json");
-  const productsInfo = JSON.parse(
-    readFileSync(productPath).toString()
-  ) as ProductResponse;
-  
+const productPath = resolve(process.cwd(), "mock", "product.json");
+const productsInfo = JSON.parse(
+  readFileSync(productPath).toString()
+) as ProductResponse;
 
 // getStaticProps 用于在构建时获取数据
 export async function getStaticProps() {
-
-      const datetime = new Date().toLocaleString();
+  const datetime = new Date().toLocaleString();
   return {
     props: {
       productsInfo,
-      datetime
+      datetime,
     },
   };
 }
@@ -24,7 +22,7 @@ export default function ProductionPage({
   datetime,
 }: {
   productsInfo: ProductResponse;
-  datetime:string
+  datetime: string;
 }) {
   return (
     <>

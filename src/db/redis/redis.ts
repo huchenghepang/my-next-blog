@@ -1,5 +1,5 @@
 
-import logger from '@/app/utils/logger';
+import logger from '@/utils/logger';
 import Redis, { Redis as RedisInstance } from 'ioredis';
 
 // 定义通用的响应接口
@@ -77,14 +77,12 @@ class RedisClient {
      * 获取键的值
      * @param key 键
      */
-    async getKey<T = any>(key: string): Promise<Response<T | string>> {
+    async getKey<T = any>(key: string): Promise<Response<T | null>> {
         try {
             const value = await this.redis.get(key);
-            if (value) {
-                return { success: true, data: JSON.parse(value ) as T }
-            }else {
-                return { success: true, data: value! };
-            }
+
+            if (!value) return { success: true, data: value as null };
+            return { success: true, data: JSON.parse(value) as T }
         } catch (err) {
             return this.handleError('getKey', err);
         }
@@ -140,7 +138,7 @@ class RedisClient {
             do {
                 const [newCursor, keys] = await this.redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
                 cursor = newCursor;
-                 
+
                 keysToDelete.push(...keys);
             } while (cursor !== '0');
 

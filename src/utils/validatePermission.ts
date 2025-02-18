@@ -1,6 +1,6 @@
 import redisClient from '@/db/redis/redis';
 import { Rolepermissions } from "@/types/mysql";
-import { queryByFieldsWithSelectedFields } from './../../db/sql/normal';
+import { queryByFieldsWithSelectedFields } from '../db/sql/normal';
 import logger from './logger';
 
 export async function validatePermission(

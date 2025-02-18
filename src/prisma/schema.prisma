@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Permissions {
+  permission_id     Int               @id @default(autoincrement())
+  permission_name   String            @unique(map: "permission_name") @db.VarChar(100)
+  description       String?           @db.VarChar(255)
+  type              Permissions_type
+  parent_id         Int?
+  can_delete        Boolean?          @default(true)
+  permission_value  String?           @db.VarChar(40)
+  Permissions       Permissions?      @relation("PermissionsToPermissions", fields: [parent_id], references: [permission_id], onDelete: Cascade, onUpdate: Restrict, map: "Permissions_ibfk_1")
+  other_Permissions Permissions[]     @relation("PermissionsToPermissions")
+  RolePermissions   RolePermissions[]
+
+  @@index([parent_id], map: "parent_id")
+}
+
+model RolePermissions {
+  role_id       Int
+  permission_id Int
+  Roles         Roles       @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: Restrict, map: "RolePermissions_ibfk_1")
+  Permissions   Permissions @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade, onUpdate: Restrict, map: "RolePermissions_ibfk_2")
+
+  @@id([role_id, permission_id])
+  @@index([permission_id], map: "permission_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Roles {
+  role_id         Int               @id @default(autoincrement())
+  role_name       String            @unique(map: "role_name") @db.VarChar(100)
+  description     String?           @db.VarChar(255)
+  created_at      DateTime?         @db.Timestamp(0)
+  updated_at      DateTime?         @db.Timestamp(0)
+  RolePermissions RolePermissions[]
+  UserRoles       UserRoles[]
+}
+
+model UserRoles {
+  user_id   String    @db.VarChar(255)
+  role_id   Int
+  user_info user_info @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "UserRoles_ibfk_1")
+  Roles     Roles     @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: Restrict, map: "UserRoles_ibfk_2")
+
+  @@id([user_id, role_id])
+  @@index([role_id], map: "role_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model article_categories {
+  id         Int       @default(autoincrement())
+  name       String    @unique(map: "cayegories_name") @db.VarChar(255)
+  parent_id  Int?
+  level      Int       @db.TinyInt
+  slug       String?   @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @default(now()) @db.Timestamp(0)
+  notes      notes[]
+
+  @@id([id, name])
+  @@index([id], map: "id")
+}
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model comment_likes {
+  like_id    Int       @id @default(autoincrement())
+  user_id    String    @db.Char(255)
+  comment_id Int
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  user_info  user_info @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "fk_user_id")
+
+  @@unique([user_id, comment_id], map: "user_id")
+}
+
+
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model files_info {
+  file_name     String            @db.VarChar(255)
+  file_id       Int               @id @default(autoincrement())
+  file_path     String            @db.VarChar(255)
+  file_ext      String            @db.VarChar(10)
+  upload_time   DateTime          @default(now()) @db.DateTime(0)
+  file_type     String            @db.VarChar(100)
+  file_size     BigInt
+  file_fullname String            @db.VarChar(255)
+  user_id       String?           @db.VarChar(255)
+  hash          String            @db.VarChar(255)
+  status        files_info_status
+  description   String?           @db.Text
+  notes         notes?
+}
+
+model note_tags {
+  note_id Int
+  tag_id  Int
+  notes   notes @relation(fields: [note_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "note_tags_ibfk_1")
+  tags    tags  @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "note_tags_ibfk_2")
+
+  @@id([note_id, tag_id])
+  @@index([tag_id], map: "tag_id")
+}
+
+
+
+model notes {
+  id                 Int                @id @default(autoincrement())
+  name               String             @db.VarChar(255)
+  category_id        String             // 改为 String 类型
+  file_id            Int                @unique(map: "file_id")
+  created_at         DateTime?          @default(now()) @db.Timestamp(0)
+  create_time        DateTime           @db.DateTime(0)
+  is_archive         Boolean            @default(false)
+  summary            String?            @db.Text
+  toc                Json?
+  reading            Int                @default(0)
+  updated_time       DateTime?          @db.DateTime(0)
+  comment_count      Int                @default(0)
+  comments           comments[]
+  note_tags          note_tags[]
+  article_categories article_categories @relation(fields: [category_id], references: [name], onUpdate: Restrict, map: "category_id")
+  files_info         files_info         @relation(fields: [file_id], references: [file_id], onUpdate: Restrict, map: "n_and_f_file_id")
+
+  @@index([category_id], map: "category_id")
+  @@index([id], map: "id")
+}
+
+model sessions {
+  session_id String  @id @db.VarChar(128)
+  expires    Int     @db.UnsignedInt
+  data       String? @db.MediumText
+}
+
+model tags {
+  id        Int         @id@default(autoincrement())
+  name      String      @unique(map: "name") @db.VarChar(255)
+  note_tags note_tags[]
+}
+
+model user_comments {
+  id         Int                     @default(autoincrement()) @db.UnsignedInt
+  user_id    String                  @db.VarChar(255)
+  comment_id Int                     @db.UnsignedInt
+  liked      user_comments_liked     @default(false)
+  report     user_comments_report    @default(false)
+  commented  user_comments_commented
+  comments   comments                @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade, onUpdate: Restrict, map: "user_comment_id")
+  user_info  user_info               @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "user_comment_user_id")
+
+  // 移除 sort: Desc 参数
+  @@id([id, user_id, comment_id])
+  @@index([comment_id], map: "user_comment_id")
+  @@index([user_id], map: "user_comment_user_id")
+}
+
+// 修改 comments 模型，为 comment_id 添加 @unique 属性
+model comments {
+  comment_id    Int              @default(autoincrement()) @db.UnsignedInt @unique
+  article_id    Int
+  user_id       String           @db.VarChar(255)
+  parent_id     Int?             @default(0) @db.UnsignedInt
+  content       String           @db.VarChar(255)
+  created_at    DateTime?        @db.DateTime(0)
+  updated_at    DateTime?        @db.DateTime(0)
+  status        comments_status? @default(pending)
+  like_count    Int?             @default(0) @db.UnsignedInt
+  reply_count   Int?             @default(0) @db.UnsignedInt
+  notes         notes            @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "article_id")
+  user_info     user_info        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "user_id")
+  user_comments user_comments[]
+
+  @@id([comment_id, article_id, user_id])
+  @@index([article_id], map: "article_id")
+  @@index([comment_id], map: "comment_id")
+  @@index([user_id], map: "user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_info {
+  index             Int             @unique(map: "index") @default(autoincrement()) @db.UnsignedInt
+  user_id           String          @id @default("") @db.VarChar(255)
+  account           String          @db.VarChar(255)
+  password          String          @db.VarChar(255)
+  register_datetime DateTime?       @default(now()) @db.DateTime(0)
+  is_login          Int             @default(0) @db.TinyInt
+  is_delete         Int             @default(0) @db.TinyInt
+  username          String          @default("未知") @db.VarChar(255)
+  role              String?         @db.VarChar(255)
+  avatar            String?         @db.VarChar(255)
+  email             String?         @db.VarChar(255)
+  signature         String?         @db.VarChar(255)
+  UserRoles         UserRoles[]
+  comment_likes     comment_likes[]
+  comments          comments[]
+  user_comments     user_comments[]
+}
+
+enum user_comments_liked {
+  false
+  true
+}
+
+enum Permissions_type {
+  route
+  button
+}
+
+enum user_comments_report {
+  true
+  false
+}
+
+enum user_comments_commented {
+  true
+  false
+}
+
+enum comments_status {
+  pending
+  approved
+  rejected
+}
+
+enum files_info_status {
+  active
+  inactive
+  deleted
+}

@@ -1,5 +1,5 @@
 "use client";
-import React, { forwardRef, ReactNode, useState } from "react";
+import React, { forwardRef, memo, ReactNode, useState } from "react";
 import ButtonStyle from "./Button.module.scss";
 
 interface ButtonProps {
@@ -84,4 +84,4 @@ const Button = forwardRef<HTMLButtonElement,ButtonProps>(
 
 Button.displayName = "Button"
 
-export default Button;
+export default memo(Button);
