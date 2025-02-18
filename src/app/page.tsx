@@ -1,4 +1,5 @@
 export default function Home() {
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* 头部横幅 */}
@@ -16,7 +17,6 @@ export default function Home() {
               key={item}
               className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition"
             >
-            
               <div className="p-4">
                 <h3 className="text-xl font-semibold text-gray-800">
                   文章标题 {item}
@@ -33,6 +33,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+
 
       {/* 分类导航 */}
       <section className="bg-white py-12">
@@ -58,7 +59,6 @@ export default function Home() {
       <section className="max-w-5xl mx-auto py-12 px-4 text-center">
         <h2 className="text-3xl font-bold text-gray-800">关于我</h2>
         <div className="mt-6 flex flex-col items-center">
-        
           <p className="text-gray-600 mt-4 max-w-lg">
             你好，我是一名前端开发者，热衷于技术分享和博客创作，希望你能在这里找到有用的内容！
           </p>

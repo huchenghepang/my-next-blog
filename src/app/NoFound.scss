@@ -1,0 +1,56 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
+  text-align: center;
+}
+
+.not-found-container {
+  max-width: 600px;
+  padding: 20px;
+}
+
+.not-found-title {
+  font-size: 10rem;
+  font-weight: bold;
+  margin: 0;
+  animation: float 3s ease-in-out infinite;
+}
+
+.not-found-message {
+  font-size: 1.5rem;
+  margin: 20px 0;
+}
+
+.not-found-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #6e8efb;
+  background: #fff;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.not-found-button:hover {
+  background: #6e8efb;
+  color: #fff;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
+}
+
+/* 动画效果 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
