@@ -1,8 +1,9 @@
 
 export interface SessionData {
     user?: {
-        userId?: string | undefined,
-        account?: string,
+        userId?: string | undefined;
+        account?: string;
+        roles?:number[];
         currentRole?: {
             role_id?: number;
             role_name?: string;

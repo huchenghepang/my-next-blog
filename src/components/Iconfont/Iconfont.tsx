@@ -4,7 +4,7 @@ import {
   ReactTemplateIcon,
   SearchFrameIcon,
 } from "@/types/iconfont";
-import React from "react";
+import React, { MouseEventHandler, ReactEventHandler } from "react";
 
 
 export type IconName =
@@ -21,6 +21,7 @@ interface IconFontProps {
   width?: string;
   height?: string;
   fillColor?: string;
+  onClick?: ReactEventHandler<SVGSVGElement>;
 }
 
 const IconFont: React.FC<IconFontProps> = ({
@@ -28,12 +29,14 @@ const IconFont: React.FC<IconFontProps> = ({
   width = "1em",
   height = "1em",
   fillColor,
+  onClick,
 }) => (
   <svg
     className="svg-icon"
     aria-hidden="true"
     width={width}
     fill={fillColor}
+    onClick={onClick}
     height={height}
   >
     <use xlinkHref={`#${name}`} />

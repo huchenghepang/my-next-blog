@@ -17,31 +17,42 @@ export const POST = createApiHandler(async (req) => {
         }
 
         /* 读取判断用户是否存在*/
-        const user = await prisma.user_info.findFirst({where:{
-            account:data.account,
-        }})
+        const user = await prisma.user_info.findFirst({
+            where: {
+                account: data.account,
+            }
+        })
         if (!user) return sendError({ errorMessage: "账号或者用户不存在" });
-        const {password,account,user_id} = user
+        const { password, account, user_id } = user
         /* 判断密码是否正确 */
-        if(password===''|| !password){
-            return sendError({errorMessage:"账号是github账号还未进行绑定"})
+        if (password === '' || !password) {
+            return sendError({ errorMessage: "账号是github账号还未进行绑定" })
         }
-        const isSucceess = compareSync(data.password,password)
+        const isSucceess = compareSync(data.password, password)
         if (!isSucceess) return sendError({ errorMessage: "当前密码不正确" })
 
-        const roles = await prisma.userRoles.findFirst({
+        const roles = await prisma.userRoles.findMany({
             where: { user_id: user_id },
             include: { Roles: true },
             orderBy: { role_id: 'asc' },  // 按 roleID 升序排序
-            take: 1,  // 只取最小的一个
         });
-        
+        const firstRole = roles[0]
+        /* 所有可选的用户角色 */
+        const allRoleIds = roles.map(role => role.role_id)
+
         /* 生成sessionID */
         const sessionId = generateSessionId()
-        const isSaveSuccess = await  saveSession(sessionId,{expires:config.expireSessionTime,data:{user:{account:account,userId:user_id,currentRole:{role_id:roles?.role_id,role_name:roles?.Roles.role_name}}}})    
+        const isSaveSuccess = await saveSession(sessionId, {
+            expires: config.expireSessionTime, data: {
+                user: {
+                    account: account, userId: user_id,
+                    roles: allRoleIds, currentRole: { role_id: firstRole?.role_id, role_name: firstRole?.Roles.role_name }
+                }
+            }
+        })
         if (!isSaveSuccess) return sendError({ errorMessage: "登录失败" });
 
-        const res = sendResponse({message:"登录成功",data:{user:{...user,password:undefined}}})
+        const res = sendResponse({ message: "登录成功", data: { user: { ...user, password: undefined }, roles } })
         res.cookies.set("sky-session", sessionId, {
             maxAge: config.expireSessionTime,
             httpOnly: true,

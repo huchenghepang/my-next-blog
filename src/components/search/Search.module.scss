@@ -1,0 +1,21 @@
+.search-container {
+    padding: 4px 16px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e9ecef;
+    .input-search {
+      width: 240px;  
+      border: none;
+      outline: none;
+      color: #adb5bd;
+      font-size: 16px;
+      padding: 10px 15px;
+      transition: all 0.3s ease; /* 添加过渡效果 */
+
+      &::placeholder {
+        color: #adb5bd;
+        font-size: 14px; /* 修改字体大小 */
+        font-style: italic; /* 设置斜体 */
+      }
+    }
+  }

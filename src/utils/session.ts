@@ -6,7 +6,7 @@ import { RowDataPacket } from 'mysql2';
 import { cookies } from 'next/headers';
 import logger from './logger';
 import { getSessionFromRedis } from './session/redis-session';
-type cookiesType = "connect.sid" | "sky-session"
+export type cookiesType = "connect.sid" | "sky-session"
 
 
 

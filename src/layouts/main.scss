@@ -1,0 +1,28 @@
+
+
+.dashboard-container{
+    background-color: #e8ebef;
+    height: 100%;
+    display: flex;
+    .appmain{
+        min-height: 100vh;
+        width: 100%;
+    }
+}
+.clearfix{
+    &::before,&::after{
+        display: table-cell;
+        content: "";
+        clear: both;
+        height: 0;
+    }
+}
+
+
+.appmain{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+

@@ -1,0 +1,72 @@
+.sidebar-container {
+  width: 257px;
+  height: 100vh;
+  background-color: #fff;
+  -webkit-user-select:none;
+  user-select: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar{
+    width: 0px;
+  }  
+  .dashboard-title {
+    height: 78px;
+    border-bottom: 1px solid #e6e9ee;
+    h2 {
+      font-size: 33px;
+      margin: 26px 32px 16px;
+      color: #232d42;
+      font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    }
+  }
+
+  .sidebar-itemlist {
+    padding-top: 20px;
+    color: #999EA8;
+    .sidebar-section {
+      padding: 8px;
+      border-bottom: 1px solid #E9ECEF;
+    }
+
+    .section-detail {
+      width: 233px;
+      .sidebar-nav-item {
+        padding: 8px 24px;
+        display: flex;
+   
+
+        .middle {
+          margin-left:10px;
+          span {
+            font-size: 16px;
+            line-height: 100%;
+            vertical-align: middle;
+          }
+        }
+        .right-info{
+            margin-left: auto;
+        }
+      }
+
+      .sidebar-nav-active-item {
+        border-radius: 4px;
+        background-color: #3a57e8;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.sidebar-title-3 {
+  font-size: 16px;
+  padding: 8px 32px 8px 16px;
+  color: #adb5bd;
+  font-weight: 600;
+  margin: 0;
+}
+
+.TextColor3{
+    color: #999EA8;
+}

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { BsGithub } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -49,6 +48,7 @@ const LoginPage = () => {
         });
       }
       showMessage({ type: "success", text: "登录成功" });
+      debugger;
       window.location.href = "/user";
     } catch (error) {
       console.log(error);
@@ -62,10 +62,7 @@ const LoginPage = () => {
     setErrors("");
   };
 
-  /* github登录 */
-  const githubLogin = async () => {
-    window.location.href = "/api/auth/github";
-  };
+
 
   return (
     <div className={loginStyle["Login-Container"]}>
@@ -73,7 +70,12 @@ const LoginPage = () => {
       {isGithubLogin ? (
         <div className={loginStyle["Github-Login"]}>
           <h2 className={loginStyle["Login-Title"]}>GitHub 登录</h2>
-          <button onClick={()=>window.location.href ="/api/auth/github"} className={loginStyle['Github-Button']}>GitHub 登录</button>
+          <button
+            onClick={() => (window.location.href = "/api/auth/github")}
+            className={loginStyle["Github-Button"]}
+          >
+            GitHub 登录
+          </button>
 
           <button
             onClick={toggleLoginMethod}

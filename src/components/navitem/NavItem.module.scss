@@ -1,0 +1,32 @@
+.nav-item {
+  padding: 8px 24px;
+  display: flex;
+  box-sizing: border-box;
+
+  .left-info{
+    display: flex;
+    align-items: center;
+  } 
+
+  .middle {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    span {
+      font-size: 16px;
+      line-height: 16px;
+      vertical-align: middle;
+    }
+  }
+  .right-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.nav-active-item {
+  border-radius: 4px;
+  background-color: #3a57e8;
+  color: #fff;
+}
