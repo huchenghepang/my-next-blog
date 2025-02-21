@@ -1,6 +1,12 @@
 "use client";
 import { UserInfo } from "@/app/api/user/info/route";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface LayoutContextType {
   user: UserInfo | null; // 允许 `user` 为空
@@ -9,27 +15,22 @@ interface LayoutContextType {
 
 const LayoutContext = createContext<LayoutContextType | null>(null);
 
-
-
-
-export const LayoutProvider =  ({ children }: { children: ReactNode }) => {
-
-
-
+export const LayoutProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(null); // 初始值设为 `null`
-    useEffect(() => {
-      const res = fetch("/api/user/info")
-        .then((res) => {
-          res.json().then((userInfo) => {
-            setUser(userInfo.data as UserInfo);
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+  useEffect(() => {
+    fetch("/api/user/info")
+      .then((res) => {
+        if (res.status === 403) {
+          window.location.href = "/login";
+        }
+        res.json().then((userInfo) => {
+          setUser(userInfo.data as UserInfo);
         });
-    }, []);
-
-
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <LayoutContext.Provider value={{ user, setUser }}>
       {children}

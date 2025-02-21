@@ -7,5 +7,7 @@ export async function isSessionExistORRedurect(redirectPath:string="/login",cook
     if (!session) {
        return redirect(redirectPath);
     }
+    console.log('se'+session);
+    
     return session
 }

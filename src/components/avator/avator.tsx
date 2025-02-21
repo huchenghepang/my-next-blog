@@ -1,5 +1,7 @@
+"use client";
 import React, { memo, useCallback, useState } from "react";
 import avatorStyle from "./avator.module.scss";
+import Image from "next/image";
 
 // 定义组件的 Props 类型
 interface AvatarProps {
@@ -26,22 +28,22 @@ const Avator: React.FC<AvatarProps> = ({
   }, [defaultAvatar]);
 
 
-  return  (
-      <img
-        src={imageSrc || defaultAvatar}
-        alt={alt}
-        width={size}
-        height={size}
-        onError={handleError}
-        onClick={onClick}
-        style={{
-          borderRadius: "50%", // 圆形头像
-          cursor: onClick ? "pointer" : "default", // 点击事件时显示指针
-          objectFit: "cover", // 确保图片裁剪不变形
-        }}
-        className={avatorStyle["avator-Container"]}
-      ></img>
-    )
+  return (
+    <Image
+      src={imageSrc || defaultAvatar}
+      alt={alt}
+      width={size}
+      height={size}
+      onError={handleError}
+      onClick={onClick}
+      style={{
+        borderRadius: "50%", // 圆形头像
+        cursor: onClick ? "pointer" : "default", // 点击事件时显示指针
+        objectFit: "cover", // 确保图片裁剪不变形
+      }}
+      className={avatorStyle["avator-Container"]}
+    ></Image>
+  );
 
 };
 

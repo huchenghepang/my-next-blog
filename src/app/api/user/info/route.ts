@@ -1,14 +1,15 @@
 import { createApiHandler } from "@/utils/createApiHandler";
 import logger from "@/utils/logger";
 import prisma from '@/utils/prisma';
-import { isSessionExistORRedurect } from '@/utils/protectPage';
 import { sendError, sendResponse } from '@/utils/responseHandler/responseHandler';
+import { getSession } from "@/utils/session";
 
 
 export const GET = createApiHandler(async () => {
     try {
-        const session = await isSessionExistORRedurect();
-        if (!session.user) return sendError({ errorMessage: "无法验证身份" })
+        const session = await getSession("sky-session");
+        
+        if (!session || !session.user) return sendError({errorMessage:"缺少验证信息",code:"403"})
         const { userId, currentRole, roles } = session.user
         if (userId && currentRole && currentRole.role_id) {
             const user = await prisma.user_info.findUnique({
@@ -45,7 +46,7 @@ interface UserDetail {
     account: string;
     register_datetime: Date | null;
     username: string;
-    avatar: string | null;
+    avatar: string ;
     email: string | null;
     signature: string | null;
 }

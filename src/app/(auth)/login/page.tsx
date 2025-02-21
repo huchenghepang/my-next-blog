@@ -47,9 +47,10 @@ const LoginPage = () => {
           text: data.errorMessage || "登录失败",
         });
       }
-      showMessage({ type: "success", text: "登录成功" });
-      debugger;
-      window.location.href = "/user";
+      showMessage({ type: "success", text: "登录成功" ,duration:2000});
+      setTimeout(()=>{
+        window.location.href = "/user";
+      },2000)
     } catch (error) {
       console.log(error);
       showMessage({ type: "error", text: "登录出错" });

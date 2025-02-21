@@ -45,7 +45,8 @@ export async function getSession(cookieName: cookiesType = "connect.sid") {
                     return null
                 }
             case "sky-session":
-                const sessionData = await getSessionFromRedis(sessionId)    
+                const sessionData = await getSessionFromRedis(sessionId);
+                if(!sessionData) return null;    
                 return {...sessionData?.data}
             default:
                 break;

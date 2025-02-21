@@ -26,9 +26,9 @@ async function LoginOut() {
   }
 }
 
-export default function LogoutButton() {
+export default function LogoutButton({size="default"}:{size?: "large" | "small" | "default" | "mini";}) {
   return (
-    <Button type="primary" onClick={LoginOut}>
+    <Button type="primary" size={size} onClick={LoginOut}>
       退出登录
     </Button>
   );
