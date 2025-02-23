@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ["www.gravatar.com","api.dicebear.com"], // 添加允许的图片域名
+    domains: ["www.gravatar.com", "api.dicebear.com","localhost"], // 添加允许的图片域名
     formats: ['image/avif', 'image/webp'], // Allow SVG format
   },
 };

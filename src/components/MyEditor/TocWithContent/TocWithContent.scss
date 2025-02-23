@@ -1,0 +1,28 @@
+.custom-scrollbar {
+  overflow: auto; // 允许横向滚动
+  white-space: pre; // 保持代码格式
+  padding: 10px;
+  color: #c9d1d9; // 代码颜色
+  border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  // 滑块（thumb）带渐变色
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #ff7eb3, #4d477d); // 渐变色从粉色到紫色
+    border-radius: 2px;
+    border: 1px solid #1e1e1e; // 让滑块与背景融合
+
+    &:hover {
+      background: linear-gradient(45deg, #ff92c2, #836fff); // 悬停时颜色更亮
+    }
+  }
+  // 轨道（track）
+  &::-webkit-scrollbar-track {
+    background-color: #c9d1d9;
+    border-radius: 2px;
+  }
+}

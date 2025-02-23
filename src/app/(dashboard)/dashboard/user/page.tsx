@@ -16,9 +16,12 @@ async function getUsers() {
 }
 
 export default async function Page() {
+  
   const session  = await isSessionExistORRedurect()
 
   const users = await getUsers();
+
+
  
 
   const isTogglerRole = await validatePermission(1, 2);

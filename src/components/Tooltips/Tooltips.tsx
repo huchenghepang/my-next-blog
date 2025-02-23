@@ -25,7 +25,10 @@ export default function ToolTips() {
             size={36}
           />
           <span className="hidden group-hover:block text-sm bg-gray-800 text-white px-2 py-1 rounded-lg">
-            联系我
+            联系方式:
+            <a type="email" href="mailto:huchenghe1021@outlook.com">
+              2927678784@qq.com
+            </a>
           </span>
         </li>
 

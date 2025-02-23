@@ -55,7 +55,7 @@ model UserRoles {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model article_categories {
-  id         Int       @default(autoincrement())
+  id         Int       @unique(map:"category_id")  @default(autoincrement())
   name       String    @unique(map: "cayegories_name") @db.VarChar(255)
   parent_id  Int?
   level      Int       @db.TinyInt
@@ -112,19 +112,20 @@ model note_tags {
 model notes {
   id                 Int                @id @default(autoincrement())
   name               String             @db.VarChar(255)
-  category_id        String             // 改为 String 类型
+  category_id        Int             // 改为 String 类型
   file_id            Int                @unique(map: "file_id")
   created_at         DateTime?          @default(now()) @db.Timestamp(0)
   create_time        DateTime           @db.DateTime(0)
   is_archive         Boolean            @default(false)
   summary            String?            @db.Text
+  content            String?            @db.Text
   toc                Json?
   reading            Int                @default(0)
   updated_time       DateTime?          @db.DateTime(0)
   comment_count      Int                @default(0)
   comments           comments[]
   note_tags          note_tags[]
-  article_categories article_categories @relation(fields: [category_id], references: [name], onUpdate: Restrict, map: "category_id")
+  article_categories article_categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "n_and_category_name")
   files_info         files_info         @relation(fields: [file_id], references: [file_id], onUpdate: Restrict, map: "n_and_f_file_id")
 
   @@index([category_id], map: "category_id")

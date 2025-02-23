@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from './logger';
+import { sendError } from './responseHandler/responseHandler';
 
 type ApiHandler = (req: NextRequest) => Promise<NextResponse>;
 type Middleware = (req: NextRequest) => Promise<NextResponse | void>;
 
-interface ApiHandlerOptions {
-    middlewares?: Middleware[];
-}
+
 
 /**
  * 创建一个带有中间件支持的 Next.js API 处理函数
@@ -39,7 +38,7 @@ export function createApiHandler(
             return response;
         } catch (error) {
             logger.error({error:error as Error,message:"API处理错误"});
-            return NextResponse.json({ error: '服务器内部错误' }, { status: 500 });
+            return sendError({code:"500",errorMessage:"服务器处理错误"})
         }
     };
 }

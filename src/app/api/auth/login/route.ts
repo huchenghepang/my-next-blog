@@ -7,7 +7,8 @@ import prisma from "@/utils/prisma";
 import { sendError, sendResponse } from "@/utils/responseHandler/responseHandler";
 import { generateSessionId, saveSession } from "@/utils/session/redis-session";
 import { validateRequest } from "@/utils/validateRequest";
-import { compareSync } from "bcrypt";
+import bcrypt from "bcrypt";
+
 
 export const POST = createApiHandler(async (req) => {
     try {
@@ -28,7 +29,7 @@ export const POST = createApiHandler(async (req) => {
         if (password === '' || !password) {
             return sendError({ errorMessage: "账号是github账号还未进行绑定" })
         }
-        const isSucceess = compareSync(data.password, password)
+        const isSucceess = bcrypt.compareSync(data.password, password)
         if (!isSucceess) return sendError({ errorMessage: "当前密码不正确" })
 
         const roles = await prisma.userRoles.findMany({

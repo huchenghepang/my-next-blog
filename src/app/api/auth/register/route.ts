@@ -5,7 +5,7 @@ import logger from "@/utils/logger";
 import prisma from "@/utils/prisma";
 import { sendError, sendResponse } from "@/utils/responseHandler/responseHandler";
 import { validateRequest } from "@/utils/validateRequest";
-import { hashSync } from "bcrypt";
+import bcrypt from "bcrypt";
 import { v5 as uuidv5 } from 'uuid';
 
 const MY_NAMESPACE = uuidv5("huchenghedezidingyi", uuidv5.DNS);
@@ -25,7 +25,7 @@ export const POST = createApiHandler(async (req) => {
         /* 生成唯一的用户ID */
         const userId = uuidv5(data.account, MY_NAMESPACE);
         /* 加密密码 */
-        const passwordBcrypted = hashSync(data.password, 10);
+        const passwordBcrypted = bcrypt.hashSync(data.password, 10);
 
         const defaultUsername = nicknames[Math.floor(Math.random() * nicknames.length)];
 

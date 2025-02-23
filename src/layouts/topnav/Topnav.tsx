@@ -1,15 +1,23 @@
 "use client";
-import Avator from "@/components/avator/avator";
 import DropMenu from "@/components/DropMenu/DropMenu";
+import { showMessage } from "@/components/Message/MessageManager";
 import { useLayout } from "@/contexts/LayoutContext";
 import { Select } from "antd";
-import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import Search from "../../components/search/Search";
 import "./navtop.scss";
-import LogoutButton from "@/components/LoginzButton";
 
 const TopNav = () => {
   const { user, setUser } = useLayout();
+  const params = useSearchParams()
+  
+  useEffect(()=>{
+   if (params?.has("isLogin")) {
+     showMessage({ type: "success", text: "登录成功" });
+   }
+  },[])
+  
 
   const currentRole = useMemo(() => {
     return {
@@ -49,26 +57,22 @@ const TopNav = () => {
   return (
     <div>
       <div className="topNavigation-container ">
-        <DropMenu
-          options={[{ value: "1", label: "你好" }]}
-          label="还还好"
-        ></DropMenu>
         <Search onEnter={(value) => console.log(value)}></Search>
         <div className="navtop-center" />
         <div className="navtop-right-ctn ">
           
           <div className="person-info">
-            <span className="username">{userInfo?.username}</span>
             <Select
               defaultValue={currentRole}
+              placeholder="切换角色"
               options={roles}
               onChange={handleRoleChange}
               style={{ width: "120px" }}
             ></Select>
           </div>
           <DropMenu
-            options={[{label:<LogoutButton size={"mini"} ></LogoutButton>,value:1}]}
-            label={<Avator src="/png/noAi.png"></Avator>}
+            options={[{label:"修改个人信息",value:1},{label:"退出登录",value:2},{label:"设置",value:1}]}
+            label={userInfo.username}
           ></DropMenu>
         </div>
       </div>

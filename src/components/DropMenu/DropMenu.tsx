@@ -18,7 +18,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ options, label }) => {
       </button>
 
       {/* 下拉菜单 */}
-      <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-md w-11/12 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+      <div className="absolute left-0 mt-2  bg-white shadow-lg rounded-md  opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         {options.map((option, index) => (
           <div key={index} className="relative group">
             <a
