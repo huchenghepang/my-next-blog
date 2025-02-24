@@ -30,6 +30,8 @@ function faviconMiddleware(req: NextRequest) {
     return NextResponse.next(); // 继续处理其他请求
 }
 
+// 中间件4：拦截对于post的请求，增加文章的阅读量
+
 // 主中间件：按顺序执行多个中间件
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;

@@ -2,17 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import logger from './logger';
 import { sendError } from './responseHandler/responseHandler';
 
-type ApiHandler = (req: NextRequest) => Promise<NextResponse>;
+type Options = { params: any };
+
+type ApiHandler = (req: NextRequest, options?: Options) => Promise<NextResponse>;
 type Middleware = (req: NextRequest) => Promise<NextResponse | void>;
-
-
 
 /**
  * 创建一个带有中间件支持的 Next.js API 处理函数
  *
- * @param handler - 核心业务逻辑的处理函数
- * @param options - 选项，包含前置和后置中间件
- * @returns 一个新的 API 处理函数，带有中间件支持
+ * @param handler - 核心业务逻辑的处理函数，接受 `NextRequest` 和可选的 `options` 参数，返回一个 `NextResponse`。
+ * @param options - 选项对象，包含额外的配置选项，比如中间件等。默认为 `undefined`。
+ * @returns 返回一个新的 API 处理函数，这个函数会先处理任何中间件，然后调用核心的 `handler` 业务逻辑。
  *
  * @example
  * ```typescript
@@ -30,15 +30,16 @@ type Middleware = (req: NextRequest) => Promise<NextResponse | void>;
  */
 export function createApiHandler(
     handler: ApiHandler,
+    options?: Options
 ): ApiHandler {
-    return async (req: NextRequest) => {
+    return async (req: NextRequest, options) => {
         try {
             // 执行业务逻辑
             const response = await handler(req);
             return response;
         } catch (error) {
-            logger.error({error:error as Error,message:"API处理错误"});
-            return sendError({code:"500",errorMessage:"服务器处理错误"})
+            logger.error({ error: error as Error, message: 'API处理错误' });
+            return sendError({ code: '500', errorMessage: '服务器处理错误' });
         }
     };
 }

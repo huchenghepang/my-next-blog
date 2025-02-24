@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 async function getArticleInfoByID(id: number) {
   if (!id) return;
-  console.log("请求了数据库1")
+
   const article = await prisma.notes.findUnique({
     where: { id: id },
     include: {
@@ -63,8 +63,8 @@ export default async function PostPage({ params }: PostPageProps) {
     return (
       <div className="flex">
         {toc && <TableOfContents toc={toc} />}
-        <div className="w-full">
-          <PreViewArticle id={String(article.id)} text={content || ""} toc={toc}/>
+        <div className="w-full flex">
+          <PreViewArticle id={String(article.id)} reading={article.reading} text={content || ""} toc={toc}/>
         </div>
       </div>
     );
@@ -77,6 +77,5 @@ export default async function PostPage({ params }: PostPageProps) {
   } finally {
     // 必须在finally去重定向 因为redirect内部舍弃错误的
     if (redirectPath) redirect(redirectPath);
-    console.log("请求 -")
   }
 }

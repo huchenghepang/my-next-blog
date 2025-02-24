@@ -4,17 +4,20 @@ import rehypeRaw from "rehype-raw"; // 允许解析 Markdown 里的 HTML
 import remarkGfm from "remark-gfm"; // 让 Markdown 支持表格、删除线等
 import CodeBlock from "./CodeBlock/CodeBlock";
 import MyImageComponent from "./MyImage";
+import { BsEye } from "react-icons/bs";
 
 interface PreViewArticleProps {
   id: string;
   text: string;
   toc: HeadList[] | undefined;
+  author?:string;
+  reading?:number;
 }
 
 function getHeaderId(
   level: number,
   toc: HeadList[] | undefined,
-  text: string | undefined
+  text: string | undefined,
 ): string {
   if (!toc) return "";
   const item = toc.find(
@@ -23,7 +26,13 @@ function getHeaderId(
   return item ? `header-${item.line}` : "";
 }
 
-export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
+export default function PreViewArticle({
+  id,
+  text,
+  toc,
+  author,
+  reading,
+}: PreViewArticleProps) {
   return (
     <div
       className="
@@ -132,6 +141,9 @@ export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
       >
         {text}
       </ReactMarkdown>
+      <p className="flex  align-center">
+        <BsEye size={20} alignmentBaseline="middle"></BsEye>:{reading}
+      </p>
     </div>
   );
 }
