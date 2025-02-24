@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import logger from './logger';
 import { sendError } from './responseHandler/responseHandler';
 
-type Options = { params: any };
+interface Options { params: any };
 
 type ApiHandler = (req: NextRequest, options?: Options) => Promise<NextResponse>;
-type Middleware = (req: NextRequest) => Promise<NextResponse | void>;
 
 /**
  * 创建一个带有中间件支持的 Next.js API 处理函数
@@ -35,7 +34,7 @@ export function createApiHandler(
     return async (req: NextRequest, options) => {
         try {
             // 执行业务逻辑
-            const response = await handler(req);
+            const response = await handler(req,options);
             return response;
         } catch (error) {
             logger.error({ error: error as Error, message: 'API处理错误' });
