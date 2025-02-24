@@ -1,0 +1,1 @@
+export interface Options { params: any };
