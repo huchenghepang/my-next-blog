@@ -176,7 +176,17 @@ interface Pagination {
     page: number;          // 当前页码
     limit: number;           // 总页数
     total: number;           // 总记录数
+    totalPages?:number;
 }
+
+export interface PaginationResponse {
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+}
+
+
 
 // 自定义响应内容
 
@@ -188,3 +198,5 @@ type HttpStatusCodes = {
     };
 };
 
+
+export type PaginationParams = Omit<Pagination, "total">

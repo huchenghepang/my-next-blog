@@ -17,14 +17,8 @@ export const Sidebar: FC = () => {
           <h3 className="sidebar-title-3">主界面</h3>
           <div className="section-detail">
             <MultiLevelNav
-              text="主页"
+              text="总览"
               leftIcon="icon-zhuye"
-              to="/"
-            ></MultiLevelNav>
-            <MultiLevelNav
-              text="分析"
-              leftIcon="icon-zhuye"
-              to="/dashboard/analyze"
             ></MultiLevelNav>
           </div>
         </div>

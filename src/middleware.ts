@@ -24,7 +24,7 @@ function faviconMiddleware(req: NextRequest) {
 
     // 如果请求路径以 favicon.ico 结尾，直接返回 404
     if (pathname.endsWith('favicon.ico')) {
-        return NextResponse.redirect(new URL('/icons/favico.ico', req.url));
+        return NextResponse.redirect(new URL('/favicon.ico', req.url));
     }
 
     return NextResponse.next(); // 继续处理其他请求

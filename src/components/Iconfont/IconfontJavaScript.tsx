@@ -7,3 +7,5 @@ export default function IconfontJavaScript({
 }) {
   return <script async src={`/svg/iconfont/${scriptName}.js`}></script>;
 }
+
+export const revalidate = false;

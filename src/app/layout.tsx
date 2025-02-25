@@ -14,11 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = { 
-  title:"天空之城",
+  title:"云间书",
   description: "护城河的天空之城",
   keywords:["技术","博客","文章"],
-  manifest:"/site.webmanifest",
-  icons:"./favicon.ico"
+  icons:"/favicon.ico"
 };
 
 
@@ -31,8 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-100 dark:bg-zinc-800 text-black dark:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-100 text-black dark:bg-zinc-600  dark:text-white`}
       >
+        {/* 头部横幅 */}
+
         {children}
       </body>
     </html>

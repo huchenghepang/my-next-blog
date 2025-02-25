@@ -1,4 +1,5 @@
 "use client";
+import { BiHomeAlt } from "react-icons/bi";
 import { CiCircleChevUp } from "react-icons/ci";
 import { IoIosContact } from "react-icons/io";
 import ThemeToggle from "../ThemeToggle";
@@ -19,7 +20,7 @@ export default function ToolTips() {
     <div className="fixed bottom-20 right-20 space-y-3">
       <ul className="space-y-3">
         {/* 联系我按钮 */}
-        <li className="group  flex items-center  space-x-2 cursor-pointer">
+        <li className="group  flex text-orange-300 items-center  space-x-2 cursor-pointer">
           <IoIosContact
             className="text-3xl group-hover:text-yellow-600 transition-all"
             size={36}
@@ -35,12 +36,6 @@ export default function ToolTips() {
         {/* 主题切换按钮 */}
         <li className="group flex items-center space-x-2 cursor-pointer justify-center">
           <ThemeToggle id="theme-toggle-btn" />
-          <span
-            onClick={handleThemeToggle}
-            className="hidden group-hover:block text-sm bg-gray-800 text-white px-2 py-1 rounded-lg"
-          >
-            切换主题
-          </span>
         </li>
 
         {/* 返回顶部按钮 */}
@@ -51,12 +46,19 @@ export default function ToolTips() {
             className="text-3xl group-hover:text-yellow-600 transition-all"
             size={36}
           />
-          <span
-            onClick={backTop}
-            className="hidden group-hover:block text-sm bg-gray-800 text-white px-2 py-1 rounded-lg"
-          >
-            返回顶部
-          </span>
+        </li>
+        <li
+          className="group flex items-center space-x-2 cursor-pointer"
+          title="返回首页"
+        >
+          <BiHomeAlt
+            id="theme-toggle-btn"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            className="text-3xl text-cyan-200 group-hover:text-yellow-600 transition-all"
+            size={36}
+          />
         </li>
       </ul>
     </div>

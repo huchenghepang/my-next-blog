@@ -13,7 +13,7 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      "react-hooks/exhaustive-deps": "off", // 禁用 useEffect/useCallback 依赖检查
+      "react-hooks/exhaustive-deps": "warn", // 禁用 useEffect/useCallback 依赖检查
       "@typescript-eslint/no-explicit-any":"off",
       "@typescript-eslint/no-unused-vars":"warn",
       "@typescript-eslint/no-unused-vars": "off",

@@ -25,7 +25,7 @@ async function getArticleInfoByID(id: number) {
   if (!id) return;
 
   const article = await prisma.notes.findUnique({
-    where: { id: id },
+    where: { id: id ,is_archive:true},
     include: {
       article_categories: { select: { level: true, name: true, id: true } },
       note_tags: { select: { tags: true } },
@@ -64,7 +64,12 @@ export default async function PostPage({ params }: PostPageProps) {
       <div className="flex">
         {toc && <TableOfContents toc={toc} />}
         <div className="w-full flex">
-          <PreViewArticle id={String(article.id)} reading={article.reading} text={content || ""} toc={toc}/>
+          <PreViewArticle
+            id={String(article.id)}
+            text={content || ""}
+            toc={toc}
+          />
+         
         </div>
       </div>
     );

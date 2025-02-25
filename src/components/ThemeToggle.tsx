@@ -30,7 +30,7 @@ const ThemeToggle = ({id}:{id:string}) => {
         dark:hover:bg-gray-700
       "
     >
-      {theme === "light" ? <CiCloudSun></CiCloudSun> : <FaMoon></FaMoon>}
+      {theme === "light" ? "☀️" : "🌙"}
     </button>
   );
 };

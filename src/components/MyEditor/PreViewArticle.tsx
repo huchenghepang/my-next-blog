@@ -2,16 +2,15 @@ import { HeadList } from "md-editor-rt";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw"; // 允许解析 Markdown 里的 HTML
 import remarkGfm from "remark-gfm"; // 让 Markdown 支持表格、删除线等
+import ArticleInfo from "./ArticleInfo";
 import CodeBlock from "./CodeBlock/CodeBlock";
 import MyImageComponent from "./MyImage";
-import { BsEye } from "react-icons/bs";
 
 interface PreViewArticleProps {
   id: string;
   text: string;
   toc: HeadList[] | undefined;
   author?:string;
-  reading?:number;
 }
 
 function getHeaderId(
@@ -30,8 +29,6 @@ export default function PreViewArticle({
   id,
   text,
   toc,
-  author,
-  reading,
 }: PreViewArticleProps) {
   return (
     <div
@@ -141,9 +138,7 @@ export default function PreViewArticle({
       >
         {text}
       </ReactMarkdown>
-      <p className="flex  align-center">
-        <BsEye size={20} alignmentBaseline="middle"></BsEye>:{reading}
-      </p>
+      <ArticleInfo articleId={id}></ArticleInfo>
     </div>
   );
 }

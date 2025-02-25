@@ -1,7 +1,7 @@
+import { Options } from '@/types/response/api';
 import { NextRequest, NextResponse } from 'next/server';
 import logger from './logger';
 import { sendError } from './responseHandler/responseHandler';
-import { Options } from '@/types/response/api';
 
 type ApiHandler = (req: NextRequest) => Promise<NextResponse>;
 type Middleware = (req: NextRequest,option:Options) => Promise<NextResponse | void>;

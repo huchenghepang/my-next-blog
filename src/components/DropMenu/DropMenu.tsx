@@ -33,5 +33,4 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ options, label }) => {
     </div>
   );
 };
-
 export default DropdownMenu;

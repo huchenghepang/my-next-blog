@@ -4,7 +4,7 @@ import { FetcherOptions } from "@/types/fetcher";
 
 export async function fetcherClient<D = unknown, CD = CustomResponse<D>>(
     url: string,
-    options?: FetcherOptions
+    options?: FetcherOptions,
 ): Promise<{ response: Response; body?: CD , success: boolean }> {
     const { contentType = "application/json", method = "GET", ...restOptions } = options || {};
     const headers: HeadersInit = {

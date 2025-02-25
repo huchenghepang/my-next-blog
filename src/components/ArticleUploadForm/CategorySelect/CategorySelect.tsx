@@ -55,11 +55,13 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     <Form.Item
       label="分类"
       name="category"
+      
       rules={[{ required: true, message: "请选择分类" }]}
     >
       <Select
         placeholder="请选择分类"
         loading={loading}
+        style={{width:"200px"}}
         onChange={onChange} // 触发外部行为
         defaultValue={defaultValue} // 默认选中值
       >
