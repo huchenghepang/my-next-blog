@@ -64,6 +64,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
         style={{width:"200px"}}
         onChange={onChange} // 触发外部行为
         defaultValue={defaultValue} // 默认选中值
+        className="dark:bg-slate-800"
       >
         {Object.values(categoryGroups).map((parent) =>
           parent.children.length > 0 ? (

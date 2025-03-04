@@ -1,14 +1,14 @@
 "use client";
-import { ArticlesCategoryies } from "@/app/api/article/route";
+import { ArticlesCategoryies, NotesWithTags } from "@/app/api/article/route";
 import CategorySelectWithNoForm from "@/components/ArticleUploadForm/CategorySelect/CategorySelectWithNoForm";
 import BubbleContainer from "@/components/Bubble/BubbleContainer";
-import { Notes } from "@/types/mysql";
 import { Pagination as PaginationType } from "@/types/response";
 import { fetcherClientCnm } from "@/utils/fetcher/fetcherCnm";
 import { formatDateUTC } from "@/utils/format/formatDatetime";
-import { Card, Pagination } from "antd";
+import { Card, Pagination, Tag } from "antd";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BsEyeFill } from "react-icons/bs";
 import "./page.scss";
@@ -18,19 +18,35 @@ const initailPagination = {
   limit: 4,
   total: 0,
 };
+
 export default function ArticleList() {
+  const [articlesList, setArticlesList] = useState<NotesWithTags[]>();
+  // 查询参数请求
+  const searchParams = useSearchParams();
+
   const [pagination, setPagination] =
     useState<PaginationType>(initailPagination);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>();
 
-  const [articlesList, setArticlesList] = useState<Notes[]>();
+  const categoryId = searchParams?.get("categoryid");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    number | undefined
+  >(Number(categoryId) || undefined);
 
   const reqArticles = useCallback(() => {
-    console.log(selectedCategoryId)
+    const tagInfo = {
+      id: Number(searchParams?.get("tagid")),
+      name: searchParams?.get("tagname") || "",
+    };
+
+
     fetcherClientCnm<ArticlesCategoryies>("/api/article", {
       method: "POST",
       contentType: "application/json",
-      body: JSON.stringify({ pagination, categoryId: selectedCategoryId }),
+      body: JSON.stringify({
+        pagination,
+        categoryId: selectedCategoryId,
+        tagInfo: tagInfo.id ? tagInfo : undefined,
+      }),
     })
       .then(({ body }) => {
         if (body && body.data && body.data.articles) {
@@ -44,11 +60,11 @@ export default function ArticleList() {
       .catch((err) => {
         console.log(err);
       });
-  }, [pagination, selectedCategoryId]);
+  }, [pagination, selectedCategoryId, searchParams]);
 
   useEffect(() => {
     reqArticles();
-  }, [pagination.page,selectedCategoryId]); // 每次pagination变化时重新请求数据
+  }, [pagination.page, selectedCategoryId]); // 每次pagination变化时重新请求数据
 
   // 处理分页器变化
   const handlePageChange = (page: number, pageSize: number | undefined) => {
@@ -60,14 +76,11 @@ export default function ArticleList() {
     // reqArticles();
   };
 
-  const handleCategoryChange = useCallback(
-    (value: number) => {
-      console.log(value)
-      setSelectedCategoryId(value);
-      setPagination(initailPagination)
-      // reqArticles();
-    },[]
-  );
+  const handleCategoryChange = useCallback((value: number) => {
+    setSelectedCategoryId(value);
+    setPagination(initailPagination);
+    // reqArticles();
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto p-6 dark:text-white">
@@ -108,6 +121,21 @@ export default function ArticleList() {
                 </p>
                 <div className="text-sm text-gray-400 mt-4 flex justify-between">
                   <span>{formatDateUTC(article.create_time)}</span>
+
+                  <div className="flex items-center space-x-2">
+                    {article.note_tags &&
+                      article.note_tags.map((tag) => {
+                        return (
+                          <Tag
+                            key={tag.tags.id}
+                            className="text-gray-400 dark:text-slate-800"
+                          >
+                            {tag.tags.name}
+                          </Tag>
+                        );
+                      })}
+                  </div>
+
                   <span>
                     {article.reading} <BsEyeFill className="inline-block" />
                   </span>

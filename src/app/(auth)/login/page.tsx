@@ -8,6 +8,8 @@ import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
 import { showMessage } from "@/components/Message/MessageManager";
 import { useFormReducer } from "@/hooks/useFormReducer";
 import { CustomResponse } from "@/types/customResponse";
+import { AuthLoginResponse } from "@/types/response/auth";
+import { setLocalStorage } from "@/utils/localStore";
 import loginStyle from "./Login.module.scss";
 
 // 根据文件名生成组件
@@ -39,7 +41,7 @@ const LoginPage = () => {
         }).toString(), // 使用 URLSearchParams 将数据编码成 x-www-form-urlencoded 格式
       });
 
-      const data: CustomResponse = await response.json();
+      const data: CustomResponse<AuthLoginResponse> = await response.json();
       if (!response.ok) {
         setErrors(data.errorMessage);
         return showMessage({
@@ -48,6 +50,8 @@ const LoginPage = () => {
         });
       }
 
+      setLocalStorage("isLogin",true);
+      setLocalStorage("userInfo",data.data);
       window.location.href = "/dashboard/?isLogin=1";
     } catch (error) {
       console.log(error);

@@ -1,4 +1,3 @@
-"use client";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 import "./bubble.scss";
@@ -11,7 +10,7 @@ export interface BubbleProps {
 }
 
 const Bubble: React.FC<BubbleProps> = ({ id, text, number }) => {
-  const size = 20 + number * 5; // 气泡大小基于number
+  const size = number * 50; // 气泡大小基于number
   const hue = Math.floor((id * 137) % 360); // 颜色
   const backgroundColor = `hsla(${hue}, 80%, 70%, 0.6)`; // 透明度 0.6
 

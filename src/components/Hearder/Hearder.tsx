@@ -1,28 +1,39 @@
 "use client";
+import { fetcherClient } from "@/utils/fetcher/fetcherClient";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import Button from "../Button/Button";
+import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "../ThemeToggle";
+import IsloginBtn from "./IsloginBtn";
 import LinkHeader from "./Link";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const keyword = inputRef.current?.value;
+    if (keyword !== "") {
+      fetcherClient<{redirect:string}>("/api/article/keyword?"+"keyword="+keyword,{method:"GET"}).then(res=>{
+        if(res.body){
+          window.location.href = res.body.data.redirect
+        }
+      }).catch()
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 60); 
-      setIsHidden(scrollY > window.innerHeight); 
+      setIsScrolled(scrollY > 60);
+      setIsHidden(scrollY > window.innerHeight);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-
 
   return (
     <header
@@ -32,7 +43,11 @@ export default function Header() {
     >
       <div className="container flex justify-between h-14 mx-auto items-center">
         {/* Logo */}
-        <Link href="/" aria-label="返回首页" className="flex items-center p-1">
+        <Link
+          href="/"
+          aria-label="返回首页"
+          className="flex items-center  w-40"
+        >
           <Image
             src="/png/favicon.png"
             alt="icon"
@@ -43,13 +58,13 @@ export default function Header() {
         </Link>
 
         {/* 导航栏 */}
-        <ul className="items-stretch flex justify-between space-x-3 lg:flex f">
+        <ul className="flex justify-center">
           <LinkHeader linkText="文 章" href="/posts" />
           <LinkHeader linkText="关 于" href="/about" />
         </ul>
 
         {/* 右侧功能区 */}
-        <div className="flex items-center md:space-x-4">
+        <div className="flex items-center w-40">
           {/* 主题切换按钮 */}
           <ThemeToggle id="theme-toggle-btn"></ThemeToggle>
           {/* 搜索框 */}
@@ -69,32 +84,18 @@ export default function Header() {
                 </svg>
               </button>
             </span>
-            <input
-              type="search"
-              name="Search"
-              placeholder="Search..."
-              className="w-32 py-2 pl-10 text-sm text-black dark:text-gray-800 rounded-md focus:outline-none"
-            />
+            <form onSubmit={handleSubmit} className="ml-3">
+              <input
+                type="search"
+                ref={inputRef}
+                name="Search"
+                placeholder="搜索文章..."
+                className="w-40 py-2 pl-10  text-sm text-black dark:text-gray-800 rounded-md focus:outline-none"
+              />
+            </form>
           </div>
           {/* 登录按钮 */}
-          <Button
-            type="link"
-            href="/login"
-            styles={{
-                "textDecoration":"none"
-            }}
-            classNames={[
-              "hidden",
-              "bg-transparent",
-              "font-semibold",
-
-              "rounded",
-              "dark:text-white",
-              "lg:block",
-            ]}
-          >
-            登 录
-          </Button>
+          <IsloginBtn></IsloginBtn>
         </div>
       </div>
     </header>

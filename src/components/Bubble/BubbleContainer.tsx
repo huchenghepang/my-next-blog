@@ -1,27 +1,35 @@
-"use client";
 
+"use client";
+import { TagsWithNotes } from "@/app/api/tags/route";
+import { fetcherClientCnm } from "@/utils/fetcher/fetcherCnm";
 import { memo, useEffect, useState } from "react";
 import Bubble from "./Bubble";
 
-const BUBBLE_COUNT = 20; // 气泡数量
 
-const BubbleContainer: React.FC = () => {
-  const [bubbles, setBubbles] = useState<
-    { id: number; text: string; number: number }[]
-  >([]);
+
+
+
+const BubbleContainer: React.FC =  () => {
+  
+  const [tagsWithNotes, setTagsWithNotes] = useState<TagsWithNotes[]>();
+
 
   useEffect(() => {
-    const bubbles = Array.from({ length: BUBBLE_COUNT }, (_, i) => ({
-      id: i,
-      text: `B${i + 1}`,
-      number: BUBBLE_COUNT,
-    }));
+   
+      fetcherClientCnm<TagsWithNotes[]>("/api/tags").then(res=>{
+        if(res.body && res.body.data){
+          setTagsWithNotes(res.body.data);
+        }
+      }).catch((err)=>{
+        console.log(err);
+      });
 
-    setBubbles(bubbles);
-  }, []);
+  },[])
+
+  
 
   return (
-    bubbles.length > 0 && (
+    tagsWithNotes && (
       <div
         className="fixed bottom-16 sm:top-20 right-4 sm:right-6 
         w-full max-w-xs sm:max-w-md 
@@ -30,8 +38,14 @@ const BubbleContainer: React.FC = () => {
         cursor-pointer
         overflow-hidden"
       >
-        {bubbles.map((bubble) => (
-          <Bubble key={bubble.id} {...bubble} totalBubbles={BUBBLE_COUNT} />
+        {tagsWithNotes.map((tag) => (
+          <Bubble
+            key={tag.id}
+            id={tag.id}
+            number={tag.note_tags.length}
+            text={tag.name}
+            totalBubbles={tagsWithNotes.length}
+          />
         ))}
       </div>
     )

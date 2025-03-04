@@ -10,13 +10,13 @@ interface PreViewArticleProps {
   id: string;
   text: string;
   toc: HeadList[] | undefined;
-  author?:string;
+  author?: string;
 }
 
 function getHeaderId(
   level: number,
   toc: HeadList[] | undefined,
-  text: string | undefined,
+  text: string | undefined
 ): string {
   if (!toc) return "";
   const item = toc.find(
@@ -25,15 +25,11 @@ function getHeaderId(
   return item ? `header-${item.line}` : "";
 }
 
-export default function PreViewArticle({
-  id,
-  text,
-  toc,
-}: PreViewArticleProps) {
+export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
   return (
     <div
       className="
-      prose dark:prose-invert mx-auto  max-w-4xl p-4 rounded-lg shadow-md
+      prose dark:prose-invert mx-auto max-w-5xl w-8/12 p-4 rounded-lg shadow-md
     bg-white dark:bg-[#0d1117] text-black dark:text-[#c9d1d9]
       prose-base text-sm
       prose-p:my-0.5

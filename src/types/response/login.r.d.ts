@@ -29,4 +29,7 @@ export interface Permission {
     type: Type;
 }
 
+
+
+
 export type Type = "route" | "button";

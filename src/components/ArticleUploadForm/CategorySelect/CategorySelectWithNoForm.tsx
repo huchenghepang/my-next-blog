@@ -63,7 +63,10 @@ const CategorySelectWithNoForm: React.FC<CategorySelectProps> = ({
         parent.children.length > 0 ? (
           <OptGroup key={parent.id} label={parent.name}>
             {parent.children.map((child) => (
-              <Option key={child.id} value={child.id}>
+              <Option
+                key={child.id}
+                value={child.id}
+              >
                 {child.name}
               </Option>
             ))}

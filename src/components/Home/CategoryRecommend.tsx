@@ -8,9 +8,9 @@ const CategoryRecommend: FC =async () => {
   try {
       const categories = await prisma.article_categories.findMany({
         where: {
-          level: 1,
+           level:{in:[2,3]}
         },
-        take: 10,
+        take: 8,
       });
 
       return (
