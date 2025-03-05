@@ -1,6 +1,6 @@
 import Button from "@/components/Button/Button";
 import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
-import LogoutButton from "@/components/LoginzButton";
+import LogoutButton from "@/components/LoginOutButton";
 import prisma from "@/utils/prisma";
 import { getSession } from "@/utils/session";
 import { validatePermission } from "@/utils/validatePermission";

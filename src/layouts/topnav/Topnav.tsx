@@ -2,11 +2,36 @@
 import DropMenu from "@/components/DropMenu/DropMenu";
 import { showMessage } from "@/components/Message/MessageManager";
 import { useLayout } from "@/contexts/LayoutContext";
+import { CustomResponse } from "@/types/customResponse";
 import { Select } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import Search from "../../components/search/Search";
 import "./navtop.scss";
+
+
+async function LoginOut() {
+  /* 请求删除数据 */
+  try {
+    const res = await fetch("/api/auth/loginout");
+    const { success, message, errorMessage } =
+      (await res.json()) as CustomResponse;
+    if (!success)
+      return showMessage({
+        type: "error",
+        text: errorMessage || "退出登录失败",
+      });
+
+    showMessage({ type: "success", text: message || "退出登录成功",duration:2000 });
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+  } catch (error) {
+    console.log(error);
+    showMessage({ type: "error", text: "退出登录出错" });
+  }
+}
+
 
 const TopNav = () => {
   const { user, setUser } = useLayout();
@@ -60,7 +85,6 @@ const TopNav = () => {
         <Search onEnter={(value) => console.log(value)}></Search>
         <div className="navtop-center" />
         <div className="navtop-right-ctn ">
-          
           <div className="person-info">
             <Select
               defaultValue={currentRole}
@@ -71,7 +95,11 @@ const TopNav = () => {
             ></Select>
           </div>
           <DropMenu
-            options={[{label:"修改个人信息",value:1},{label:"退出登录",value:2},{label:"设置",value:1}]}
+            options={[
+              { label: "修改个人信息", value: 1 },
+              { label: "退出登录", value: 2, onClick: LoginOut },
+              { label: "设置", value: 1 },
+            ]}
             label={userInfo.username}
           ></DropMenu>
         </div>

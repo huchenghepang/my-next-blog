@@ -46,7 +46,7 @@ export default function Header() {
         <Link
           href="/"
           aria-label="返回首页"
-          className="flex items-center  w-40"
+          className="flex items-center  w-80"
         >
           <Image
             src="/png/favicon.png"
@@ -60,13 +60,15 @@ export default function Header() {
         {/* 导航栏 */}
         <ul className="flex justify-center">
           <LinkHeader linkText="文 章" href="/posts" />
+          <LinkHeader linkText="主 站" href="https://huchenghe.site" />
           <LinkHeader linkText="关 于" href="/about" />
         </ul>
 
         {/* 右侧功能区 */}
-        <div className="flex items-center w-40">
+        <div className="flex items-center w-80 ">
           {/* 主题切换按钮 */}
           <ThemeToggle id="theme-toggle-btn"></ThemeToggle>
+
           {/* 搜索框 */}
           <div className="relative hidden md:block">
             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -90,7 +92,7 @@ export default function Header() {
                 ref={inputRef}
                 name="Search"
                 placeholder="搜索文章..."
-                className="w-40 py-2 pl-10  text-sm text-black dark:text-gray-800 rounded-md focus:outline-none"
+                className="w-40 py-2 pl-5  text-sm text-black dark:text-gray-800 rounded-md focus:outline-none"
               />
             </form>
           </div>

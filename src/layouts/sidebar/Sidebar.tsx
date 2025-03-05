@@ -51,28 +51,28 @@ export const Sidebar: FC = () => {
             <div className="sidebar-nav-item">
               <div className="left-info"></div>
               <div className="middle">
-                <span>Component</span>
+                <span>组件</span>
               </div>
               <div className="right-info"></div>
             </div>
             <div className="sidebar-nav-item">
               <div className="left-info"></div>
               <div className="middle">
-                <span>Form</span>
+                <span>表单</span>
               </div>
               <div className="right-info"></div>
             </div>
             <div className="sidebar-nav-item">
               <div className="left-info"></div>
               <div className="middle">
-                <span>Table</span>
+                <span>表格</span>
               </div>
               <div className="right-info"></div>
             </div>
             <div className="sidebar-nav-item">
               <div className="left-info"></div>
               <div className="middle">
-                <span>Icons</span>
+                <span>图标</span>
               </div>
               <div className="right-info"></div>
             </div>

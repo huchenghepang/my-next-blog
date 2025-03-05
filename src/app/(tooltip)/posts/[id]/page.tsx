@@ -69,7 +69,6 @@ export default async function PostPage({ params }: PostPageProps) {
             text={content || ""}
             toc={toc}
           />
-         
         </div>
       </div>
     );

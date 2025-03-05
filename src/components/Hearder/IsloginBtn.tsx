@@ -41,11 +41,8 @@ const IsloginBtn = () => {
       <Button
         type="link"
         href="/login"
-        styles={{
-          textDecoration: "none",
-        }}
         classNames={[
-          "hidden",
+          
           "bg-transparent",
           "font-semibold",
           "rounded",

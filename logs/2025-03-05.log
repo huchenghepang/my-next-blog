@@ -1,0 +1,10 @@
+{"datetime":"2025-03-05 14:07:05","environment":"production","level":"error","message":"Error: connect ECONNREFUSED 127.0.0.1:3306"}
+{"datetime":"2025-03-05 14:07:05","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:07:05","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:07:05","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:07:05","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:07:06","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:07:06","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-05 14:10:13","environment":"production","error":{"clientVersion":"6.4.1","name":"PrismaClientInitializationError"},"level":"error","message":"API处理错误"}
+{"datetime":"2025-03-05 14:10:13","environment":"production","error":{"clientVersion":"6.4.1","name":"PrismaClientInitializationError"},"level":"error","message":"API处理错误"}
+{"datetime":"2025-03-05 14:10:13","environment":"production","error":{"clientVersion":"6.4.1","name":"PrismaClientInitializationError"},"level":"error","message":"API处理错误"}
