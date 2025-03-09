@@ -1,0 +1,14 @@
+{"datetime":"2025-03-07 11:07:21","environment":"production","level":"error","message":"Error: connect ECONNREFUSED 127.0.0.1:3306"}
+{"datetime":"2025-03-07 11:07:21","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:07:21","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:07:21","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:07:21","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:07:22","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:07:22","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:09:35","environment":"production","error":{},"level":"error","message":"Error during setKey:"}
+{"datetime":"2025-03-07 11:09:38","environment":"production","error":{},"level":"error","message":"Error during setKey:"}
+{"datetime":"2025-03-07 11:37:22","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:37:22","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:37:23","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:37:23","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}
+{"datetime":"2025-03-07 11:37:24","environment":"production","error":{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"port":6379,"syscall":"connect"},"level":"error","message":"Redis connection error:"}

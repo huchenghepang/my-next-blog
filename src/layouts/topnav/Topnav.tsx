@@ -3,6 +3,7 @@ import DropMenu from "@/components/DropMenu/DropMenu";
 import { showMessage } from "@/components/Message/MessageManager";
 import { useLayout } from "@/contexts/LayoutContext";
 import { CustomResponse } from "@/types/customResponse";
+import { removeLocalStorage } from "@/utils/localStore";
 import { Select } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
@@ -23,11 +24,12 @@ async function LoginOut() {
       });
 
     showMessage({ type: "success", text: message || "退出登录成功",duration:2000 });
+    removeLocalStorage("userInfo");
+    removeLocalStorage("isLogin");
     setTimeout(() => {
       window.location.href = "/login";
     }, 2000);
   } catch (error) {
-    console.log(error);
     showMessage({ type: "error", text: "退出登录出错" });
   }
 }

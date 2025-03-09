@@ -2,6 +2,7 @@
 
 import { getLocalStorage } from "@/utils/localStore";
 import { Avatar } from "antd";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import Button from "../Button/Button";
 
@@ -36,13 +37,14 @@ const IsloginBtn = () => {
   return (
     // 根据登录状态渲染不同组件
     isLogin ? (
-      <Avatar src={avatar} size={50} />
+      <Link href={"/dashboard"}>
+        <Avatar src={avatar} size={50} />
+      </Link>
     ) : (
       <Button
         type="link"
         href="/login"
         classNames={[
-          
           "bg-transparent",
           "font-semibold",
           "rounded",
