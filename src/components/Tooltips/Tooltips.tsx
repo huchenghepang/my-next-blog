@@ -4,20 +4,12 @@ import { CiCircleChevUp } from "react-icons/ci";
 import { IoIosContact } from "react-icons/io";
 import ThemeToggle from "../ThemeToggle";
 
+const backTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 export default function ToolTips() {
-     const handleThemeToggle = () => {
-       const themeToggleButton = document.getElementById("theme-toggle-btn");
-       if (themeToggleButton) {
-         themeToggleButton.click(); // 触发点击事件
-       }
-     };
-
-     const backTop = ()=>{
-        window.scrollTo({top:0,behavior:"smooth"})
-     }
-
   return (
-    <div className="fixed bottom-20 right-20 space-y-3">
+    <div className="fixed bottom-20 right-20 space-y-3 max-md:bottom-40 max-md:right-1">
       <ul className="space-y-3">
         {/* 联系我按钮 */}
         <li className="group  flex text-orange-300 items-center  space-x-2 cursor-pointer">
