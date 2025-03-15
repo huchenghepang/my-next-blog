@@ -9,7 +9,7 @@ const backTop = () => {
 };
 export default function ToolTips() {
   return (
-    <div className="fixed bottom-20 right-20 space-y-3 max-md:bottom-40 max-md:right-1">
+    <div className="fixed bottom-20 right-20 space-y-3 max-md:bottom-10 max-md:right-1">
       <ul className="space-y-3">
         {/* 联系我按钮 */}
         <li className="group  flex text-orange-300 items-center  space-x-2 cursor-pointer">

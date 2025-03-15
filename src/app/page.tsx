@@ -27,7 +27,7 @@ export default function Home() {
       <AnimatedCharacter></AnimatedCharacter>
       <SlipDamping></SlipDamping>
       {/* 页脚 */}
-      <footer className=" text-white dark:text-cyan-200 text-center py-6">
+      <footer className=" text-violet-300 dark:text-cyan-200 text-center py-6">
         <p>&copy; 2025 Jeff的博客. 版权所有</p>
       </footer>
     </div>

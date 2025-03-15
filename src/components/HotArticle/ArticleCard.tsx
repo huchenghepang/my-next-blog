@@ -1,5 +1,5 @@
 "use client";
-import { formatNumber } from "@/utils/noraml/formatNumber";
+import { formatNumber } from "@/utils/normal/formatNumber";
 import { FC } from "react";
 
 // 定义组件的 Props 类型

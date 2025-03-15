@@ -37,9 +37,6 @@ const INTPCharacter = () => {
           y2="85"
           stroke="#333"
           strokeWidth="2"
-          animate={{
-            y2: [85, 88, 85], // 眼睛轻微变化
-          }}
           transition={{
             duration: 1.5,
             repeat: Infinity,

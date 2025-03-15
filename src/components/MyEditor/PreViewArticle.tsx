@@ -30,7 +30,7 @@ export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
     <div
       className="
       prose dark:prose-invert mx-auto max-w-5xl w-8/12 p-4 rounded-lg shadow-md
-      max-md:w-full max-md:max-w-full max-md:pb-44
+      max-md:w-full max-md:max-w-full max-md:pb-10
     bg-white dark:bg-[#0d1117] text-black dark:text-[#c9d1d9]
       prose-base text-sm
       prose-p:my-0.5

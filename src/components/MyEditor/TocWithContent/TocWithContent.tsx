@@ -1,6 +1,7 @@
 "use client";
+import useSlidePage from "@/hooks/useSlidePage";
 import { HeadList } from "@/types/custom-editor";
-import throttle from "@/utils/throttle";
+import debounce from "@/utils/normal/debounce";
 import { useEffect, useRef, useState } from "react";
 import "./TocWithContent.scss";
 
@@ -15,10 +16,9 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
   const [isVisible, setIsVisible] = useState(true);
   const tocRef = useRef<HTMLElement>(null);
   const startX = useRef(0);
-
   /** 监听滚动，设置当前高亮的目录项 */
   useEffect(() => {
-    const handleScroll = throttle(() => {
+    const handleScroll = debounce(() => {
       const sections = toc
         .map((tocItem) => document.getElementById(`header-${tocItem.line}`))
         .filter(Boolean) as HTMLElement[];
@@ -47,6 +47,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
     }, 1000);
 
     window.addEventListener("scroll", handleScroll);
+    
     handleScroll(); // 初始触发一次
 
     return () => {
@@ -104,14 +105,18 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
     const section = document.getElementById(`header-${line}`);
     setActiveLine(line);
     if (section) {
-      window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+      window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth"});
     }
   };
+
+  useSlidePage(() => {
+    setIsVisible(true);
+  });
 
   return (
     <nav
       ref={tocRef}
-      className={`fixed min-w-52 custom-scrollbar left-0 bg-white shadow-lg rounded-lg p-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto transition-transform duration-300 ${
+      className={`fixed min-w-52 custom-scrollbar left-0  bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto transition-transform duration-300 ${
         isVisible ? "translate-x-0" : "-translate-x-full"
       } md:block`}
       onTouchStart={handleTouchStart}
@@ -121,7 +126,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
       <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
         目录
       </h2>
-      <ul className="space-y-2 text-sm">
+      <ul className="max-md:pb-6 space-y-2 text-sm">
         {toc.map((item) => (
           <li
             key={item.line}
@@ -139,7 +144,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
                   ? "bg-blue-100 dark:bg-slate-200 dark:text-zinc-600"
                   : "hover:bg-blue-50 dark:hover:bg-slate-300 dark:text-zinc-600"
               }`}
-              style={{ paddingLeft: `${Math.min(item.level - 1, 4) * 16}px` }} // 只允许最多 4 级缩进
+              style={{ paddingLeft: `${Math.min(item.level - 1, 4) * 12}px` }} // 只允许最多 4 级缩进
             >
               {item.text}
             </span>

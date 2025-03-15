@@ -25,7 +25,7 @@ async function getArticleInfoByID(id: number) {
   if (!id) return;
 
   const article = await prisma.notes.findUnique({
-    where: { id: id ,is_archive:true},
+    where: { id: id, is_archive: true },
     include: {
       article_categories: { select: { level: true, name: true, id: true } },
       note_tags: { select: { tags: true } },
@@ -49,7 +49,7 @@ export default async function PostPage({ params }: PostPageProps) {
       redirectPath = "/404";
       throw Error(`无效的文章 ID: ${id}`);
     }
-    
+
     /* 根据id信息查询数据库里面的文章内容 */
     const article = await getArticleInfoByID(Number(id));
     if (!article) {
