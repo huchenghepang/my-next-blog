@@ -14,7 +14,12 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ["www.gravatar.com", "api.dicebear.com","localhost"], // 添加允许的图片域名
+    remotePatterns: [ // 最新方式 之前是用domains
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     formats: ['image/avif', 'image/webp'], // Allow SVG format
   },
 };

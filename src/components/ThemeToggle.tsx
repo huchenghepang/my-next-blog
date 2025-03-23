@@ -1,7 +1,5 @@
 "use client";
 
-import { CiCloudSun } from "react-icons/ci";
-import { FaMoon } from "react-icons/fa";
 import { useTheme } from "../hooks/useTheme";
 
 

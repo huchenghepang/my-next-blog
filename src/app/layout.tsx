@@ -13,14 +13,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = { 
-  title:"云间书",
+export const metadata: Metadata = {
+  title: "云间书",
   description: "护城河的天空之城",
-  keywords:["技术","博客","文章"],
-  icons:"/favicon.ico"
+  keywords: ["技术", "博客", "文章"],
+  icons: "/favicon.ico",
 };
 
-
+const loadColor = `(function () { const t = localStorage.getItem("theme"); const a = document.documentElement.classList; if (t === 'light' || t === 'dark') { document.documentElement.classList.add(t); } })();`;
 
 export default function RootLayout({
   children,
@@ -28,12 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN" suppressHydrationWarning={true}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: loadColor }} />
+      </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-100 text-black dark:bg-zinc-600  dark:text-white`}
       >
         {/* 头部横幅 */}
-
         {children}
       </body>
     </html>
