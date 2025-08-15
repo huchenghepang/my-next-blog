@@ -2,8 +2,9 @@
 import { AuthLoginResponse } from "@/types/response/auth";
 
 interface LocalStorageInfo {
-    token:string;
-    isLogin:boolean;
+    token: string;
+    refreshToken: string;
+    isLogin: boolean;
     userInfo: AuthLoginResponse
 }
 

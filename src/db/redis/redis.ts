@@ -18,8 +18,8 @@ class RedisClient {
         this.redis = new Redis({
             host: '127.0.0.1', // Redis 服务器地址
             port: 6379, // Redis 端口
-            password: '123456', // Redis 密码
-            db: 0, // 数据库索引
+            password: 'h5mJWbSvKB', // Redis 密码
+            db: 1, // 数据库索引
             retryStrategy: (times: number) => {
                 const maxAttempts = 5; // 最大重试次数
                 if (times > maxAttempts) {

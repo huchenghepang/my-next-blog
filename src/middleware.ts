@@ -22,9 +22,11 @@ function ipFilterMiddleware(req: NextRequest) {
 function faviconMiddleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
-    // 如果请求路径以 favicon.ico 结尾，直接返回 404
+    // 如果请求路径以 favicon.ico 结尾，直接返回首页的页签图标
     if (pathname.endsWith('favicon.ico')) {
-        return NextResponse.redirect(new URL('/favicon.ico', req.url));
+        const faviconResponse = NextResponse.redirect(new URL('/favicon.ico', req.url));
+        faviconResponse.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+        return faviconResponse;
     }
 
     return NextResponse.next(); // 继续处理其他请求
@@ -37,10 +39,6 @@ export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     // 优先拦截 favicon.ico 请求
-    const faviconResponse = faviconMiddleware(req);
-    if (faviconResponse) {
-        return faviconResponse;
-    }
 
     // 针对 `/dashboard` 和 `/admin` 路径的特定路由
     if (pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {

@@ -6,49 +6,9 @@
     "auditLog": "logs\\exceptions\\.db8396748e5f5602cd3078b9a95a40f2053748e3-audit.json",
     "files": [
         {
-            "date": 1740076804284,
-            "name": "logs\\exceptions\\2025-02-21-error.log",
-            "hash": "fffd1870681abc8af27989335c1f6f2bed005fcf9778205eec240125803912ee"
-        },
-        {
-            "date": 1740216627252,
-            "name": "logs\\exceptions\\2025-02-22-error.log",
-            "hash": "4be2aa51c8c3e9ada39be8aa13433cc034b8b5cbce66e8d0ef8cc674603670f4"
-        },
-        {
-            "date": 1740259125698,
-            "name": "logs\\exceptions\\2025-02-23-error.log",
-            "hash": "7801f2c934c580ce6dd84a0bf999ed6d67bce7a523d0f0f4e120291565690e95"
-        },
-        {
-            "date": 1740349605153,
-            "name": "logs\\exceptions\\2025-02-24-error.log",
-            "hash": "2761ef13e1d20f6dcc5feb95c1107107c12b882cb1ebc9b1833ae80ed8cbeea8"
-        },
-        {
-            "date": 1741065005797,
-            "name": "logs\\exceptions\\2025-03-04-error.log",
-            "hash": "9ff4cfb3ebdae2bdf940ccf011a142a38df39abf77d789238508c81c5a9006e2"
-        },
-        {
-            "date": 1741150837102,
-            "name": "logs\\exceptions\\2025-03-05-error.log",
-            "hash": "ebbc008e827efd4cd3eb0cfa435377f7d186ac65d864261201752ffd2a64e120"
-        },
-        {
-            "date": 1741316840273,
-            "name": "logs\\exceptions\\2025-03-07-error.log",
-            "hash": "7f78164477388b2456ab429736d1e5f0c25412b82d8d0c5ec026a8308a3f3fe0"
-        },
-        {
-            "date": 1741518268962,
-            "name": "logs\\exceptions\\2025-03-09-error.log",
-            "hash": "489862681f6bd6dc7668f49f6473a96912710d0ad39c9d4ffe90264c6a2ceda2"
-        },
-        {
-            "date": 1742660203926,
-            "name": "logs\\exceptions\\2025-03-23-error.log",
-            "hash": "bfc8856e42fdf5b60a638343772e1fac7050f5bc4102da67e224ff1d14906ce1"
+            "date": 1755280888845,
+            "name": "logs\\exceptions\\2025-08-16-error.log",
+            "hash": "eb6b8558d34689024ca019451ce76179c7f0181d8df88bdbef5ce67ee859fc8b"
         }
     ],
     "hashType": "sha256"

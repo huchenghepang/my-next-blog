@@ -44,6 +44,9 @@ importers:
       fs-extra:
         specifier: ^11.3.0
         version: 11.3.0
+      geist:
+        specifier: ^1.4.2
+        version: 1.4.2(next@15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.85.0))
       github-markdown-css:
         specifier: ^5.8.1
         version: 5.8.1
@@ -1944,6 +1947,11 @@ packages:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
     deprecated: This package is no longer supported.
+
+  geist@1.4.2:
+    resolution: {integrity: sha512-OQUga/KUc8ueijck6EbtT07L4tZ5+TZgjw8PyWfxo16sL5FWk7gNViPNU8hgCFjy6bJi9yuTP+CRpywzaGN8zw==}
+    peerDependencies:
+      next: '>=13.2.0'
 
   generate-function@2.3.1:
     resolution: {integrity: sha512-eeB5GfMNeevm/GRYq20ShmsaGcmI81kIX2K9XQx5miC8KdHaC6Jm0qQ8ZNeGOi7wYB8OsdxKs+Y2oVuTFuVwKQ==}
@@ -5941,6 +5949,10 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wide-align: 1.1.5
+
+  geist@1.4.2(next@15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.85.0)):
+    dependencies:
+      next: 15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.85.0)
 
   generate-function@2.3.1:
     dependencies:

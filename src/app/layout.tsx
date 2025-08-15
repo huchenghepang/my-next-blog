@@ -1,17 +1,8 @@
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-/* 谷歌字体使得更容易SEO */
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { GeistMono } from "geist/font/mono";
 
 export const metadata: Metadata = {
   title: "云间书",
@@ -34,7 +25,8 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-100 text-black dark:bg-zinc-600  dark:text-white`}
+        className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-amber-100 text-black dark:bg-zinc-600  dark:text-white`}
+        suppressContentEditableWarning={true}
       >
         {/* 头部横幅 */}
         {children}

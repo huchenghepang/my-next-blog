@@ -2,5 +2,6 @@
   "eslint.options": {
     "overrideConfigFile": "./eslint.config.mjs"
   },
-  "commentTranslate.hover.enabled": false
+  "commentTranslate.hover.enabled": false,
+  "i18n-ally.localesPaths": ["/src/locales"]
 }
