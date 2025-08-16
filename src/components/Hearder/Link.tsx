@@ -10,11 +10,11 @@ interface LinkProps {
 // 根据文件名生成组件
 const LinkHeader: React.FC<LinkProps> = ({ linkText, href }) => {
   return (
-    <li className="flex hover:bg-slate-500 hover:text-cyan-200">
+    <li className="flex hover:bg-slate-500 hover:text-cyan-50">
       <a
         rel="noopener noreferrer"
         href={href || "/"}
-        className="flex items-center px-4 -mb-1 border-b-2 dark:border- dark:text-white dark:border-violet-600"
+        className="flex items-center px-4 -mb-1 border-b-2 border-transparent hover:border-cyan-200 dark:text-white dark:hover:border-violet-600"
       >
         {linkText}
       </a>
