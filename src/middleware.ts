@@ -60,5 +60,5 @@ export async function middleware(req: NextRequest) {
 
 // 配置：faviconMiddleware 匹配全局，其余的匹配特定路径
 export const config = {
-    matcher: ['/((?!favicon\.ico$).*)', '/dashboard/:path*', '/admin/:path*'],
+    matcher: ['/dashboard/:path*', '/admin/:path*'],
 };
