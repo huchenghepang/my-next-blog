@@ -1,4 +1,4 @@
-"use client"; // ✅ 让这个组件变成 Client Component
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,7 +19,10 @@ export default function Page({ params }: PageProps) {
   const closeModal = () => router.back();
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 pointer-events-auto">
+    <div
+      aria-hidden="true"
+      className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 pointer-events-auto"
+    >
       <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full pointer-events-auto">
         <h2 className="text-2xl font-bold mb-4">模态框</h2>
         {info.length > 0 ? (

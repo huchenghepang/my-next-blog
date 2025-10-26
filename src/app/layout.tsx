@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   icons: "/favicon.ico",
 };
 
-const loadColor = `(function () { const t = localStorage.getItem("theme"); const a = document.documentElement.classList; if (t === 'light' || t === 'dark') { document.documentElement.classList.add(t); } })();`;
+const loadColor = `(function () { const t = localStorage.getItem("theme");if (t === 'light' || t === 'dark') { document.documentElement.classList.add(t); } })();`;
 
 export default function RootLayout({
   children,
@@ -28,7 +28,6 @@ export default function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-amber-100 text-black dark:bg-zinc-600  dark:text-white`}
         suppressContentEditableWarning={true}
       >
-        {/* 头部横幅 */}
         {children}
       </body>
     </html>

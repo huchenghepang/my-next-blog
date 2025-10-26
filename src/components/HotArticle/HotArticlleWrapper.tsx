@@ -36,7 +36,7 @@ const HotArticlleWrapper = async () => {
 };
 
 // 开启 ISR（增量静态生成）
-export const revalidate = 86400; // 每 24 小时重新生成 
+export const revalidate = 86400; // 每 24 小时重新生成
 /* 特别注意开发者模式下会一直生成 没有缓存 */
 
 export default HotArticlleWrapper;

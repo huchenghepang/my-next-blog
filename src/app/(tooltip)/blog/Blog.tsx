@@ -1,4 +1,3 @@
-"use client";
 import { FC, use } from "react";
 
 import { notes } from "@prisma/client";
@@ -17,9 +16,13 @@ const Blog: FC<BlogProps> = ({ notes }) => {
         return (
           <div key={note.id} className="mb-4 p-4 bg-white rounded-lg shadow-sm">
             <ul className="list-disc list-inside">
-              <li className="text-lg font-bold text-gray-800">Article Name: {note.name}</li>
+              <li className="text-lg font-bold text-gray-800">
+                Article Name: {note.name}
+              </li>
               <li className="text-gray-600">Summary: {note.summary}</li>
-              <li className="text-gray-600">Archived: {note.is_archive.toString()}</li>
+              <li className="text-gray-600">
+                Archived: {note.is_archive.toString()}
+              </li>
             </ul>
           </div>
         );
