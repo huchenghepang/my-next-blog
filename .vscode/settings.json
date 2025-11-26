@@ -3,5 +3,6 @@
     "overrideConfigFile": "./eslint.config.mjs"
   },
   "commentTranslate.hover.enabled": false,
-  "i18n-ally.localesPaths": ["/src/locales"]
+  "i18n-ally.localesPaths": ["/src/locales"],
+  "cSpell.words": ["blogdb"]
 }

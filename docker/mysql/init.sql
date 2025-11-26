@@ -1,0 +1,465 @@
+/*
+ Navicat Premium Dump SQL
+
+ Source Server         : docker-mysql-管理员
+ Source Server Type    : MySQL
+ Source Server Version : 80025 (8.0.25)
+ Source Host           : localhost:3306
+ Source Schema         : blogdb
+
+ Target Server Type    : MySQL
+ Target Server Version : 80025 (8.0.25)
+ File Encoding         : 65001
+
+ Date: 27/11/2025 01:17:34
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for Permissions
+-- ----------------------------
+DROP TABLE IF EXISTS `Permissions`;
+CREATE TABLE `Permissions`  (
+  `permission_id` int NOT NULL AUTO_INCREMENT,
+  `permission_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `type` enum('route','button') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` int NULL DEFAULT NULL,
+  `can_delete` tinyint(1) NULL DEFAULT 1,
+  `permission_value` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`permission_id`) USING BTREE,
+  UNIQUE INDEX `permission_name`(`permission_name` ASC) USING BTREE,
+  INDEX `parent_id`(`parent_id` ASC) USING BTREE,
+  CONSTRAINT `Permissions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `Permissions` (`permission_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of Permissions
+-- ----------------------------
+INSERT INTO `Permissions` VALUES (1, 'user', '角色路由', 'route', NULL, 1, '/user');
+INSERT INTO `Permissions` VALUES (2, 'user.role.change', '切换用户角色', 'button', 1, 1, '/user/role/change');
+
+-- ----------------------------
+-- Table structure for RolePermissions
+-- ----------------------------
+DROP TABLE IF EXISTS `RolePermissions`;
+CREATE TABLE `RolePermissions`  (
+  `role_id` int NOT NULL,
+  `permission_id` int NOT NULL,
+  PRIMARY KEY (`role_id`, `permission_id`) USING BTREE,
+  INDEX `permission_id`(`permission_id` ASC) USING BTREE,
+  CONSTRAINT `RolePermissions_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `Roles` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `RolePermissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `Permissions` (`permission_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of RolePermissions
+-- ----------------------------
+INSERT INTO `RolePermissions` VALUES (1, 1);
+INSERT INTO `RolePermissions` VALUES (2, 1);
+INSERT INTO `RolePermissions` VALUES (1, 2);
+INSERT INTO `RolePermissions` VALUES (2, 2);
+
+-- ----------------------------
+-- Table structure for Roles
+-- ----------------------------
+DROP TABLE IF EXISTS `Roles`;
+CREATE TABLE `Roles`  (
+  `role_id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`role_id`) USING BTREE,
+  UNIQUE INDEX `role_name`(`role_name` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of Roles
+-- ----------------------------
+INSERT INTO `Roles` VALUES (1, '管理员', '系统管理员', '2025-02-18 01:43:34', '2025-02-18 01:43:37');
+INSERT INTO `Roles` VALUES (2, '普通用户', '普通用户', '2025-02-18 01:44:07', '2025-02-18 01:44:09');
+INSERT INTO `Roles` VALUES (3, 'VIP用户', 'VIP用户', '2025-02-18 01:45:40', '2025-02-18 01:45:42');
+
+-- ----------------------------
+-- Table structure for UserRoles
+-- ----------------------------
+DROP TABLE IF EXISTS `UserRoles`;
+CREATE TABLE `UserRoles`  (
+  `user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`, `role_id`) USING BTREE,
+  INDEX `role_id`(`role_id` ASC) USING BTREE,
+  CONSTRAINT `UserRoles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `UserRoles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `Roles` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of UserRoles
+-- ----------------------------
+INSERT INTO `UserRoles` VALUES ('161c9196-397a-53ca-8cc4-93e718ab7cc9', 2);
+INSERT INTO `UserRoles` VALUES ('709331f2-fe5b-5852-a22b-ee169952a2eb', 2);
+INSERT INTO `UserRoles` VALUES ('89153120', 2);
+
+-- ----------------------------
+-- Table structure for _prisma_migrations
+-- ----------------------------
+DROP TABLE IF EXISTS `_prisma_migrations`;
+CREATE TABLE `_prisma_migrations`  (
+  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `checksum` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `finished_at` datetime(3) NULL DEFAULT NULL,
+  `migration_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logs` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `rolled_back_at` datetime(3) NULL DEFAULT NULL,
+  `started_at` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `applied_steps_count` int UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of _prisma_migrations
+-- ----------------------------
+INSERT INTO `_prisma_migrations` VALUES ('492c1525-904b-428e-9df9-6c32de705f8c', 'c0b3b536dc5defc1f5456580efd4b242dc9c66eeb2d641cbc3b3b29b03893347', '2025-02-17 13:12:55.286', '20250217131251_init', NULL, NULL, '2025-02-17 13:12:51.349', 1);
+INSERT INTO `_prisma_migrations` VALUES ('c0e786f2-77fb-42af-8261-f541cb29bd15', 'e663e5448d4b49ddde969b13af5908279564d6eb1cd87d98c1b0c355d34bf588', '2025-02-17 12:12:17.273', '20250217121216_init', NULL, NULL, '2025-02-17 12:12:16.873', 1);
+INSERT INTO `_prisma_migrations` VALUES ('cef5df45-3e07-4bdc-928b-c6bbe8bb3b45', '886c55377d853fdf20ed5b5ad6b3dd7031f48171b0e77ec15849c27a371105e8', '2025-02-22 18:24:02.101', '20250222182401_init', NULL, NULL, '2025-02-22 18:24:01.515', 1);
+INSERT INTO `_prisma_migrations` VALUES ('d236bafd-e814-44f8-8f72-b3a4e0f3d046', '392e377564ded992f8d3013aa6f72cd7b6e496bb9d557f0cc825a728f52ed7f4', '2025-02-22 18:25:16.201', '20250222182516_init', NULL, NULL, '2025-02-22 18:25:16.118', 1);
+INSERT INTO `_prisma_migrations` VALUES ('de502f01-8a5a-499a-a987-3c2dbd66819d', '92176b0040e826c7b13eb990e319b6e8ad3d0d19fe72afa3eb9085cf858658d9', '2025-02-17 12:23:34.778', '20250217122334_init', NULL, NULL, '2025-02-17 12:23:34.690', 1);
+
+-- ----------------------------
+-- Table structure for article_categories
+-- ----------------------------
+DROP TABLE IF EXISTS `article_categories`;
+CREATE TABLE `article_categories`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` int NULL DEFAULT NULL,
+  `level` tinyint NOT NULL,
+  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`, `name`) USING BTREE,
+  UNIQUE INDEX `cayegories_name`(`name` ASC) USING BTREE,
+  UNIQUE INDEX `category_id`(`id` ASC) USING BTREE,
+  INDEX `id`(`id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of article_categories
+-- ----------------------------
+INSERT INTO `article_categories` VALUES (1, '前端开发', NULL, 1, 'frontend', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (2, '后端开发', NULL, 1, 'backend', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (3, '数据库', NULL, 1, 'database', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (4, 'DevOps', NULL, 1, 'devops', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (5, '人工智能', NULL, 1, 'ai', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (6, '移动端开发', NULL, 1, 'mobile', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (7, '编程语言', NULL, 1, 'programming-languages', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (8, 'Vue.js', 1, 2, 'vue', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (9, 'React', 1, 2, 'react', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (10, 'JavaScript', 1, 2, 'javascript', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (11, 'CSS', 1, 2, 'css', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (12, 'Node.js', 2, 2, 'nodejs', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (13, 'NestJS', 2, 2, 'nestjs', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (14, 'Spring Boot', 2, 2, 'spring-boot', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (15, 'MySQL', 3, 2, 'mysql', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (16, 'PostgreSQL', 3, 2, 'postgresql', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (17, 'MongoDB', 3, 2, 'mongodb', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (18, 'Redis', 3, 2, 'redis', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (19, 'Docker', 4, 2, 'docker', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (20, 'Kubernetes', 4, 2, 'kubernetes', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (21, 'CI/CD', 4, 2, 'cicd', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (22, '机器学习', 5, 2, 'machine-learning', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (23, '深度学习', 5, 2, 'deep-learning', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (24, '自然语言处理', 5, 2, 'nlp', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (25, 'Python', 7, 2, 'python', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (26, 'Java', 7, 2, 'java', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (27, 'C++', 7, 2, 'cpp', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+INSERT INTO `article_categories` VALUES (28, 'Go', 7, 2, 'golang', '2025-02-22 23:31:26', '2025-02-22 23:31:26');
+
+-- ----------------------------
+-- Table structure for comment_likes
+-- ----------------------------
+DROP TABLE IF EXISTS `comment_likes`;
+CREATE TABLE `comment_likes`  (
+  `like_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`like_id`) USING BTREE,
+  UNIQUE INDEX `user_id`(`user_id` ASC, `comment_id` ASC) USING BTREE,
+  CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of comment_likes
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for comments
+-- ----------------------------
+DROP TABLE IF EXISTS `comments`;
+CREATE TABLE `comments`  (
+  `comment_id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `article_id` int NOT NULL,
+  `user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` int UNSIGNED NULL DEFAULT 0,
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
+  `status` enum('pending','approved','rejected') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'pending',
+  `like_count` int UNSIGNED NULL DEFAULT 0,
+  `reply_count` int UNSIGNED NULL DEFAULT 0,
+  PRIMARY KEY (`comment_id`, `article_id`, `user_id`) USING BTREE,
+  UNIQUE INDEX `comments_comment_id_key`(`comment_id` ASC) USING BTREE,
+  INDEX `article_id`(`article_id` ASC) USING BTREE,
+  INDEX `comment_id`(`comment_id` ASC) USING BTREE,
+  INDEX `user_id`(`user_id` ASC) USING BTREE,
+  CONSTRAINT `article_id` FOREIGN KEY (`article_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of comments
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for files_info
+-- ----------------------------
+DROP TABLE IF EXISTS `files_info`;
+CREATE TABLE `files_info`  (
+  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_id` int NOT NULL AUTO_INCREMENT,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_ext` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `upload_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `file_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_size` bigint NOT NULL,
+  `file_fullname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('active','inactive','deleted') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`file_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of files_info
+-- ----------------------------
+INSERT INTO `files_info` VALUES ('185b489e826ca3bf110785205f04d5d3.md', 1, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\185b489e826ca3bf110785205f04d5d3.md', '.md', '2025-02-22 20:23:34', 'application/md', 4986, 'MD语法使用教程.md', NULL, '185b489e826ca3bf110785205f04d5d3', 'active', NULL);
+INSERT INTO `files_info` VALUES ('185b489e826ca3bf110785205f04d5d3.md', 2, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\185b489e826ca3bf110785205f04d5d3.md', '.md', '2025-02-22 20:46:16', 'application/md', 4986, 'MD语法使用教程.md', NULL, '185b489e826ca3bf110785205f04d5d3', 'active', NULL);
+INSERT INTO `files_info` VALUES ('9de3255efe6b7c63437436d5225a0aba.png', 3, 'D:\\Code\\next.js\\my-app\\public\\image\\9de3255efe6b7c63437436d5225a0aba.png', '.png', '2025-02-22 22:26:19', 'image/png', 2049138, '天空之城.png', NULL, '9de3255efe6b7c63437436d5225a0aba', 'active', NULL);
+INSERT INTO `files_info` VALUES ('9de3255efe6b7c63437436d5225a0aba.png', 4, 'D:\\Code\\next.js\\my-app\\public\\image\\9de3255efe6b7c63437436d5225a0aba.png', '.png', '2025-02-22 22:27:25', 'image/png', 2049138, '天空之城.png', NULL, '9de3255efe6b7c63437436d5225a0aba', 'active', NULL);
+INSERT INTO `files_info` VALUES ('dd0db08fdd124ffa238f0925f86325a1.png', 5, 'D:\\Code\\next.js\\my-app\\public\\image\\dd0db08fdd124ffa238f0925f86325a1.png', '.png', '2025-02-22 22:27:46', 'image/png', 2993366, 'Jeff_时间线📍天空之城 和另外 9 个页面 - 用户配置 1 - Microsoft​ Edge_2025-02-08_04-46-55.png', NULL, 'dd0db08fdd124ffa238f0925f86325a1', 'active', NULL);
+INSERT INTO `files_info` VALUES ('0968cefcce0739fcf15011dc458992b1.jpg', 6, 'D:\\Code\\next.js\\my-app\\public\\image\\0968cefcce0739fcf15011dc458992b1.jpg', '.jpg', '2025-02-23 03:13:35', 'image/jpeg', 253872, '微信图片_20250208044504.jpg', NULL, '0968cefcce0739fcf15011dc458992b1', 'active', NULL);
+INSERT INTO `files_info` VALUES ('0968cefcce0739fcf15011dc458992b1.jpg', 7, 'D:\\Code\\next.js\\my-app\\public\\image\\0968cefcce0739fcf15011dc458992b1.jpg', '.jpg', '2025-02-23 03:13:45', 'image/jpeg', 253872, '微信图片_20250208044504.jpg', NULL, '0968cefcce0739fcf15011dc458992b1', 'active', NULL);
+INSERT INTO `files_info` VALUES ('0968cefcce0739fcf15011dc458992b1.jpg', 8, 'D:\\Code\\next.js\\my-app\\public\\image\\0968cefcce0739fcf15011dc458992b1.jpg', '.jpg', '2025-02-23 03:13:54', 'image/jpeg', 253872, '微信图片_20250208044504.jpg', NULL, '0968cefcce0739fcf15011dc458992b1', 'active', NULL);
+INSERT INTO `files_info` VALUES ('notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 9, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 'md', '2025-02-23 03:21:11', 'application/md', 1969, 'Mysql修改时区.md', NULL, 'c99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5', 'active', NULL);
+INSERT INTO `files_info` VALUES ('notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 10, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 'md', '2025-02-23 03:28:02', 'application/md', 1969, 'Mysql修改时区.md', NULL, 'c99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5', 'active', NULL);
+INSERT INTO `files_info` VALUES ('notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 11, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notec99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 'md', '2025-02-23 03:30:03', 'application/md', 1969, 'Mysql修改时区.md', NULL, 'c99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5', 'active', NULL);
+INSERT INTO `files_info` VALUES ('notesc99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 12, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notesc99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 'md', '2025-02-23 03:31:10', 'application/md', 1969, 'Mysql修改时区.md', NULL, 'c99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5', 'active', NULL);
+INSERT INTO `files_info` VALUES ('notesc99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 13, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notesc99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5.md', 'md', '2025-02-23 03:32:16', 'application/md', 1969, 'Mysql修改时区.md', NULL, 'c99d224258277b19326cac3aacecc62c7334a402923121e1e933092cb327bdd5', 'active', NULL);
+INSERT INTO `files_info` VALUES ('545b648ca232da192fb5c71d251e5af6625067dad16d5cc4f722e2008ddd7d1c.md', 14, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\545b648ca232da192fb5c71d251e5af6625067dad16d5cc4f722e2008ddd7d1c.md', 'md', '2025-02-23 03:41:50', 'application/md', 3811, 'Docker.md', NULL, '545b648ca232da192fb5c71d251e5af6625067dad16d5cc4f722e2008ddd7d1c', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 15, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:39', 'application/md', 3811, 'Docker.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 16, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:44', 'application/md', 3811, 'Docker.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 17, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:45', 'application/md', 3811, 'Docker.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 18, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:46', 'application/md', 3811, 'Docker.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 19, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:46', 'application/md', 3811, 'Docker.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('012e4cb13a4a0606760f0d04e8548bb7.md', 20, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\012e4cb13a4a0606760f0d04e8548bb7.md', 'md', '2025-02-23 03:47:50', 'application/md', 3811, 'Docker飒飒.md', NULL, '012e4cb13a4a0606760f0d04e8548bb7', 'active', NULL);
+INSERT INTO `files_info` VALUES ('c95eeecaddf64d3f7610a9e22e879804.md', 21, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\c95eeecaddf64d3f7610a9e22e879804.md', 'md', '2025-02-23 03:48:03', 'application/md', 3820, 'Docker飒飒.md', NULL, 'c95eeecaddf64d3f7610a9e22e879804', 'active', NULL);
+INSERT INTO `files_info` VALUES ('9b45ec6d932c37c7ab4315093792938d.md', 22, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\9b45ec6d932c37c7ab4315093792938d.md', 'md', '2025-02-23 04:06:46', 'application/md', 9, '文章.md', NULL, '9b45ec6d932c37c7ab4315093792938d', 'active', NULL);
+INSERT INTO `files_info` VALUES ('9b45ec6d932c37c7ab4315093792938d.md', 23, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\9b45ec6d932c37c7ab4315093792938d.md', 'md', '2025-02-23 04:08:01', 'application/md', 9, '阿萨撒.md', NULL, '9b45ec6d932c37c7ab4315093792938d', 'active', NULL);
+INSERT INTO `files_info` VALUES ('84370a701831e7c64193a5a20476d384.md', 24, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\84370a701831e7c64193a5a20476d384.md', 'md', '2025-02-23 04:25:16', 'application/md', 12, '厉害.md', NULL, '84370a701831e7c64193a5a20476d384', 'active', NULL);
+INSERT INTO `files_info` VALUES ('011d1beec0cc2401fe3ed468b6b289db.md', 25, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\011d1beec0cc2401fe3ed468b6b289db.md', 'md', '2025-02-23 17:30:23', 'application/md', 1444, 'Nextjs.md', NULL, '011d1beec0cc2401fe3ed468b6b289db', 'active', NULL);
+INSERT INTO `files_info` VALUES ('fca76a17d4a84c8279ce6a6d633cb221.md', 26, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\fca76a17d4a84c8279ce6a6d633cb221.md', 'md', '2025-02-23 23:39:33', 'application/md', 5199, '文章渲染.md', NULL, 'fca76a17d4a84c8279ce6a6d633cb221', 'active', NULL);
+INSERT INTO `files_info` VALUES ('fad3d3f9508e0f434b8fc4f542c083a6.md', 27, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\fad3d3f9508e0f434b8fc4f542c083a6.md', 'md', '2025-02-24 02:30:40', 'application/md', 66634, 'Vue3简介.md', NULL, 'fad3d3f9508e0f434b8fc4f542c083a6', 'active', NULL);
+INSERT INTO `files_info` VALUES ('fad3d3f9508e0f434b8fc4f542c083a6.md', 28, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\fad3d3f9508e0f434b8fc4f542c083a6.md', 'md', '2025-02-24 02:46:16', 'application/md', 66634, 'vue3.md', NULL, 'fad3d3f9508e0f434b8fc4f542c083a6', 'active', NULL);
+INSERT INTO `files_info` VALUES ('9de3255efe6b7c63437436d5225a0aba.png', 29, 'D:\\Code\\next.js\\my-app\\public\\image\\9de3255efe6b7c63437436d5225a0aba.png', '.png', '2025-02-24 05:48:41', 'image/png', 2049138, '天空之城.png', NULL, '9de3255efe6b7c63437436d5225a0aba', 'active', NULL);
+INSERT INTO `files_info` VALUES ('2f92bd68ad20a9ec378c9011b4d76afb.md', 30, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\2f92bd68ad20a9ec378c9011b4d76afb.md', 'md', '2025-02-24 06:03:09', 'application/md', 1054, '常见markdwon用法.md', NULL, '2f92bd68ad20a9ec378c9011b4d76afb', 'active', NULL);
+INSERT INTO `files_info` VALUES ('254f42f2dcf8dbf4da2748515dbc7f59.md', 31, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\254f42f2dcf8dbf4da2748515dbc7f59.md', 'md', '2025-03-04 13:59:41', 'application/md', 1855, 'Mysql修改时区.md', NULL, '254f42f2dcf8dbf4da2748515dbc7f59', 'active', NULL);
+INSERT INTO `files_info` VALUES ('d8d83ae6b14393675fa0ad876aa6b65b.md', 32, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\d8d83ae6b14393675fa0ad876aa6b65b.md', 'md', '2025-03-04 15:25:58', 'application/md', 5964, 'Vue项目的配置.md', NULL, 'd8d83ae6b14393675fa0ad876aa6b65b', 'active', NULL);
+INSERT INTO `files_info` VALUES ('96eb3f57bf150a3d14265cd1123a3dae.md', 33, 'D:\\Code\\next.js\\my-app\\public\\uploads\\notes\\96eb3f57bf150a3d14265cd1123a3dae.md', 'md', '2025-03-04 15:29:40', 'application/md', 6153, 'ebpack的细节代码和规范细节.md', NULL, '96eb3f57bf150a3d14265cd1123a3dae', 'active', NULL);
+
+-- ----------------------------
+-- Table structure for note_tags
+-- ----------------------------
+DROP TABLE IF EXISTS `note_tags`;
+CREATE TABLE `note_tags`  (
+  `note_id` int NOT NULL,
+  `tag_id` int NOT NULL,
+  PRIMARY KEY (`note_id`, `tag_id`) USING BTREE,
+  INDEX `tag_id`(`tag_id` ASC) USING BTREE,
+  CONSTRAINT `note_tags_ibfk_1` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `note_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of note_tags
+-- ----------------------------
+INSERT INTO `note_tags` VALUES (16, 1);
+INSERT INTO `note_tags` VALUES (16, 2);
+INSERT INTO `note_tags` VALUES (17, 3);
+INSERT INTO `note_tags` VALUES (18, 4);
+INSERT INTO `note_tags` VALUES (22, 4);
+INSERT INTO `note_tags` VALUES (23, 4);
+INSERT INTO `note_tags` VALUES (19, 5);
+INSERT INTO `note_tags` VALUES (22, 5);
+INSERT INTO `note_tags` VALUES (20, 6);
+INSERT INTO `note_tags` VALUES (21, 7);
+INSERT INTO `note_tags` VALUES (21, 8);
+INSERT INTO `note_tags` VALUES (23, 9);
+
+-- ----------------------------
+-- Table structure for notes
+-- ----------------------------
+DROP TABLE IF EXISTS `notes`;
+CREATE TABLE `notes`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_id` int NOT NULL,
+  `file_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL,
+  `is_archive` tinyint(1) NOT NULL DEFAULT 0,
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `toc` json NULL,
+  `reading` int NOT NULL DEFAULT 0,
+  `updated_time` datetime NULL DEFAULT NULL,
+  `comment_count` int NOT NULL DEFAULT 0,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `file_id`(`file_id` ASC) USING BTREE,
+  INDEX `category_id`(`category_id` ASC) USING BTREE,
+  INDEX `id`(`id` ASC) USING BTREE,
+  CONSTRAINT `n_and_category_name` FOREIGN KEY (`category_id`) REFERENCES `article_categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `n_and_f_file_id` FOREIGN KEY (`file_id`) REFERENCES `files_info` (`file_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of notes
+-- ----------------------------
+INSERT INTO `notes` VALUES (1, 'Mysql修改时区', 15, 9, '2025-02-22 19:21:12', '2025-02-22 19:12:42', 0, NULL, NULL, 0, NULL, 0, '在Mysql插入新记录或者更新的时候往往会遇到一个问题就是时区的问题，如果在数据库与服务器时区不统一的情况下往往需要，服务器做时区的统一处理。而这个时候，考虑优先在数据库端把时区设置好一个很不错的想法。以下是一些步骤对于Mysql设置时区的统一：\n\n## Mysql命令设置时区\n![image/jpeg](http://localhost:4000/image/0968cefcce0739fcf15011dc458992b1.jpg \'微信图片_20250208044504.jpg\')\n\n首先，进入运行中的 MySQL 容器：\n\n```sh\ndocker exec -it mysql-container bash\n```\n---\n###### **步骤 2: 设置 MySQL 时区**\n\n进入 MySQL 后，设置时区：\n\n```sql\nSET GLOBAL time_zone = \'+08:00\';\n```\n---\n\n这会将 MySQL 时区设置为东八区。\n\n## 修改DockerCompose\n如果你使用 Docker Compose 来启动 MySQL 服务，可以在 `docker-compose.yml` 文件中加入环境变量 `TZ` 来设置时区：\n\n```yaml\nservices:\n  mysql:\n    image: mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: rootpassword\n      TZ: \"Asia/Shanghai\"\n    ports:\n      - \"3306:3306\"\n    volumes:\n      - mysql-data:/var/lib/mysql\n    restart: always\n\nvolumes:\n  mysql-data:\n```\n---\n\n然后通过以下命令启动 Docker Compose 服务：\n\n```sh\ndocker-compose up -d\n```\n---\n\n## 编辑器修改\n\n**直接编辑容器内配置**\n\n1.  首先，你可以使用 `docker cp` 命令将宿主机的 `my.cnf` 文件复制到容器内，或将容器内的文件复制到宿主机进行编辑：\n    \n    ```sh\n    docker cp mysql-container:/etc/mysql/my.cnf ./my.cnf\n    ```\n    \n    \n2.  在宿主机上编辑 `my.cnf` 文件，添加时区配置：\n    \n```ini\n    [mysqld]\n    default-time-zone = \'+08:00\'\n``` \n    \n\n    \n3.  然后将修改后的 `my.cnf` 文件复制回容器：\n    \n    ```sh\n    docker cp ./my.cnf mysql-container:/etc/mysql/my.cnf\n    ```\n\n\n4.  最后重启 MySQL 容器，使配置生效：\n\n    ```sh\n    docker restart mysql-container\n    ```\n');
+INSERT INTO `notes` VALUES (2, 'Mysql修改时区', 15, 10, '2025-02-23 03:12:42', '2025-02-23 03:12:42', 0, NULL, NULL, 0, NULL, 0, '在Mysql插入新记录或者更新的时候往往会遇到一个问题就是时区的问题，如果在数据库与服务器时区不统一的情况下往往需要，服务器做时区的统一处理。而这个时候，考虑优先在数据库端把时区设置好一个很不错的想法。以下是一些步骤对于Mysql设置时区的统一：\n\n## Mysql命令设置时区\n![image/jpeg](http://localhost:4000/image/0968cefcce0739fcf15011dc458992b1.jpg \'微信图片_20250208044504.jpg\')\n\n首先，进入运行中的 MySQL 容器：\n\n```sh\ndocker exec -it mysql-container bash\n```\n---\n###### **步骤 2: 设置 MySQL 时区**\n\n进入 MySQL 后，设置时区：\n\n```sql\nSET GLOBAL time_zone = \'+08:00\';\n```\n---\n\n这会将 MySQL 时区设置为东八区。\n\n## 修改DockerCompose\n如果你使用 Docker Compose 来启动 MySQL 服务，可以在 `docker-compose.yml` 文件中加入环境变量 `TZ` 来设置时区：\n\n```yaml\nservices:\n  mysql:\n    image: mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: rootpassword\n      TZ: \"Asia/Shanghai\"\n    ports:\n      - \"3306:3306\"\n    volumes:\n      - mysql-data:/var/lib/mysql\n    restart: always\n\nvolumes:\n  mysql-data:\n```\n---\n\n然后通过以下命令启动 Docker Compose 服务：\n\n```sh\ndocker-compose up -d\n```\n---\n\n## 编辑器修改\n\n**直接编辑容器内配置**\n\n1.  首先，你可以使用 `docker cp` 命令将宿主机的 `my.cnf` 文件复制到容器内，或将容器内的文件复制到宿主机进行编辑：\n    \n    ```sh\n    docker cp mysql-container:/etc/mysql/my.cnf ./my.cnf\n    ```\n    \n    \n2.  在宿主机上编辑 `my.cnf` 文件，添加时区配置：\n    \n```ini\n    [mysqld]\n    default-time-zone = \'+08:00\'\n``` \n    \n\n    \n3.  然后将修改后的 `my.cnf` 文件复制回容器：\n    \n    ```sh\n    docker cp ./my.cnf mysql-container:/etc/mysql/my.cnf\n    ```\n\n\n4.  最后重启 MySQL 容器，使配置生效：\n\n    ```sh\n    docker restart mysql-container\n    ```\n');
+INSERT INTO `notes` VALUES (3, 'Mysql修改时区', 15, 11, '2025-02-23 03:12:42', '2025-02-23 03:12:42', 0, NULL, NULL, 0, NULL, 0, '在Mysql插入新记录或者更新的时候往往会遇到一个问题就是时区的问题，如果在数据库与服务器时区不统一的情况下往往需要，服务器做时区的统一处理。而这个时候，考虑优先在数据库端把时区设置好一个很不错的想法。以下是一些步骤对于Mysql设置时区的统一：\n\n## Mysql命令设置时区\n![image/jpeg](http://localhost:4000/image/0968cefcce0739fcf15011dc458992b1.jpg \'微信图片_20250208044504.jpg\')\n\n首先，进入运行中的 MySQL 容器：\n\n```sh\ndocker exec -it mysql-container bash\n```\n---\n###### **步骤 2: 设置 MySQL 时区**\n\n进入 MySQL 后，设置时区：\n\n```sql\nSET GLOBAL time_zone = \'+08:00\';\n```\n---\n\n这会将 MySQL 时区设置为东八区。\n\n## 修改DockerCompose\n如果你使用 Docker Compose 来启动 MySQL 服务，可以在 `docker-compose.yml` 文件中加入环境变量 `TZ` 来设置时区：\n\n```yaml\nservices:\n  mysql:\n    image: mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: rootpassword\n      TZ: \"Asia/Shanghai\"\n    ports:\n      - \"3306:3306\"\n    volumes:\n      - mysql-data:/var/lib/mysql\n    restart: always\n\nvolumes:\n  mysql-data:\n```\n---\n\n然后通过以下命令启动 Docker Compose 服务：\n\n```sh\ndocker-compose up -d\n```\n---\n\n## 编辑器修改\n\n**直接编辑容器内配置**\n\n1.  首先，你可以使用 `docker cp` 命令将宿主机的 `my.cnf` 文件复制到容器内，或将容器内的文件复制到宿主机进行编辑：\n    \n    ```sh\n    docker cp mysql-container:/etc/mysql/my.cnf ./my.cnf\n    ```\n    \n    \n2.  在宿主机上编辑 `my.cnf` 文件，添加时区配置：\n    \n```ini\n    [mysqld]\n    default-time-zone = \'+08:00\'\n``` \n    \n\n    \n3.  然后将修改后的 `my.cnf` 文件复制回容器：\n    \n    ```sh\n    docker cp ./my.cnf mysql-container:/etc/mysql/my.cnf\n    ```\n\n\n4.  最后重启 MySQL 容器，使配置生效：\n\n    ```sh\n    docker restart mysql-container\n    ```\n');
+INSERT INTO `notes` VALUES (4, 'Mysql修改时区', 15, 12, '2025-02-23 03:12:42', '2025-02-23 03:12:42', 0, NULL, NULL, 0, NULL, 0, '在Mysql插入新记录或者更新的时候往往会遇到一个问题就是时区的问题，如果在数据库与服务器时区不统一的情况下往往需要，服务器做时区的统一处理。而这个时候，考虑优先在数据库端把时区设置好一个很不错的想法。以下是一些步骤对于Mysql设置时区的统一：\n\n## Mysql命令设置时区\n![image/jpeg](http://localhost:4000/image/0968cefcce0739fcf15011dc458992b1.jpg \'微信图片_20250208044504.jpg\')\n\n首先，进入运行中的 MySQL 容器：\n\n```sh\ndocker exec -it mysql-container bash\n```\n---\n###### **步骤 2: 设置 MySQL 时区**\n\n进入 MySQL 后，设置时区：\n\n```sql\nSET GLOBAL time_zone = \'+08:00\';\n```\n---\n\n这会将 MySQL 时区设置为东八区。\n\n## 修改DockerCompose\n如果你使用 Docker Compose 来启动 MySQL 服务，可以在 `docker-compose.yml` 文件中加入环境变量 `TZ` 来设置时区：\n\n```yaml\nservices:\n  mysql:\n    image: mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: rootpassword\n      TZ: \"Asia/Shanghai\"\n    ports:\n      - \"3306:3306\"\n    volumes:\n      - mysql-data:/var/lib/mysql\n    restart: always\n\nvolumes:\n  mysql-data:\n```\n---\n\n然后通过以下命令启动 Docker Compose 服务：\n\n```sh\ndocker-compose up -d\n```\n---\n\n## 编辑器修改\n\n**直接编辑容器内配置**\n\n1.  首先，你可以使用 `docker cp` 命令将宿主机的 `my.cnf` 文件复制到容器内，或将容器内的文件复制到宿主机进行编辑：\n    \n    ```sh\n    docker cp mysql-container:/etc/mysql/my.cnf ./my.cnf\n    ```\n    \n    \n2.  在宿主机上编辑 `my.cnf` 文件，添加时区配置：\n    \n```ini\n    [mysqld]\n    default-time-zone = \'+08:00\'\n``` \n    \n\n    \n3.  然后将修改后的 `my.cnf` 文件复制回容器：\n    \n    ```sh\n    docker cp ./my.cnf mysql-container:/etc/mysql/my.cnf\n    ```\n\n\n4.  最后重启 MySQL 容器，使配置生效：\n\n    ```sh\n    docker restart mysql-container\n    ```\n');
+INSERT INTO `notes` VALUES (5, 'Mysql修改时区', 15, 13, '2025-02-23 03:12:42', '2025-02-23 03:12:42', 0, NULL, NULL, 0, NULL, 0, '在Mysql插入新记录或者更新的时候往往会遇到一个问题就是时区的问题，如果在数据库与服务器时区不统一的情况下往往需要，服务器做时区的统一处理。而这个时候，考虑优先在数据库端把时区设置好一个很不错的想法。以下是一些步骤对于Mysql设置时区的统一：\n\n## Mysql命令设置时区\n![image/jpeg](http://localhost:4000/image/0968cefcce0739fcf15011dc458992b1.jpg \'微信图片_20250208044504.jpg\')\n\n首先，进入运行中的 MySQL 容器：\n\n```sh\ndocker exec -it mysql-container bash\n```\n---\n###### **步骤 2: 设置 MySQL 时区**\n\n进入 MySQL 后，设置时区：\n\n```sql\nSET GLOBAL time_zone = \'+08:00\';\n```\n---\n\n这会将 MySQL 时区设置为东八区。\n\n## 修改DockerCompose\n如果你使用 Docker Compose 来启动 MySQL 服务，可以在 `docker-compose.yml` 文件中加入环境变量 `TZ` 来设置时区：\n\n```yaml\nservices:\n  mysql:\n    image: mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: rootpassword\n      TZ: \"Asia/Shanghai\"\n    ports:\n      - \"3306:3306\"\n    volumes:\n      - mysql-data:/var/lib/mysql\n    restart: always\n\nvolumes:\n  mysql-data:\n```\n---\n\n然后通过以下命令启动 Docker Compose 服务：\n\n```sh\ndocker-compose up -d\n```\n---\n\n## 编辑器修改\n\n**直接编辑容器内配置**\n\n1.  首先，你可以使用 `docker cp` 命令将宿主机的 `my.cnf` 文件复制到容器内，或将容器内的文件复制到宿主机进行编辑：\n    \n    ```sh\n    docker cp mysql-container:/etc/mysql/my.cnf ./my.cnf\n    ```\n    \n    \n2.  在宿主机上编辑 `my.cnf` 文件，添加时区配置：\n    \n```ini\n    [mysqld]\n    default-time-zone = \'+08:00\'\n``` \n    \n\n    \n3.  然后将修改后的 `my.cnf` 文件复制回容器：\n    \n    ```sh\n    docker cp ./my.cnf mysql-container:/etc/mysql/my.cnf\n    ```\n\n\n4.  最后重启 MySQL 容器，使配置生效：\n\n    ```sh\n    docker restart mysql-container\n    ```\n');
+INSERT INTO `notes` VALUES (6, 'Docker', 19, 14, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 2, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (7, 'Docker', 19, 15, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 2, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (8, 'Docker', 19, 16, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (9, 'Docker', 19, 17, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (10, 'Docker', 19, 18, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (11, 'Docker', 19, 19, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (12, 'Docker飒飒', 19, 20, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ \n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (13, 'Docker飒飒', 19, 21, '2025-02-23 03:41:06', '2025-02-23 03:41:06', 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。', NULL, 0, NULL, 0, '使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。## 1. 查看正在运行的容器 \n使用 `docker ps` 命令\n\n```bash\ndocker ps\n```\n**说明：** \n- 该命令将列出所有当前正在运行的容器。\n \n- 输出通常包含以下列： \n  - **CONTAINER ID** ：容器的唯一标识符（部分显示）。\n \n  - **IMAGE** ：容器使用的镜像名称。\n \n  - **COMMAND** ：启动容器时执行的命令。\n \n  - **CREATED** ：容器创建的时间。\n \n  - **STATUS** ：容器的当前状态（如运行中、重启中等）。\n \n  - **PORTS** ：容器映射的端口信息。\n \n  - **NAMES** ：容器的名称。\n**示例输出：** \n\n```rust\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-static-site\n```\n\n## 2. 查看所有容器（包括停止的容器） \n使用 `docker ps -a` 命令\n\n```bash\ndocker ps -a\n```\n**说明：**  \n- `-a` 或 `--all` 选项将列出所有容器，无论它们是否正在运行。\n\n- 这对于查看已停止的容器或调试容器问题非常有用。\n**示例输出：** \n\n```java\nCONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                     PORTS                  NAMES\na1b2c3d4e5f6   nginx:latest   \"nginx -g \'daemon of…\"   2 hours ago     Up 2 hours                 0.0.0.0:8080->80/tcp   my-static-site\nf6e5d4c3b2a1   ubuntu         \"/bin/bash\"              3 hours ago     Exited (0) 1 hour ago                              nostalgic_hopper\n```\n\n## 3. 其他有用的相关命令 \n\n### 查看容器的简短 ID 列表 \n\n\n```bash\ndocker ps -q\n```\n**说明：**  \n- `-q` 或 `--quiet` 选项仅显示容器的 ID，适用于脚本自动化处理。\n\n### 查看特定名称或标签的容器 \n\n\n```bash\ndocker ps --filter \"name=容器名称\"\n```\n**示例：** \n\n```bash\ndocker ps --filter \"name=my-static-site\"\n```\n\n### 查看容器的详细信息 \n\n\n```bash\ndocker inspect 容器ID或名称\n```\n**示例：** \n\n```bash\ndocker inspect my-static-site\n```\n\n### 查看容器的资源使用情况 \n\n\n```bash\ndocker stats\n```\n**说明：** \n- 实时显示所有运行中容器的资源使用情况（如 CPU、内存、网络等）。\n\n## 4. 使用 Docker Desktop 查看容器 \n\n如果你使用的是 Docker Desktop（适用于 Windows 和 macOS），可以通过图形界面轻松查看和管理容器：\n \n1. **打开 Docker Desktop** 。\n \n2. **导航到“Containers”或“容器”选项卡** 。\n \n3. **在列表中查看所有正在运行和已停止的容器** 。\n \n4. **可以通过界面启动、停止、删除或查看容器日志** 。\n\n## 5. 常见问题解答 \nQ1: 为什么 `docker ps` 不显示任何容器？**A1:**  \n- 这表示当前没有正在运行的容器。你可以使用 `docker ps -a` 查看所有容器，包括已停止的容器。\n\n### Q2: 如何停止正在运行的容器？ \n**A2:**  \n- 使用 `docker stop 容器ID或名称` 命令停止容器。\n**示例：** \n\n```bash\ndocker stop my-static-site\n```\n\n### Q3: 如何删除已停止的容器？ 飒飒飒\n**A3:**  \n- 使用 `docker rm 容器ID或名称` 命令删除容器。\n**示例：** \n\n```bash\ndocker rm nostalgic_hopper\n```\n\n## 总结 \n使用 `docker ps` 命令可以方便地查看当前正在运行的 Docker 容器，并通过不同的选项获取更多信息。结合其他 Docker 命令，可以有效地管理和维护容器环境。如果你习惯使用图形界面，Docker Desktop 也是一个不错的选择。');
+INSERT INTO `notes` VALUES (14, '文章', 9, 22, '2025-02-23 04:06:26', '2025-02-23 04:06:26', 0, NULL, NULL, 0, NULL, 0, '文字性');
+INSERT INTO `notes` VALUES (15, '阿萨撒', 9, 23, '2025-02-23 04:07:57', '2025-02-23 04:07:57', 0, '', NULL, 0, NULL, 0, '文字性');
+INSERT INTO `notes` VALUES (16, '厉害', 10, 24, '2025-02-23 04:24:56', '2025-02-23 04:24:56', 0, '这', NULL, 5, NULL, 0, '真的厉害');
+INSERT INTO `notes` VALUES (17, 'Nextjs', 9, 25, '2025-02-23 00:00:00', '2025-02-23 00:00:00', 1, 'Nextjs', NULL, 21, NULL, 0, '\n## nextjs中动态生成路由时需要等待\n\n出现问题的代码示例：\n```tsx\ninterface PostPageProps {\n  params: {\n    title:  string;\n  };\n}\n\nexport function generateStaticParams(){\n    return Array.from({length:100},(_,k)=>{\n       return {\n         title: (k + 1).toString(),\n       };\n    })\n}\n\nexport default  function PostPage({ params }: PostPageProps) {\n  const {title} = params\n  return <div>博客{title}</div>;\n}\n```\n报错：\n``` bash\n GET /posts/12212 200 in 2055ms\nError: Route \"/posts/[title]\" used `params.title`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at title (src\\app\\(tooltip)\\posts\\[title]\\page.tsx:17:24)\n  15 |\n  16 | export default async function PostPage({ params }: PostPageProps) {\n> 17 |   return <div>博客{params.title}</div>;                     ^\n```\n原因：在nextjs15中params需要用await等待参数的接受\n```tsx\n\ntype PostPageProps = {\n  // 允许params必须是一个 Promise 对象\n  params: Promise<{ title: string }>; // 这里必须是Promise否则在build的时候也会报错\n};\n\nexport function generateStaticParams(){\n    return Array.from({length:100},(_,k)=>{\n       return {\n         title: (k + 1).toString(),\n       };\n    })\n}\n\nexport default async function PostPage({ params }: PostPageProps) {\n  const {title} = await params // 等待参数的接收\n  return <div>博客{title}</div>;\n}\n```');
+INSERT INTO `notes` VALUES (18, '文章渲染', 8, 26, '2025-02-23 23:39:23', '2025-02-23 23:39:23', 1, '文章渲染器', '\"[{\\\"text\\\":\\\"具体过程\\\",\\\"level\\\":4,\\\"line\\\":23},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":29},{\\\"text\\\":\\\"示例代码\\\",\\\"level\\\":4,\\\"line\\\":33},{\\\"text\\\":\\\"具体过程\\\",\\\"level\\\":4,\\\"line\\\":44},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":50},{\\\"text\\\":\\\"示例代码\\\",\\\"level\\\":4,\\\"line\\\":54},{\\\"text\\\":\\\"具体过程\\\",\\\"level\\\":4,\\\"line\\\":67},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":75},{\\\"text\\\":\\\"具体过程\\\",\\\"level\\\":4,\\\"line\\\":85},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":91},{\\\"text\\\":\\\"示例代码\\\",\\\"level\\\":4,\\\"line\\\":95},{\\\"text\\\":\\\"具体过程\\\",\\\"level\\\":4,\\\"line\\\":109},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":115},{\\\"text\\\":\\\"应用场景\\\",\\\"level\\\":4,\\\"line\\\":125},{\\\"text\\\":\\\"示例代码\\\",\\\"level\\\":4,\\\"line\\\":129},{\\\"text\\\":\\\"🌍 每一步在实际开发中的优化策略\\\",\\\"level\\\":2,\\\"line\\\":142},{\\\"text\\\":\\\"示例代码\\\",\\\"level\\\":4,\\\"line\\\":152},{\\\"text\\\":\\\"⚠️ 注意事项\\\",\\\"level\\\":2,\\\"line\\\":173},{\\\"text\\\":\\\"❓ 常见面试题\\\",\\\"level\\\":2,\\\"line\\\":185}]\"', 135, NULL, 0, '\n**## 🌟 浏览器渲染流程详解 \n\n浏览器的渲染过程可以分为以下关键步骤：\n \n1. **解析 HTML，构建 DOM 树**\n \n2. **解析 CSS，构建 CSSOM 树**\n \n3. **构建 Render Tree（渲染树）**\n \n4. **布局（Layout）**\n \n5. **绘制（Painting）**\n \n6. **合成（Compositing）**\n\n每一步之间紧密联系，对应的内容和实际应用如下：\n\n\n---\n\n1. **解析 HTML，构建 DOM 树** 浏览器会从网络层获取 HTML 文件并逐字解析，生成 **DOM（Document Object Model）树** ，它是网页结构的抽象表示。\n#### 具体过程 \n\n- HTML 被分解为标签、属性、内容等基础单元。\n\n- 浏览器逐行解析这些单元，并以树状结构的形式存储。\n\n#### 应用场景 \n \n- **JavaScript 操作 DOM 树** ：前端开发中使用 `document.getElementById` 或 `querySelector` 操作 DOM 节点。\n\n#### 示例代码 \n\n\n```javascript\nconsole.log(document.documentElement); // 查看完整 DOM 树\n```\n\n\n---\n\n2. **解析 CSS，构建 CSSOM 树** 浏览器解析 HTML 中 `<style>` 标签、`<link>` 引用的 CSS 文件以及内联样式，生成 **CSSOM（CSS Object Model）树** 。\n#### 具体过程 \n\n- 每条 CSS 规则会解析成树状结构。\n\n- 优先级规则（如层叠规则）在生成过程中被计算。\n\n#### 应用场景 \n \n- **调试样式问题** ：在浏览器开发者工具中查看 CSS 计算结果。\n\n#### 示例代码 \n\n\n```javascript\n// 查看某个元素的计算样式\nconst element = document.querySelector(\'h1\');\nconsole.log(window.getComputedStyle(element));\n```\n\n\n---\n\n3. **构建 Render Tree（渲染树）** 渲染树结合 **DOM 树**  和 **CSSOM 树** ，表示每个可见节点的样式和布局信息。隐藏的节点（如 `display: none`）不会加入渲染树。\n#### 具体过程 \n\n- DOM 和 CSSOM 合并。\n\n- 不可见的节点被忽略。\n\n- 每个节点包含可绘制的视觉样式。\n\n#### 应用场景 \n \n- **调试不可见元素** ：检查隐藏元素是否仍然占用布局。\n\n\n---\n\n4. **布局（Layout）** \n布局阶段计算每个渲染树节点的位置和大小，生成网页的几何信息。\n\n#### 具体过程 \n\n- 从根节点开始递归计算。\n \n- **回流（Reflow）** ：当元素的几何属性发生变化时，需要重新计算布局。\n\n#### 应用场景 \n \n- ⚠️ **性能优化** ：减少布局重排，合并 DOM 操作。\n\n#### 示例代码 \n\n\n```javascript\nconst element = document.querySelector(\'div\');\nconsole.log(element.offsetWidth); // 触发回流\n```\n\n\n---\n\n5. **绘制（Painting）** \n绘制阶段将每个节点的样式应用到屏幕，生成像素。\n\n#### 具体过程 \n\n- 每个节点的颜色、边框、文字等被绘制。\n \n- **重绘（Repaint）** ：当视觉样式改变时，但布局不变时发生。\n\n#### 应用场景 \n \n- **动画优化** ：避免频繁触发绘制。\n\n\n---\n\n6. **合成（Compositing）** \n绘制后的图层被合成为一张最终的页面图像。这一阶段由 GPU 处理，对性能至关重要。\n\n#### 应用场景 \n \n- **启用 GPU 加速** ：通过 `transform` 或 `opacity` 实现高性能动画。\n\n#### 示例代码 \n\n\n```css\ndiv {\n  transform: translateZ(0); /* 启用 GPU 加速 */\n}\n```\n\n\n---\n\n\n## 🌍 每一步在实际开发中的优化策略 \n1. **减少 DOM 和 CSSOM 的构建时间** \n- 减少 HTML 层级。\n \n- 使用高效的选择器（避免使用全局选择器 `*`）。\n2. **优化布局和回流**  \n- 避免频繁访问 DOM 属性（如 `offsetHeight`）。\n \n- 使用文档片段（`DocumentFragment`）进行批量操作。\n\n#### 示例代码 \n\n\n```javascript\nconst fragment = document.createDocumentFragment();\nfor (let i = 0; i < 100; i++) {\n  const div = document.createElement(\'div\');\n  div.textContent = `Item ${i}`;\n  fragment.appendChild(div);\n}\ndocument.body.appendChild(fragment); // 一次性更新 DOM\n```\n3. **避免不必要的重绘**  \n- 合理使用 CSS 动画属性，如 `transform` 和 `opacity`。\n \n- 尽量避免动画影响非合成层的元素（如 `width` 或 `height`）。\n\n\n---\n\n\n## ⚠️ 注意事项 \n \n1. ⚠️ **DOM 树和 CSSOM 树是并行解析的** ，但浏览器会阻塞渲染，直到 CSSOM 完全生成。\n \n2. ⚠️ JavaScript 的 `document.write` 会阻塞 DOM 树解析，尽量避免使用。\n\n3. ⚠️ 避免使用过多的嵌套层级，会影响 DOM 树的构建效率。\n\n\n---\n\n\n## ❓ 常见面试题 \n \n1. **什么是回流和重绘？如何减少它们的发生？** \n  - 回流：布局变化引发重新计算。\n\n  - 重绘：视觉样式变化但不涉及布局时发生。\n\n  - 减少策略：合并 DOM 操作、优化动画。\n \n2. **渲染树和 DOM 树有什么区别？** \n  - DOM 树：页面结构的抽象表示。\n\n  - 渲染树：用于绘制页面的结构，包含样式信息。\n \n3. **CSS 属性如何影响渲染性能？**  \n  - 高性能属性：`transform`、`opacity`。\n \n  - 性能瓶颈属性：`width`、`margin`。\n\n\n---\n\n\n通过逐步学习和实践浏览器渲染原理，你将能够在项目中轻松优化性能、提升用户体验，并有效解决性能瓶颈问题！**\n\n\n![[Pasted image 20241018022401.png]]\n![[cb55f9cbb41aa92738c29ef1e1c2ac1.jpg]]');
+INSERT INTO `notes` VALUES (19, 'vue3', 8, 28, '2025-02-24 02:46:02', '2025-02-24 02:46:02', 1, 'vue3快速上手', '\"[{\\\"text\\\":\\\"1. Vue3简介\\\",\\\"level\\\":1,\\\"line\\\":0},{\\\"text\\\":\\\"1.1. 【性能的提升】\\\",\\\"level\\\":2,\\\"line\\\":8},{\\\"text\\\":\\\"1.2.【 源码的升级】\\\",\\\"level\\\":2,\\\"line\\\":17},{\\\"text\\\":\\\"1.3. 【拥抱TypeScript】\\\",\\\"level\\\":2,\\\"line\\\":24},{\\\"text\\\":\\\"1.4. 【新的特性】\\\",\\\"level\\\":2,\\\"line\\\":29},{\\\"text\\\":\\\"2. 创建Vue3工程\\\",\\\"level\\\":1,\\\"line\\\":54},{\\\"text\\\":\\\"2.1. 【基于 vue-cli 创建】\\\",\\\"level\\\":2,\\\"line\\\":56},{\\\"text\\\":\\\"2.2. 【基于 vite 创建】(推荐)\\\",\\\"level\\\":2,\\\"line\\\":83},{\\\"text\\\":\\\"2.3. 【一个简单的效果】\\\",\\\"level\\\":2,\\\"line\\\":153},{\\\"text\\\":\\\"3. Vue3核心语法\\\",\\\"level\\\":1,\\\"line\\\":194},{\\\"text\\\":\\\"3.1.  【OptionsAPI 与 CompositionAPI】\\\",\\\"level\\\":2,\\\"line\\\":195},{\\\"text\\\":\\\"Options API 的弊端\\\",\\\"level\\\":3,\\\"line\\\":199},{\\\"text\\\":\\\"Composition API 的优势\\\",\\\"level\\\":3,\\\"line\\\":205},{\\\"text\\\":\\\"3.2. 【拉开序幕的 setup】\\\",\\\"level\\\":2,\\\"line\\\":213},{\\\"text\\\":\\\"setup 概述\\\",\\\"level\\\":3,\\\"line\\\":214},{\\\"text\\\":\\\"setup 的返回值\\\",\\\"level\\\":3,\\\"line\\\":261},{\\\"text\\\":\\\"setup 与 Options API 的关系\\\",\\\"level\\\":3,\\\"line\\\":270},{\\\"text\\\":\\\"setup 语法糖\\\",\\\"level\\\":3,\\\"line\\\":275},{\\\"text\\\":\\\"3.3. 【ref 创建：基本类型的响应式数据】\\\",\\\"level\\\":2,\\\"line\\\":331},{\\\"text\\\":\\\"3.4. 【reactive 创建：对象类型的响应式数据】\\\",\\\"level\\\":2,\\\"line\\\":376},{\\\"text\\\":\\\"3.5. 【ref 创建：对象类型的响应式数据】\\\",\\\"level\\\":2,\\\"line\\\":428},{\\\"text\\\":\\\"3.6. 【ref 对比 reactive】\\\",\\\"level\\\":2,\\\"line\\\":480},{\\\"text\\\":\\\"3.7. 【toRefs 与 toRef】\\\",\\\"level\\\":2,\\\"line\\\":500},{\\\"text\\\":\\\"3.8. 【computed】\\\",\\\"level\\\":2,\\\"line\\\":541},{\\\"text\\\":\\\"3.9.【watch】\\\",\\\"level\\\":2,\\\"line\\\":588},{\\\"text\\\":\\\"* 情况一\\\",\\\"level\\\":3,\\\"line\\\":598},{\\\"text\\\":\\\"* 情况二\\\",\\\"level\\\":3,\\\"line\\\":627},{\\\"text\\\":\\\"*  情况三\\\",\\\"level\\\":3,\\\"line\\\":677},{\\\"text\\\":\\\"* 情况四\\\",\\\"level\\\":3,\\\"line\\\":731},{\\\"text\\\":\\\"* 情况五\\\",\\\"level\\\":3,\\\"line\\\":794},{\\\"text\\\":\\\"3.10. 【watchEffect】\\\",\\\"level\\\":2,\\\"line\\\":847},{\\\"text\\\":\\\"3.11. 【标签的 ref 属性】\\\",\\\"level\\\":2,\\\"line\\\":914},{\\\"text\\\":\\\"3.12. 【props】\\\",\\\"level\\\":2,\\\"line\\\":997},{\\\"text\\\":\\\"3.13. 【生命周期】\\\",\\\"level\\\":2,\\\"line\\\":1064},{\\\"text\\\":\\\"3.14. 【自定义hook】\\\",\\\"level\\\":2,\\\"line\\\":1145},{\\\"text\\\":\\\"4. 路由\\\",\\\"level\\\":1,\\\"line\\\":1243},{\\\"text\\\":\\\"4.1. 【对路由的理解】\\\",\\\"level\\\":2,\\\"line\\\":1245},{\\\"text\\\":\\\"4.2. 【基本切换效果】\\\",\\\"level\\\":2,\\\"line\\\":1249},{\\\"text\\\":\\\"4.3. 【两个注意点】\\\",\\\"level\\\":2,\\\"line\\\":1309},{\\\"text\\\":\\\"4.4.【路由器工作模式】\\\",\\\"level\\\":2,\\\"line\\\":1315},{\\\"text\\\":\\\"4.5. 【to的两种写法】\\\",\\\"level\\\":2,\\\"line\\\":1343},{\\\"text\\\":\\\"4.6. 【命名路由】\\\",\\\"level\\\":2,\\\"line\\\":1353},{\\\"text\\\":\\\"4.7. 【嵌套路由】\\\",\\\"level\\\":2,\\\"line\\\":1391},{\\\"text\\\":\\\"4.8. 【路由传参】\\\",\\\"level\\\":2,\\\"line\\\":1455},{\\\"text\\\":\\\"query参数\\\",\\\"level\\\":3,\\\"line\\\":1457},{\\\"text\\\":\\\"params参数\\\",\\\"level\\\":3,\\\"line\\\":1493},{\\\"text\\\":\\\"4.9. 【路由的props配置】\\\",\\\"level\\\":2,\\\"line\\\":1529},{\\\"text\\\":\\\"4.10. 【 replace属性】\\\",\\\"level\\\":2,\\\"line\\\":1552},{\\\"text\\\":\\\"4.11. 【编程式导航】\\\",\\\"level\\\":2,\\\"line\\\":1567},{\\\"text\\\":\\\"4.12. 【重定向】\\\",\\\"level\\\":2,\\\"line\\\":1583},{\\\"text\\\":\\\"5. pinia\\\",\\\"level\\\":1,\\\"line\\\":1598},{\\\"text\\\":\\\"5.1【准备一个效果】\\\",\\\"level\\\":2,\\\"line\\\":1600},{\\\"text\\\":\\\"5.2【搭建 pinia 环境】\\\",\\\"level\\\":2,\\\"line\\\":1604},{\\\"text\\\":\\\"5.3【存储+读取数据】\\\",\\\"level\\\":2,\\\"line\\\":1630},{\\\"text\\\":\\\"5.4.【修改数据】(三种方式)\\\",\\\"level\\\":2,\\\"line\\\":1717},{\\\"text\\\":\\\"5.5.【storeToRefs】\\\",\\\"level\\\":2,\\\"line\\\":1771},{\\\"text\\\":\\\"5.6.【getters】\\\",\\\"level\\\":2,\\\"line\\\":1796},{\\\"text\\\":\\\"5.7.【$subscribe】\\\",\\\"level\\\":2,\\\"line\\\":1838},{\\\"text\\\":\\\"5.8. 【store组合式写法】\\\",\\\"level\\\":2,\\\"line\\\":1851},{\\\"text\\\":\\\"6. 组件通信\\\",\\\"level\\\":1,\\\"line\\\":1880},{\\\"text\\\":\\\"6.1. 【props】\\\",\\\"level\\\":2,\\\"line\\\":1895},{\\\"text\\\":\\\"6.2. 【自定义事件】\\\",\\\"level\\\":2,\\\"line\\\":1947},{\\\"text\\\":\\\"6.3. 【mitt】\\\",\\\"level\\\":2,\\\"line\\\":1974},{\\\"text\\\":\\\"6.4.【v-model】\\\",\\\"level\\\":2,\\\"line\\\":2048},{\\\"text\\\":\\\"6.5.【$attrs 】\\\",\\\"level\\\":2,\\\"line\\\":2139},{\\\"text\\\":\\\"6.6. 【refs、parent】\\\",\\\"level\\\":2,\\\"line\\\":2207},{\\\"text\\\":\\\"6.7. 【provide、inject】\\\",\\\"level\\\":2,\\\"line\\\":2221},{\\\"text\\\":\\\"6.8. 【pinia】\\\",\\\"level\\\":2,\\\"line\\\":2288},{\\\"text\\\":\\\"6.9. 【slot】\\\",\\\"level\\\":2,\\\"line\\\":2292},{\\\"text\\\":\\\"1. 默认插槽\\\",\\\"level\\\":3,\\\"line\\\":2294},{\\\"text\\\":\\\"2. 具名插槽\\\",\\\"level\\\":3,\\\"line\\\":2315},{\\\"text\\\":\\\"3. 作用域插槽\\\",\\\"level\\\":3,\\\"line\\\":2339},{\\\"text\\\":\\\"7. 其它 API\\\",\\\"level\\\":1,\\\"line\\\":2376},{\\\"text\\\":\\\"7.1.【shallowRef 与 shallowReactive 】\\\",\\\"level\\\":2,\\\"line\\\":2378},{\\\"text\\\":\\\"shallowRef\\\",\\\"level\\\":3,\\\"line\\\":2380},{\\\"text\\\":\\\"shallowReactive\\\",\\\"level\\\":3,\\\"line\\\":2392},{\\\"text\\\":\\\"总结\\\",\\\"level\\\":3,\\\"line\\\":2404},{\\\"text\\\":\\\"7.2.【readonly 与 shallowReadonly】\\\",\\\"level\\\":2,\\\"line\\\":2410},{\\\"text\\\":\\\"readonly\\\",\\\"level\\\":3,\\\"line\\\":2412},{\\\"text\\\":\\\"shallowReadonly\\\",\\\"level\\\":3,\\\"line\\\":2432},{\\\"text\\\":\\\"7.3.【toRaw 与 markRaw】\\\",\\\"level\\\":2,\\\"line\\\":2451},{\\\"text\\\":\\\"toRaw\\\",\\\"level\\\":3,\\\"line\\\":2453},{\\\"text\\\":\\\"markRaw\\\",\\\"level\\\":3,\\\"line\\\":2488},{\\\"text\\\":\\\"7.4.【customRef】\\\",\\\"level\\\":2,\\\"line\\\":2508},{\\\"text\\\":\\\"8. Vue3新组件\\\",\\\"level\\\":1,\\\"line\\\":2544},{\\\"text\\\":\\\"8.1. 【Teleport】\\\",\\\"level\\\":2,\\\"line\\\":2546},{\\\"text\\\":\\\"8.2. 【Suspense】\\\",\\\"level\\\":2,\\\"line\\\":2560},{\\\"text\\\":\\\"8.3.【全局API转移到应用对象】\\\",\\\"level\\\":2,\\\"line\\\":2590},{\\\"text\\\":\\\"8.4.【其他】\\\",\\\"level\\\":2,\\\"line\\\":2599}]\"', 51, NULL, 0, NULL);
+INSERT INTO `notes` VALUES (20, '常见markdwon用法', 8, 30, '2025-02-24 06:02:47', '2025-02-24 06:02:47', 1, '常见markdown格式，方便备查', '\"[{\\\"text\\\":\\\"常见markdown格式\\\",\\\"level\\\":1,\\\"line\\\":0},{\\\"text\\\":\\\"表格\\\",\\\"level\\\":2,\\\"line\\\":2},{\\\"text\\\":\\\"图片\\\",\\\"level\\\":2,\\\"line\\\":11},{\\\"text\\\":\\\"引用\\\",\\\"level\\\":2,\\\"line\\\":14},{\\\"text\\\":\\\"加粗\\\",\\\"level\\\":2,\\\"line\\\":18},{\\\"text\\\":\\\"下划线\\\",\\\"level\\\":2,\\\"line\\\":22},{\\\"text\\\":\\\"上标和下标\\\",\\\"level\\\":2,\\\"line\\\":25},{\\\"text\\\":\\\"无序列表\\\",\\\"level\\\":2,\\\"line\\\":29},{\\\"text\\\":\\\"有序列表\\\",\\\"level\\\":2,\\\"line\\\":36},{\\\"text\\\":\\\"任务列表\\\",\\\"level\\\":2,\\\"line\\\":40},{\\\"text\\\":\\\"行内代码块\\\",\\\"level\\\":2,\\\"line\\\":43},{\\\"text\\\":\\\"块级代码块\\\",\\\"level\\\":2,\\\"line\\\":45},{\\\"text\\\":\\\"链接\\\",\\\"level\\\":2,\\\"line\\\":51},{\\\"text\\\":\\\"思维导图mermaid\\\",\\\"level\\\":2,\\\"line\\\":54},{\\\"text\\\":\\\"流程图\\\",\\\"level\\\":3,\\\"line\\\":55},{\\\"text\\\":\\\"时序图\\\",\\\"level\\\":3,\\\"line\\\":60},{\\\"text\\\":\\\"甘特图\\\",\\\"level\\\":3,\\\"line\\\":68},{\\\"text\\\":\\\"类图\\\",\\\"level\\\":3,\\\"line\\\":74}]\"', 59, NULL, 0, NULL);
+INSERT INTO `notes` VALUES (21, 'Mysql修改时区', 15, 31, '2025-03-04 13:59:23', '2025-03-04 13:59:23', 1, '怎么在mysql中修改时区', '\"[{\\\"text\\\":\\\"Mysql命令设置时区\\\",\\\"level\\\":2,\\\"line\\\":2},{\\\"text\\\":\\\"步骤 2: 设置 MySQL 时区\\\",\\\"level\\\":6,\\\"line\\\":10},{\\\"text\\\":\\\"修改DockerCompose\\\",\\\"level\\\":2,\\\"line\\\":21},{\\\"text\\\":\\\"编辑器修改\\\",\\\"level\\\":2,\\\"line\\\":49}]\"', 35, NULL, 0, NULL);
+INSERT INTO `notes` VALUES (22, 'Vue项目的配置', 8, 32, '2025-03-04 00:00:00', '2025-03-04 00:00:00', 1, '配置vue项目', '\"[{\\\"text\\\":\\\"1. .eslintrc.cjs\\\",\\\"level\\\":3,\\\"line\\\":0},{\\\"text\\\":\\\"2. .gitignore\\\",\\\"level\\\":3,\\\"line\\\":28},{\\\"text\\\":\\\"3. .prettierrc.json\\\",\\\"level\\\":3,\\\"line\\\":39},{\\\"text\\\":\\\"4. env.d.ts\\\",\\\"level\\\":3,\\\"line\\\":51},{\\\"text\\\":\\\"5. index.html\\\",\\\"level\\\":3,\\\"line\\\":68},{\\\"text\\\":\\\"6. package-lock.json\\\",\\\"level\\\":3,\\\"line\\\":87},{\\\"text\\\":\\\"7. package.json\\\",\\\"level\\\":3,\\\"line\\\":99},{\\\"text\\\":\\\"8. README.md\\\",\\\"level\\\":3,\\\"line\\\":122},{\\\"text\\\":\\\"使用\\\",\\\"level\\\":2,\\\"line\\\":137},{\\\"text\\\":\\\"10. tsconfig.json\\\",\\\"level\\\":3,\\\"line\\\":151},{\\\"text\\\":\\\"11. tsconfig.node.json\\\",\\\"level\\\":3,\\\"line\\\":176},{\\\"text\\\":\\\"12. vite.config.ts\\\",\\\"level\\\":3,\\\"line\\\":193}]\"', 30, NULL, 0, NULL);
+INSERT INTO `notes` VALUES (23, 'ebpack的细节代码和规范细节', 8, 33, '2025-03-04 15:29:26', '2025-03-04 15:29:26', 1, 'ebpack的细节代码和规范细节', '\"[{\\\"text\\\":\\\"Webpack的细节代码和规范细节\\\",\\\"level\\\":1,\\\"line\\\":0},{\\\"text\\\":\\\"配置文件结构\\\",\\\"level\\\":2,\\\"line\\\":2},{\\\"text\\\":\\\"模块化配置\\\",\\\"level\\\":2,\\\"line\\\":4},{\\\"text\\\":\\\"1. 使用 Babel 进行 JavaScript 转译\\\",\\\"level\\\":3,\\\"line\\\":6},{\\\"text\\\":\\\"2. 处理 CSS 和预处理器\\\",\\\"level\\\":3,\\\"line\\\":34},{\\\"text\\\":\\\"3.处理静态资源（图片、字体、音频)\\\",\\\"level\\\":3,\\\"line\\\":59},{\\\"text\\\":\\\"优化配置\\\",\\\"level\\\":2,\\\"line\\\":78},{\\\"text\\\":\\\"1. 代码分隔\\\",\\\"level\\\":3,\\\"line\\\":79},{\\\"text\\\":\\\"2.缓存优化\\\",\\\"level\\\":3,\\\"line\\\":90},{\\\"text\\\":\\\"3.使用threeShaking减少未使用的代码\\\",\\\"level\\\":3,\\\"line\\\":102},{\\\"text\\\":\\\"代码规范\\\",\\\"level\\\":2,\\\"line\\\":104},{\\\"text\\\":\\\"1.使用ESLint和Prettier\\\",\\\"level\\\":3,\\\"line\\\":105},{\\\"text\\\":\\\"2.项目统一命名\\\",\\\"level\\\":3,\\\"line\\\":143},{\\\"text\\\":\\\"3. 注释和文档\\\",\\\"level\\\":3,\\\"line\\\":149},{\\\"text\\\":\\\"其他最佳实践\\\",\\\"level\\\":2,\\\"line\\\":154},{\\\"text\\\":\\\"1.配置环境变量\\\",\\\"level\\\":3,\\\"line\\\":155},{\\\"text\\\":\\\"2.代码的压缩\\\",\\\"level\\\":3,\\\"line\\\":184},{\\\"text\\\":\\\"3.使用别名\\\",\\\"level\\\":3,\\\"line\\\":208},{\\\"text\\\":\\\"4.清除输出目录\\\",\\\"level\\\":3,\\\"line\\\":227},{\\\"text\\\":\\\"5.性能优化\\\",\\\"level\\\":3,\\\"line\\\":261}]\"', 126, NULL, 0, NULL);
+
+-- ----------------------------
+-- Table structure for sessions
+-- ----------------------------
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE `sessions`  (
+  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expires` int UNSIGNED NOT NULL,
+  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`session_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sessions
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tags
+-- ----------------------------
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `name`(`name` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tags
+-- ----------------------------
+INSERT INTO `tags` VALUES (6, 'markdown');
+INSERT INTO `tags` VALUES (7, 'mysql');
+INSERT INTO `tags` VALUES (3, 'nextjs');
+INSERT INTO `tags` VALUES (4, 'react');
+INSERT INTO `tags` VALUES (9, 'vue');
+INSERT INTO `tags` VALUES (5, 'Vue3');
+INSERT INTO `tags` VALUES (1, '厉害');
+INSERT INTO `tags` VALUES (8, '后端');
+INSERT INTO `tags` VALUES (2, '真的');
+
+-- ----------------------------
+-- Table structure for user_comments
+-- ----------------------------
+DROP TABLE IF EXISTS `user_comments`;
+CREATE TABLE `user_comments`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_id` int UNSIGNED NOT NULL,
+  `liked` enum('false','true') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'false',
+  `report` enum('true','false') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'false',
+  `commented` enum('true','false') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`, `user_id`, `comment_id`) USING BTREE,
+  INDEX `user_comment_id`(`comment_id` ASC) USING BTREE,
+  INDEX `user_comment_user_id`(`user_id` ASC) USING BTREE,
+  CONSTRAINT `user_comment_id` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`comment_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `user_comment_user_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_comments
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for user_info
+-- ----------------------------
+DROP TABLE IF EXISTS `user_info`;
+CREATE TABLE `user_info`  (
+  `index` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `account` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `register_datetime` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_login` tinyint NOT NULL DEFAULT 0,
+  `is_delete` tinyint NOT NULL DEFAULT 0,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未知',
+  `role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`) USING BTREE,
+  UNIQUE INDEX `index`(`index` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 999 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_info
+-- ----------------------------
+INSERT INTO `user_info` VALUES (432, '1', 'NHqsCxiely', 'nYrnRzNt7I', '2020-08-02 23:52:38', 49, 33, 'Chu Wing Fat', 'bQ7Ss9HGlv', 'qXrsLdWfva', 'chu227@hotmail.com', 'xEtqh9lYhR');
+INSERT INTO `user_info` VALUES (411, '10', 'r6VF5p2xIn', '6LhSu3rirh', '2009-08-29 23:53:26', 40, 12, 'Louis Phillips', 'QVG4G9coIR', 'fPTxltrnoO', 'louisp@yahoo.com', 'YnbnA2XDQY');
+INSERT INTO `user_info` VALUES (998, '161c9196-397a-53ca-8cc4-93e718ab7cc9', 'huchenghe@gmail.com', '$2b$10$SCvPrSf6gEmJ.zAxMg58xuxymK57YqNxVp0wfs8hP0XUEM5K5CBv.', '2025-08-11 16:11:31', 0, 0, '未知生物', NULL, 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=robohash', NULL, NULL);
+INSERT INTO `user_info` VALUES (481, '2', 'UmwX1EopmG', 'NH4cWmcxEO', '2005-12-24 10:08:40', 57, 42, 'Carl Butler', 'MxzuFaI8JH', 'jLxT2s2KIY', 'carl804@mail.com', 'ckj1ohxMYR');
+INSERT INTO `user_info` VALUES (350, '3', '8aqW9HGsxq', 'ajPJA3PqFt', '2024-11-18 22:32:57', 15, 94, 'Liu Rui', 'BSGAATOtfz', 'hsPiFgHpHN', 'ruiliu6@gmail.com', 'FkK4dohGqx');
+INSERT INTO `user_info` VALUES (713, '4', 'zBDiO0F0wx', '388Xcx3Vlw', '2023-04-02 21:40:03', 5, 41, 'Rachel Nelson', 'QUOR71nGIw', 'BBvW2tzPRg', 'ner9@outlook.com', 'dyjEgZLn9c');
+INSERT INTO `user_info` VALUES (809, '5', 'TwKQBVtU23', 'VSSHBDmbCa', '2004-01-15 00:23:20', 23, 12, 'Deng Xiuying', 'Yq6mkxRMKK', 'VgLlCqM5AS', 'dxiuying1964@hotmail.com', 'hAIMK1thWu');
+INSERT INTO `user_info` VALUES (417, '6', 'zOI0KQNfsN', 'jUnwyU4BLD', '2007-05-30 02:33:56', 7, 38, 'Evelyn Brown', '4wJ9r8Bp99', 'aqqF9sjoQC', 'browne@gmail.com', '9Bdseao5Jc');
+INSERT INTO `user_info` VALUES (950, '7', 'vdvJnTfVR3', 'SpB8Krql5c', '2002-08-21 18:03:12', 103, 27, 'Wan Hok Yau', 'E1iCClbLVk', 'LuD4fJkAb5', 'wahok712@gmail.com', 'QxWAlAbjZY');
+INSERT INTO `user_info` VALUES (996, '709331f2-fe5b-5852-a22b-ee169952a2eb', 'huchenghe138@gmail.com', '$2b$10$SCvPrSf6gEmJ.zAxMg58xuxymK57YqNxVp0wfs8hP0XUEM5K5CBv.', '2025-02-18 08:26:06', 0, 0, '夜空中最亮的星', NULL, 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=robohash', NULL, NULL);
+INSERT INTO `user_info` VALUES (789, '8', 'sG8paZNUaZ', 'WgEQzmgUqc', '2012-12-14 17:22:57', 121, 89, 'Shi Jialun', 'Op50VIjR6n', 'm3qWeBUa6a', 'jialunshi@yahoo.com', 'deNjtdUnLu');
+INSERT INTO `user_info` VALUES (997, '89153120', 'huchenghepang', '', '2025-02-24 14:21:28', 0, 0, 'jeff', NULL, NULL, NULL, NULL);
+INSERT INTO `user_info` VALUES (389, '9', 'qIcMhysgaj', '6nbSkXO16N', '2013-05-31 17:59:19', 78, 31, 'Cui Xiaoming', 'fFW1WZux4p', '0FnZKLjts2', 'cuixiaom@gmail.com', 'RbjU2FicH0');
+
+SET FOREIGN_KEY_CHECKS = 1;
