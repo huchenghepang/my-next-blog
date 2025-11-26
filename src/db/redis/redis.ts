@@ -15,21 +15,21 @@ class RedisClient {
     private redis: RedisInstance;
 
     constructor() {
-        this.redis = new Redis({
-            host: '127.0.0.1', // Redis 服务器地址
-            port: 6379, // Redis 端口
-            password: 'h5mJWbSvKB', // Redis 密码
-            db: 1, // 数据库索引
-            retryStrategy: (times: number) => {
-                const maxAttempts = 5; // 最大重试次数
-                if (times > maxAttempts) {
-                    return null; // 返回 null，停止重试
-                }
-                const delay = Math.min(times * 100, 2000); // 每次重试的延迟时间
-                return delay; // 返回延迟时间，继续重试
-            },
-            maxRetriesPerRequest: 5, // 每个请求的最大重试次数
-            connectTimeout: 10000, // 连接超时时间（毫秒）
+        const redisUrl = process.env.REDIS_URL;
+        if (!redisUrl) {
+          throw new Error("REDIS_URL is not defined in environment variables");
+        }
+        this.redis = new Redis(redisUrl, {
+          retryStrategy: (times: number) => {
+            const maxAttempts = 5; // 最大重试次数
+            if (times > maxAttempts) {
+              return null; // 返回 null，停止重试
+            }
+            const delay = Math.min(times * 100, 2000); // 每次重试的延迟时间
+            return delay; // 返回延迟时间，继续重试
+          },
+          maxRetriesPerRequest: 5, // 每个请求的最大重试次数
+          connectTimeout: 10000, // 连接超时时间（毫秒）
         });
 
         this.handleEvents();
@@ -37,10 +37,15 @@ class RedisClient {
 
     // 绑定连接事件
     private handleEvents() {
-        this.redis.on('connect', () => logger.info('Redis connected successfully.'));
+        this.redis.on('connect', () => { 
+            logger.warn("Redis connected successfully.");
+            logger.warn("连接的 Redis 服务器地址:" + this.redis.options.host + ':' + this.redis.options.port +" 数据库索引:" + this.redis.options.db);
+        });
         this.redis.on('error', (err) => logger.error({ message: 'Redis connection error:', error: err }));
-        this.redis.on('reconnecting', () => logger.info('Redis reconnecting...'));
-        this.redis.on('end', () => logger.info('Redis connection closed.'));
+        this.redis.on("reconnecting", () =>
+          logger.warn("Redis reconnecting...")
+        );
+        this.redis.on("end", () => logger.warn("Redis connection closed."));
     }
 
     // 通用错误处理方法
