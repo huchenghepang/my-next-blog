@@ -35,7 +35,7 @@ function faviconMiddleware(req: NextRequest) {
 // 中间件4：拦截对于post的请求，增加文章的阅读量
 
 // 主中间件：按顺序执行多个中间件
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     // 优先拦截 favicon.ico 请求
