@@ -1,0 +1,43 @@
+{
+  "import": ["@cspell/dict-lorem-ipsum/cspell-ext.json"],
+  "caseSensitive": false,
+  "dictionaries": ["custom-dictionary"],
+  "words": [
+    // 自定义专有名词，如项目名、技术术语
+    "monorepo",
+    "pnpm",
+    "vite",
+    "rollup",
+    "eslint",
+    "prettier"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "custom-dictionary",
+      "path": "./.cspell/custom-dictionary.txt",
+      "addWords": true
+    }
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "public/**",
+    "**/*.spec.ts",
+    "**/*.json",
+    ".cspell/**",
+    "**/package.json",
+    "**/*.md",
+    "**/stats.html",
+    "eslint.config.mjs",
+    ".gitignore",
+    "prettierignore",
+    "cspell.json",
+    "commitlint.config.js",
+    ".cspell",
+    ".env",
+    ".vscode/**",
+    "package.json",
+    "**/node_modules/**",
+    "package-lock.json"
+  ]
+}
