@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 const MyImage = ({ src, alt }: { src?: string; alt?: string }) => {
+
   const defaultImage = "/image/svg/error.svg";
   const [imgSrc, setImgSrc] = useState(src?.startsWith("/") ? src : `/${src}`);
 

@@ -4,5 +4,22 @@
   },
   "commentTranslate.hover.enabled": false,
   "i18n-ally.localesPaths": ["/src/locales"],
-  "cSpell.words": ["blogdb"]
+  "cSpell.words": ["blogdb"],
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/.git": true,
+    "**/coverage": true,
+    "**/.vscode": true,
+    "**/logs": true,
+    "**/*.log": true,
+    "**/tmp": true,
+    "**/temp": true,
+    "**/public": true,
+    "**.yaml": true
+  }
 }

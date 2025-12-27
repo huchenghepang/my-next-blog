@@ -19,9 +19,10 @@ interface CustomResponse<D = unknown> {
 
 /* 错误的响应 */
 interface CustomErrorResponse {
-    code: number;
-    detail: string | null;
-    errorMessage: string | null;
+  success: false;
+  code: number;
+  detail?: string;
+  errorMessage: string;
 }
 
 type SendResponseOptions<T = unknown> = {

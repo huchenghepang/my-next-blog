@@ -1,26 +1,18 @@
-import Joi from "joi";
-import { errorMessage } from "./ErrorMessage";
+import z from "zod";
 
+export const addPermissionSchema = z.object({
+  permissionName: z.string(),
+  description: z.string(),
+  type: z.enum(["route", "button"]),
+  parentId: z.number(),
+  permissionValue: z.string(),
+});
 
+export const deletePermissionSchema = z.object({
+  permissionId: z.number(),
+});
 
-
-export const addPermissionSchema = Joi.object({
-    permissionName: Joi.string().required(),
-    description:Joi.string().required(),
-    type: Joi.string().valid('route', 'button').required(),
-    parentId:Joi.number().required(),
-    permissionValue:Joi.string().required()
-}).messages(errorMessage)
-
-export const deletePermissionSchema = Joi.object({
-    permissionId:Joi.number().required()
-}).messages(errorMessage)
-
-export const UpdatePermissionSchema = Joi.object({
-    permissionName: Joi.string().required(),
-    description: Joi.string().required(),
-    type: Joi.string().valid('route', 'button').required(),
-    parentId: Joi.number().required(),
-    permissionValue: Joi.string().required(),
-    permissionId: Joi.number().required()
-}).messages(errorMessage)
+export const updatePermissionSchema = addPermissionSchema.partial();
+export type AddPermissionSchema = z.infer<typeof addPermissionSchema>;
+export type DeletePermissionSchema = z.infer<typeof deletePermissionSchema>;
+export type UpdatePermissionSchema = z.infer<typeof updatePermissionSchema>;

@@ -1,9 +1,7 @@
-import Joi from "joi";
-import { pagationErrorMessages } from "./ErrorMessage";
+import z from "zod";
 
-export const getUserInfoListScheme = Joi.object({
-    page:Joi.number().required(),
-    limit:Joi.number().required(),
-    keyword:Joi.string()
-}).messages(pagationErrorMessages)
-
+export const getUserInfoListScheme = z.object({
+  page: z.number(),
+  limit: z.number().int().positive(),
+  keyword: z.string().optional(),
+});

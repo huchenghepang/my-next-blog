@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
 
 export const POST = createApiHandler(async (req) => {
     try {
-        const { data, error } = await validateRequest<register_login_Interface>(req, register_login_schema);
+        const { data, error } = await validateRequest(req, register_login_schema);
         if (!data) {
             return sendError({ errorMessage: error });
         }
@@ -29,8 +29,8 @@ export const POST = createApiHandler(async (req) => {
         if (password === '' || !password) {
             return sendError({ errorMessage: "账号是github账号还未进行绑定" })
         }
-        const isSucceess = bcrypt.compareSync(data.password, password)
-        if (!isSucceess) return sendError({ errorMessage: "当前密码不正确" })
+        const isSuccess = bcrypt.compareSync(data.password, password)
+        if (!isSuccess) return sendError({ errorMessage: "当前密码不正确" });
 
         const roles = await prisma.userRoles.findMany({
             where: { user_id: user_id },

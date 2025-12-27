@@ -1,29 +1,54 @@
-import Joi from "joi";
-import { errorMessage, stringAndNumberErrorMessages } from "./ErrorMessage";
+import z from "zod";
+const schema = z
+  .object({
+    type: z.string().optional(),
+    fieldName: z
+      .number()
+      .refine((val) => [0, 1].includes(val ?? -1), {
+        message: "必须是 0 或 1",
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.type === "account") {
+        return data.fieldName !== undefined;
+      }
+      return true;
+    },
+    {
+      message: "当 type 为 'account' 时，fieldName 为必填",
+      path: ["fieldName"],
+    }
+  );
+export const addUserScheme = z.object({
+  account: z.string().min(6, { message: "account 必须至少6个字符" }),
+  password: z.string().min(6, { message: "password 必须至少6个字符" }),
+});
 
-export const addUserScheme = Joi.object({
-    accout: Joi.string().required(),
-    password: Joi.string().required()
-}).messages(errorMessage);
+export const removeUserSchema = z.object({
+  userId: z.string().min(6),
+});
 
-export const removeUserSchema = Joi.object({
-    userId: Joi.string().required()
-}).messages(errorMessage);
+export const changeUserStatusSchema = z.object({
+  userId: z.string().min(6),
 
-export const changeUserStatusSchema = Joi.object({
-    userId: Joi.string().required(),
+  type: z.enum(["password", "account"]),
 
-    type: Joi.string()
-        .valid("password", "account")
-        .required(),
+  isDelete: z
+    .number()
+    .int()
+    .refine((val) => [0, 1].includes(val), {
+      message: "isDelete 必须是 0 或 1",
+    }),
+});
 
-    isDelete: Joi.number()
-        .valid(0, 1)
-        .when("type", { is: "account", then: Joi.required() }),
-}).messages(errorMessage);;
+export const assignUserRolesSchema = z.object({
+  userId: z.string().min(6),
+  roleIds: z.array(z.number()).min(1, { message: "roleIds 不能为空" }),
+});
 
-
-export const assignUserRolesSchema = Joi.object({
-    userId: Joi.string().required(),
-    roleIds: Joi.array().items(Joi.number()).required()  // 确保数组中的每个元素是数字
-}).messages(stringAndNumberErrorMessages)
+export type ChangeUserStatusSchema = z.infer<typeof changeUserStatusSchema>;
+export type AssignUserRolesSchema = z.infer<typeof assignUserRolesSchema>;
+export type RemoveUserSchema = z.infer<typeof removeUserSchema>;
+export type AddUserSchema = z.infer<typeof addUserScheme>;

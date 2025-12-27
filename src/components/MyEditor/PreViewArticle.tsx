@@ -50,6 +50,10 @@ export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
             return <CodeBlock {...params}></CodeBlock>;
           },
           img({ src, alt }) {
+            if (src instanceof Blob) {
+              const objectURL = URL.createObjectURL(src);
+              return <MyImageComponent src={objectURL} alt={alt} />;
+            }
             return <MyImageComponent src={src} alt={alt} />;
           },
           blockquote({ children }) {
