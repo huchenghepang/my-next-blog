@@ -1,6 +1,5 @@
-import Header from "@/components/Hearder/Hearder";
+import Header from "@/components/Header/Header";
 import { ReactNode } from "react";
-
 
 export default function LayoutWithBubbles({
   children,
@@ -11,7 +10,6 @@ export default function LayoutWithBubbles({
     <>
       <Header></Header>
       {children}
-
-     </>
+    </>
   );
 }

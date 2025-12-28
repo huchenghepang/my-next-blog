@@ -1,14 +1,16 @@
 
-import DownArrowWarpper from "../HotArticle/DownArrowWarpper";
-
-const SideTitle = () => {
+import DownArrowWrapper from "../HotArticle/DownArrowWrapper";
+interface Props {
+  text: string;
+}
+const SideTitle = ({ text }: Props) => {
   return (
     <div className="flex justify-center items-center">
-      <span className="text-2xl font-bold">生命中的每一步都意味着可能性</span>
-      <DownArrowWarpper
+      <span className="text-2xl font-bold mr-2">{text}</span>
+      <DownArrowWrapper
         idTarget="step-second-life"
         block="end"
-      ></DownArrowWarpper>
+      ></DownArrowWrapper>
     </div>
   );
 };

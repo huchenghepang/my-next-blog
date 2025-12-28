@@ -3,8 +3,8 @@ import prisma from "@/utils/prisma";
 import { ArticleCardProps } from "./ArticleCard";
 import ArticlesList from "./ArticlesList";
 
-// 服务器组件：获取数据并传递给 HotArticlle 组件
-const HotArticlleWrapper = async () => {
+// 服务器组件：获取数据并传递给 HotArticleWrapper 组件
+const HotArticleWrapper = async () => {
   const articles = await prisma.notes.findMany({
     where: {
       is_archive: true,
@@ -39,4 +39,4 @@ const HotArticlleWrapper = async () => {
 export const revalidate = 86400; // 每 24 小时重新生成
 /* 特别注意开发者模式下会一直生成 没有缓存 */
 
-export default HotArticlleWrapper;
+export default HotArticleWrapper;

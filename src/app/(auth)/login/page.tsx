@@ -104,7 +104,7 @@ const LoginPage = () => {
             placeholder="手机号或邮箱"
             onChange={handleChange}
             onFocus={resetError}
-            autoComplete="account"
+            autoComplete="username"
             required
             className={loginStyle["Login-Input"]}
           />
@@ -113,7 +113,7 @@ const LoginPage = () => {
             key={"password"}
             type="password"
             value={formState.password || ""}
-            autoComplete="password"
+            autoComplete="new-password"
             onChange={handleChange}
             className={loginStyle["Login-Input"]}
             name="password"

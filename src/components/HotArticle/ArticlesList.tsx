@@ -1,6 +1,6 @@
 import { FC } from "react";
 import ArticleCard from "./ArticleCard";
-import DownArrowWarpper from "./DownArrowWarpper";
+import DownArrowWrapper from "./DownArrowWrapper";
 
 interface ArticlesListProps {
   // 这里是组件的属性
@@ -15,7 +15,7 @@ const ArticlesList: FC<ArticlesListProps> = ({ articleList }) => {
         <div className="space-y-2 text-center ">
           <h2 className="text-2xl  font-bold">
             <span>有些东西总需要瞅瞅的 &nbsp;&nbsp;</span>
-            <DownArrowWarpper></DownArrowWarpper>
+            <DownArrowWrapper></DownArrowWrapper>
           </h2>
           <p id="step-second-life" className="font-serif text-sm ">
             不知道看什么？这里有些东西我可以分享给你...

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { forwardRef, memo, ReactNode, useState } from "react";
 import ButtonStyle from "./Button.module.scss";
 
@@ -10,9 +11,10 @@ interface ButtonProps {
   classNames?: string[];
   href?: string;
   size?: "large" | "small" | "default" | "mini";
+  className?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement,ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
@@ -22,11 +24,12 @@ const Button = forwardRef<HTMLButtonElement,ButtonProps>(
       href,
       styles,
       size = "default",
+      className,
     },
-    ref,
+    ref
   ) => {
     const [waveStyle, setWaveStyle] = useState<React.CSSProperties | null>(
-      null,
+      null
     );
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,7 +39,6 @@ const Button = forwardRef<HTMLButtonElement,ButtonProps>(
       const x = e.clientX - rect.left - size / 2;
       const y = e.clientY - rect.top - size / 2;
 
-      // 直接更新 state，触发 CSS 变化
       setWaveStyle({
         width: `${size}px`,
         height: `${size}px`,
@@ -57,14 +59,14 @@ const Button = forwardRef<HTMLButtonElement,ButtonProps>(
       ButtonStyle[type],
       ButtonStyle[size],
       ...classNames,
-      "clearfix"
+      "clearfix",
+      ...[className],
     ].join(" ");
-
     if (href) {
       return (
-        <a href={href} style={styles} className={buttonClassNames}>
+        <Link href={href} style={styles} className={buttonClassNames}>
           {children}
-        </a>
+        </Link>
       );
     }
 
@@ -79,7 +81,7 @@ const Button = forwardRef<HTMLButtonElement,ButtonProps>(
         {waveStyle && <span className={ButtonStyle.wave} style={waveStyle} />}
       </button>
     );
-  },
+  }
 );
 
 Button.displayName = "Button"

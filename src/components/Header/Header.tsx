@@ -1,5 +1,5 @@
 "use client";
-import { throttle } from "lodash";
+import throttle from "@/utils/throttle";
 import { useEffect, useState } from "react";
 import ThemeToggle from "../ThemeToggle";
 import HeaderSearch from "./Header-Search";
@@ -16,10 +16,12 @@ export default function Header() {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 0);
       setIsHidden(scrollY > window.innerHeight);
-    }, 200);
+    }, 1000);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
@@ -29,10 +31,10 @@ export default function Header() {
       } ${isScrolled ? "bg-gray-200 dark:bg-zinc-600" : "bg-transparent"}`}
     >
       <div className="container flex justify-between h-14 mx-auto items-center">
-        <Logo link="/" title="返回首页"></Logo>
+        <Logo link="/" title="返回首页" className="w-100"></Logo>
 
         {/* 导航栏 */}
-        <ul className="flex justify-center space-x-3 h-full">
+        <ul className="flex justify-between space-x-4 h-full">
           <LinkHeader linkText="文 章" href="/posts" />
           <LinkHeader linkText="主 站" href="https://huchenghe.site" />
           <LinkHeader linkText="关 于" href="/about" />
@@ -47,7 +49,9 @@ export default function Header() {
           <HeaderSearch placeholder="搜索文章..."></HeaderSearch>
 
           {/* 登录按钮 */}
-          <IsloginBtn></IsloginBtn>
+          <div className="flex mx-2">
+            <IsloginBtn></IsloginBtn>
+          </div>
         </div>
       </div>
     </header>
