@@ -12,7 +12,7 @@ function authMiddleware(req: NextRequest) {
 
 // 中间件2：IP 限制（仅允许特定IP访问）
 function ipFilterMiddleware(req: NextRequest) {
-    const clientIP = req.headers.get("x-forwarded-for") || "unknown ip";
+    const clientIP = req.headers.get("x-forwarded-for") || "unknown ip";    
     if (clientIP && !globalConfig.default.allowedIPs.includes(clientIP)) {
         return sendError({ errorMessage: "ip不存在或获取ip地址不允许访问", code: "403" });
     }
