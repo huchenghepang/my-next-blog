@@ -1,8 +1,7 @@
 "use client";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiCircleChevUp } from "react-icons/ci";
-import { IoIosContact } from "react-icons/io";
-import ThemeToggle from "../ThemeToggle";
+import {IoIosContact} from "react-icons/io"
 
 const backTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -25,10 +24,7 @@ export default function ToolTips() {
           </span>
         </li>
 
-        {/* 主题切换按钮 */}
-        <li className="group flex items-center space-x-2 cursor-pointer justify-center">
-          <ThemeToggle id="theme-toggle-btn" />
-        </li>
+
 
         {/* 返回顶部按钮 */}
         <li className="group flex items-center space-x-2 cursor-pointer">

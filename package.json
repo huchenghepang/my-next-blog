@@ -17,6 +17,12 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "next",
+    "@mui/material": "next",
+    "@mui/material-nextjs": "next",
     "@prisma/adapter-mariadb": "^7.5.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "7.5.0 ",

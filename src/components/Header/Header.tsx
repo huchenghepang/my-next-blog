@@ -1,7 +1,7 @@
 "use client";
 import throttle from "@/utils/throttle";
 import { useEffect, useState } from "react";
-import ThemeToggle from "../ThemeToggle";
+import ThemeMuiToggle from "../ThemeMuiToggle"
 import HeaderSearch from "./Header-Search";
 import IsloginBtn from "./IsloginBtn";
 import LinkHeader from "./Link";
@@ -43,11 +43,10 @@ export default function Header() {
         {/* 右侧功能区 */}
         <div className="flex items-center w-100">
           {/* 主题切换按钮 */}
-          <ThemeToggle id="theme-toggle-btn"></ThemeToggle>
-
+          {/* <ThemeToggle id="theme-toggle-btn"></ThemeToggle> */}
+          <ThemeMuiToggle id="theme-toggle-btn"></ThemeMuiToggle>
           {/* 搜索框 */}
           <HeaderSearch placeholder="搜索文章..."></HeaderSearch>
-
           {/* 登录按钮 */}
           <div className="flex mx-2">
             <IsloginBtn></IsloginBtn>
@@ -55,5 +54,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
