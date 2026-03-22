@@ -69,3 +69,7 @@ src/prisma/generated/prisma/models/tags.ts
 src/prisma/generated/prisma/models/user_comments.ts
 src/prisma/generated/prisma/models/user_info.ts
 src/prisma/generated/prisma/models/UserRoles.ts
+src/prisma/generated/prisma/models/Account.ts
+src/prisma/generated/prisma/models/Session.ts
+src/prisma/generated/prisma/models/User.ts
+src/prisma/generated/prisma/models/Verification.ts

@@ -1,7 +1,7 @@
 import Button from "@/components/Button/Button";
 import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
 import LogoutButton from "@/components/LoginOutButton";
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma"
 import { getSession } from "@/utils/session";
 import { validatePermission } from "@/utils/validatePermission";
 import { redirect } from "next/navigation";
@@ -9,7 +9,7 @@ import userStyle from "./user.module.scss";
 
 async function getUsers() {
   try {
-    const users = await prisma.user_info.findMany();
+    const users = await prisma.user.findMany()
     return users;
   } catch (error) {
     return null;
@@ -34,8 +34,8 @@ export default async function Page() {
       <LogoutButton></LogoutButton>
       {isTogglerRole && <Button>切换用户角色</Button>}
       {users && (users.map(user=>{return (
-        <p key={user.user_id}>
-          <span>用户名：{user.username}</span>
+        <p key={user.id}>
+          <span>用户名：{user.name}</span>
           <span>个性签名：{user.signature}</span>
         </p>
       ) }))}

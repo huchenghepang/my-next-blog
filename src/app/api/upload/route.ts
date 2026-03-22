@@ -1,5 +1,5 @@
 import config from "@/config/config";
-import { saveFile, saveFileInfoIntoDB } from "@/utils/filehandler/fileHelper";
+import {saveFile, saveFileInfoIntoDB} from "@/utils/file/fileHelper"
 import logger from "@/utils/logger";
 import { sendError, sendResponse } from "@/utils/responseHandler/responseHandler";
 import { NextRequest } from "next/server";

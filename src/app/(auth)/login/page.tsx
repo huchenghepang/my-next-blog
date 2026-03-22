@@ -7,8 +7,7 @@ import Button from "@/components/Button/Button";
 import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
 import { showMessage } from "@/components/Message/MessageManager";
 import { useFormReducer } from "@/hooks/useFormReducer";
-import { CustomResponse } from "@/types/customResponse";
-import { AuthLoginResponse } from "@/types/response/auth";
+import {authClient} from "@/lib/auth.client"
 import { setLocalStorage } from "@/utils/localStore";
 import loginStyle from "./Login.module.scss";
 
@@ -30,29 +29,16 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded", // 修改为 x-www-form-urlencoded
-        },
-        body: new URLSearchParams({
-          account: formState.account,
-          password: formState.password,
-        }).toString(), // 使用 URLSearchParams 将数据编码成 x-www-form-urlencoded 格式
-      });
+      const data = await authClient.signIn.email({
+        email: formState.account,
+        password: formState.password,
+        callbackURL: "/dashboard/?isLogin=1",
+      })
+      showMessage({type: "success", text: "登录成功"})
+      console.log(data)
 
-      const data: CustomResponse<AuthLoginResponse> = await response.json();
-      if (!response.ok) {
-        setErrors(data.errorMessage);
-        return showMessage({
-          type: "error",
-          text: data.errorMessage || "登录失败",
-        });
-      }
-
-      setLocalStorage("isLogin",true);
-      setLocalStorage("userInfo",data.data);
-      window.location.href = "/dashboard/?isLogin=1";
+      setLocalStorage("isLogin", true)
+     
     } catch (error) {
       console.log(error);
       showMessage({ type: "error", text: "登录出错" });

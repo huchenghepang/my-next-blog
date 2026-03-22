@@ -2,6 +2,7 @@ Appmain
 breakline
 bullmq
 Bykey
+categoryid
 Contions
 coreutils
 DOTENV
@@ -9,6 +10,7 @@ endgroup
 ENVDEVELOPMENT
 ENVPRODUCTION
 ENVTEST
+flac
 huchenghe
 huchenghepang
 huchengssshe
@@ -17,7 +19,9 @@ iconfont
 Islogin
 itemlist
 JDCLOUD
+NEXTAUTH
 nostream
+tagid
 toplevel
 webfactory
 willsoto

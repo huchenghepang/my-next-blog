@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { writeFileSync } from 'fs';
 import { ensureDirSync, readFileSync, statSync } from 'fs-extra';
 import path from 'path';
-import prisma from '../prisma';
+import prisma from "../../lib/prisma";
 import { getCurrentTimeInTimeZone } from '../timezone';
 /**
  * 根据文件扩展名匹配文件夹

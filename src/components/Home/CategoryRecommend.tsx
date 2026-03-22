@@ -1,5 +1,5 @@
+import prisma from "@/lib/prisma";
 import logger from "@/utils/logger";
-import prisma from "@/utils/prisma";
 import { FC } from "react";
 
 // 根据文件名生成组件

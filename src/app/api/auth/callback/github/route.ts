@@ -1,7 +1,6 @@
 import config from "@/config/config";
 import { createApiHandler } from "@/utils/createApiHandler";
-import logger from "@/utils/logger";
-import prisma from "@/utils/prisma";
+import logger from "@/utils/logger"
 import { sendError } from "@/utils/responseHandler/responseHandler";
 import { generateSessionId, saveSession } from "@/utils/session/redis-session";
 import axios from "axios";
@@ -71,35 +70,6 @@ export const GET = createApiHandler(async (req) => {
         };
 
         const userID = userResponseData.id + ''
-
-        /* 查询这个用户有没有注册账号 如果没有则自动注册 */
-        const user = await prisma.user_info.findFirst({
-            where: {
-                user_id: userID
-            }
-        })
-        if (!user) {
-            /* 加密密码 */
-            /* 注册绑定账号 */
-            const user = await prisma.user_info.create({
-                data: {
-                    account: userData.login,
-                    user_id: userID,
-                    username: userData.name,
-                    avatar: userData.avatarUrl,
-                    password: ""
-                }
-            })
-            /* 分配默认的角色 */
-            await prisma.userRoles.create({
-                data: {
-                    user_id: userID,
-                    role_id: 2
-                }
-            })
-            if(!user) return sendError({errorMessage:"登录GitHub失败"})
-            
-        }
 
         /* 保存session */
         const sessionId = generateSessionId();

@@ -1,12 +1,12 @@
+import prisma from "@/lib/prisma";
 import { createApiHandler } from "@/utils/createApiHandler";
-import prisma from "@/utils/prisma";
 import {
   sendError,
   sendResponse,
 } from "@/utils/responseHandler/responseHandler";
 
 export const GET = createApiHandler(async (req) => {
-  const { articleId } = req.params;
+  const {articleId} = req.params as any
 
   if (!articleId) return sendError({ errorMessage: "缺少文章ID" });
 
@@ -43,16 +43,6 @@ export const GET = createApiHandler(async (req) => {
           parent_id: true,
           reply_count: true,
           updated_at: true,
-          user_comments: {
-            select: {
-              user_info: {
-                select: {
-                  user_id: true,
-                  username: true,
-                },
-              },
-            },
-          },
         },
       },
     },

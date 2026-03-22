@@ -6,36 +6,36 @@ import Button from "@/components/Button/Button";
 import IconfontJavaScript from "@/components/Iconfont/IconfontJavaScript";
 import { showMessage } from "@/components/Message/MessageManager";
 import { useFormReducer } from "@/hooks/useFormReducer";
-import { CustomResponse } from "@/types/customResponse";
+import {authClient} from "@/lib/auth.client"
 import RegisterStyle from "./Register.module.scss";
 
 const initialErrorState = {
   accountError: undefined,
   passwordError: undefined,
-  confimPassword: undefined,
-};
+  confirmPassword: undefined,
+}
 interface ErrorState {
-  accountError: string | undefined;
-  passwordError: string | undefined;
-  confimPassword: string | undefined;
+  accountError: string | undefined
+  passwordError: string | undefined
+  confirmPassword: string | undefined
 }
 
 interface ErrorAction {
-  type: "accountError" | "passwordError" | "confimPassword" | "reset";
-  message: string;
+  type: "accountError" | "passwordError" | "confirmPassword" | "reset"
+  message: string
 }
 function reducer(state: ErrorState, action: ErrorAction) {
   switch (action.type) {
     case "accountError":
-      return { ...state, [action.type]: action.message };
-    case "confimPassword":
-      return { ...state, [action.type]: action.message };
+      return {...state, [action.type]: action.message}
+    case "confirmPassword":
+      return {...state, [action.type]: action.message}
     case "passwordError":
-      return { ...state, [action.type]: action.message };
+      return {...state, [action.type]: action.message}
     case "reset":
-      return initialErrorState;
+      return initialErrorState
     default:
-      throw new Error();
+      throw new Error()
   }
 }
 
@@ -55,34 +55,19 @@ const RegisterPage = () => {
 
     try {
       if(formState.password !== formState.confirmPassword ){
-        return dispatchError({type:"confimPassword",message:"密码需要与确认密码一致"})
+        return dispatchError({
+          type: "confirmPassword",
+          message: "密码需要与确认密码一致",
+        })
       }
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded", // 修改为 x-www-form-urlencoded
-        },
-        body: new URLSearchParams({
-          account: formState.account,
-          password: formState.password,
-        }).toString(), // 使用 URLSearchParams 将数据编码成 x-www-form-urlencoded 格式
-      });
-
-      const data: CustomResponse = await response.json();
-      if (!response.ok) {
-        dispatchError({
-          type: "accountError",
-          message: data.errorMessage || "",
-        });
-        return showMessage({
-          type: "error",
-          text: data.errorMessage || "注册失败",
-        });
-      }
-      showMessage({ type: "success", text: "注册成功" });
-      setTimeout(()=>{
-        window.location.href = "/login";
-      },4000)
+     
+      const data = await authClient.signUp.email({
+        email: formState.account,
+        password: formState.password,
+        name: formState.account,
+        callbackURL: "/login",
+      })
+      showMessage({type: "success", text: "注册成功"})
     } catch (error) {
       console.log(error);
       showMessage({ type: "error", text: "注册出错" });
@@ -130,7 +115,7 @@ const RegisterPage = () => {
           required
         />
         <p className={RegisterStyle["Register-Error"]}>
-          {errors.passwordError || errors.confimPassword}
+          {errors.passwordError || errors.confirmPassword}
         </p>
         <input
           key={"confirmPassword"}
@@ -144,7 +129,7 @@ const RegisterPage = () => {
           required
         />
         <p className={RegisterStyle["Register-Error"]}>
-          {errors.confimPassword }
+          {errors.confirmPassword}
         </p>
         <button type="submit" className={RegisterStyle["Register-Button"]}>
           注册
@@ -156,7 +141,7 @@ const RegisterPage = () => {
         </div>
       </form>
     </div>
-  );
+  )
 };
 
 export default RegisterPage;

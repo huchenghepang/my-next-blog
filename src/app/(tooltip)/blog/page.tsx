@@ -1,12 +1,12 @@
-import prisma from '@/utils/prisma';
-import { FC, Suspense } from 'react';
-import Blog from './Blog';
+import prisma from "@/lib/prisma";
+import { FC, Suspense } from "react";
+import Blog from "./Blog";
 interface PageProps {
   // 这里是组件的属性
-  params:Promise<{info:string[]}>;
+  params: Promise<{ info: string[] }>;
 }
 
-const Page: FC<PageProps> =  (props) => {
+const Page: FC<PageProps> = (props) => {
   const notes = prisma.notes.findMany();
 
   return (

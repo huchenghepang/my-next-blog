@@ -1,9 +1,8 @@
 import PreViewArticle from "@/components/MyEditor/PreViewArticle";
 import TableOfContents from "@/components/MyEditor/TocWithContent/TocWithContent";
-import { HeadList } from "@/types/custom-editor";
-import { readArticle } from "@/utils/filehandler/fileHelper";
-import logger from "@/utils/logger";
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma"
+import {HeadList} from "@/types/custom-editor"
+import logger from "@/utils/logger"
 import { redirect } from "next/navigation";
 
 type PostPageProps = {
@@ -25,25 +24,20 @@ async function getArticleInfoByID(id: number) {
   if (!id) return;
 
   const article = await prisma.notes.findUnique({
-    where: { id: id, is_archive: true },
+    where: {id: id, is_archive: true},
     include: {
-      article_categories: { select: { level: true, name: true, id: true } },
-      note_tags: { select: { tags: true } },
-      files_info: {
-        select: {
-          file_path: true,
-        },
-      },
+      article_categories: {select: {level: true, name: true, id: true}},
+      note_tags: {select: {tags: true}},
     },
-  });
+  })
   return article;
 }
 
 export default async function PostPage({ params }: PostPageProps) {
   let redirectPath: string | null = null;
   try {
-    const rawparams = await params;
-    const { id } = rawparams;
+    const rawParams = await params
+    const {id} = rawParams
     if (!id || isNaN(Number(id))) {
       // 过滤无效的 ID，比如 favicon.ico
       redirectPath = "/404";
@@ -56,7 +50,7 @@ export default async function PostPage({ params }: PostPageProps) {
       redirectPath = "/404";
       throw Error(`访问ID为:${id}的文章不存在`);
     }
-    const content = await readArticle(article.files_info.file_path);
+    const content = article.content
 
     const toc: HeadList[] | undefined = JSON.parse(article.toc as string);
 

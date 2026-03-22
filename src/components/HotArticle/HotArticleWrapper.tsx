@@ -1,5 +1,5 @@
+import prisma from "@/lib/prisma";
 import { formatDateUTC } from "@/utils/format/formatDatetime";
-import prisma from "@/utils/prisma";
 import { ArticleCardProps } from "./ArticleCard";
 import ArticlesList from "./ArticlesList";
 
