@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+    <div className="flex h-screen w-full items-center justify-center text-white">
       <div className="flex flex-col items-center gap-4">
         <div className="animate-spin">
           <svg
@@ -21,9 +21,9 @@ export default function Loading() {
           </svg>
         </div>
         <p className="text-lg font-semibold animate-opacity animate-delay-500">
-          正在加载，请稍候...
+          loading...
         </p>
       </div>
     </div>
-  );
+  )
 }

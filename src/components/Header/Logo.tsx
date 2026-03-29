@@ -9,16 +9,20 @@ interface LogoProps{
 
 function Logo({ link,title,className }: LogoProps) {
   return (
-    <Link href={link} aria-label={title} className={`flex items-center w-80 ${className}`}>
+    <Link
+      href={link}
+      aria-label={title}
+      className={`flex items-center  ${className}`}
+    >
       <Image
         src="/png/favicon.png"
         alt="icon"
-        style={{ borderRadius: "50%" }}
+        style={{borderRadius: "50%"}}
         width={34}
         height={34}
       />
     </Link>
-  );
+  )
 }
 
 export default Logo

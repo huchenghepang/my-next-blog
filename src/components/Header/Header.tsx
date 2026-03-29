@@ -1,58 +1,97 @@
-"use client";
-import throttle from "@/utils/throttle";
-import { useEffect, useState } from "react";
+import {AppBar, Box, Container, Stack, Toolbar} from "@mui/material"
+import Link from "next/link"
 import ThemeMuiToggle from "../ThemeMuiToggle"
-import HeaderSearch from "./Header-Search";
-import IsloginBtn from "./IsloginBtn";
-import LinkHeader from "./Link";
-import Logo from "./Logo";
+import HeaderClient from "./HeaderClient"
+import Logo from "./Logo"
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = throttle(() => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 0);
-      setIsHidden(scrollY > window.innerHeight);
-    }, 1000);
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   return (
-    <header
-      className={`sticky  w-full top-0 z-50 transition-all duration-300 ${
-        isHidden ? "-translate-y-full" : "translate-y-0"
-      } ${isScrolled ? "bg-gray-200 dark:bg-zinc-600" : "bg-transparent"}`}
-    >
-      <div className="container flex justify-between h-14 mx-auto items-center">
-        <Logo link="/" title="返回首页" className="w-100"></Logo>
+    <HeaderClient>
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          backgroundColor: "transparent",
+          transition: "all 0.3s",
+          "&.scrolled": {
+            backdropFilter: "blur(8px)",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          },
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar
+            disableGutters
+            sx={{justifyContent: "space-between", minHeight: "56px"}}
+          >
+            {/* Logo - 服务端渲染 */}
+            <Logo link="/" title="返回首页" />
 
-        {/* 导航栏 */}
-        <ul className="flex justify-between space-x-4 h-full">
-          <LinkHeader linkText="文 章" href="/posts" />
-          <LinkHeader linkText="主 站" href="https://huchenghe.site" />
-          <LinkHeader linkText="关 于" href="/about" />
-        </ul>
+            {/* 桌面端导航 - 服务端渲染 */}
+            <Stack
+              direction="row"
+              spacing={3}
+              sx={{
+                display: {xs: "none", md: "flex"},
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  textDecoration: "none",
+                  color: "text.primary",
+                  fontWeight: 500,
+                  "&:hover": {opacity: 0.7},
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <Link href="/posts">文 章</Link>
+              </Box>
+              <Box
+                sx={{
+                  textDecoration: "none",
+                  color: "text.primary",
+                  fontWeight: 500,
+                  "&:hover": {opacity: 0.7},
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <Link
+                  href="https://huchenghe.site"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  主 站
+                </Link>
+              </Box>
+              <Box
+                sx={{
+                  textDecoration: "none",
+                  color: "text.primary",
+                  fontWeight: 500,
+                  "&:hover": {opacity: 0.7},
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <Link href="/about">关 于</Link>
+              </Box>
+            </Stack>
 
-        {/* 右侧功能区 */}
-        <div className="flex items-center w-100">
-          {/* 主题切换按钮 */}
-          {/* <ThemeToggle id="theme-toggle-btn"></ThemeToggle> */}
-          <ThemeMuiToggle id="theme-toggle-btn"></ThemeMuiToggle>
-          {/* 搜索框 */}
-          <HeaderSearch placeholder="搜索文章..."></HeaderSearch>
-          {/* 登录按钮 */}
-          <div className="flex mx-2">
-            <IsloginBtn></IsloginBtn>
-          </div>
-        </div>
-      </div>
-    </header>
+            {/* 右侧功能区 - 服务端渲染 */}
+            <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+              <ThemeMuiToggle />
+              {/* 移动端搜索按钮和桌面端搜索框通过客户端组件处理 */}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </HeaderClient>
   )
 }

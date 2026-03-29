@@ -1,11 +1,10 @@
-import AnimatedCharacter from "@/components/Animation/PersonAnimation";
-import Header from "@/components/Header/Header";
-import HeroSection from "@/components/Hero";
-import CategoryRecommend from "@/components/Home/CategoryRecommend";
-import SideTitle from "@/components/Home/SideTitle";
-import SlipDamping from "@/components/Home/Sidle";
-import HotArticleWrapper from "@/components/HotArticle/HotArticleWrapper";
-import Footer from "@/components/layout/footer";
+import Header from "@/components/Header/Header"
+import HeroSection from "@/components/Hero"
+import CategoryRecommend from "@/components/Home/CategoryRecommend"
+import SideTitle from "@/components/Home/SideTitle"
+import SlipDamping from "@/components/Home/Sidle"
+import HotArticleWrapper from "@/components/HotArticle/HotArticleWrapper"
+import Footer from "@/components/layout/footer"
 
 export default function Home() {
   return (
@@ -23,7 +22,7 @@ export default function Home() {
         <HotArticleWrapper></HotArticleWrapper>
         {/* 分类导航 */}
         <CategoryRecommend></CategoryRecommend>
-        <AnimatedCharacter></AnimatedCharacter>
+        {/* <AnimatedCharacter></AnimatedCharacter> */}
         <SlipDamping></SlipDamping>
         {/* 页脚 */}
         <Footer
@@ -32,5 +31,5 @@ export default function Home() {
         ></Footer>
       </div>
     </>
-  );
+  )
 }

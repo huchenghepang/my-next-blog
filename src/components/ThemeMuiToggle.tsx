@@ -2,14 +2,13 @@
 
 import {useColorScheme} from "@mui/material/styles"
 
-const ThemeMuiToggle = ({id}: {id: string}) => {
+const ThemeMuiToggle = () => {
   const {mode, setMode} = useColorScheme()
   if (!mode) {
     return null
   }
   return (
     <button
-      id={id}
       onClick={() => {
         setMode(mode === "light" ? "dark" : "light")
       }}

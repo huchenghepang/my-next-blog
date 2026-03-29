@@ -99,7 +99,11 @@
       "bcrypt"
     ],
     "onlyBuiltDependencies": [
-      "bcrypt"
+      "@parcel/watcher",
+      "@prisma/engines",
+      "bcrypt",
+      "prisma",
+      "sharp"
     ]
   },
   "config": {

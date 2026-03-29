@@ -1,15 +1,14 @@
-import { FC, use } from "react";
-
-import { notes } from "@prisma/client";
+import {notes} from "@/prisma/generated/prisma/client"
+import {FC, use} from "react"
 
 interface BlogProps {
   // Here are the component properties
-  notes: Promise<notes[]>;
+  notes: Promise<notes[]>
 }
 
 // Generate a component based on the file name
-const Blog: FC<BlogProps> = ({ notes }) => {
-  const allNotes = use(notes);
+const Blog: FC<BlogProps> = ({notes}) => {
+  const allNotes = use(notes)
   return (
     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
       {allNotes.map((note, index) => {
@@ -25,10 +24,10 @@ const Blog: FC<BlogProps> = ({ notes }) => {
               </li>
             </ul>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog
