@@ -3,7 +3,31 @@ import Link from "next/link"
 import ThemeMuiToggle from "../ThemeMuiToggle"
 import HeaderClient from "./HeaderClient"
 import Logo from "./Logo"
-
+const navItemStyle = {
+  textDecoration: "none",
+  color: "text.primary",
+  fontWeight: 500,
+  display: "flex",
+  alignItems: "center",
+  height: "100%",
+  position: "relative",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: "-4px",
+    left: 0,
+    width: "0%",
+    height: "2px",
+    backgroundColor: "primary.main",
+    transition: "width 0.3s ease",
+  },
+  "&:hover::after": {
+    width: "100%",
+  },
+  "&:hover": {
+    opacity: 0.7,
+  },
+} as const
 export default function Header() {
   return (
     <HeaderClient>
@@ -37,30 +61,10 @@ export default function Header() {
                 height: "100%",
               }}
             >
-              <Box
-                sx={{
-                  textDecoration: "none",
-                  color: "text.primary",
-                  fontWeight: 500,
-                  "&:hover": {opacity: 0.7},
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
+              <Box sx={navItemStyle}>
                 <Link href="/posts">文 章</Link>
               </Box>
-              <Box
-                sx={{
-                  textDecoration: "none",
-                  color: "text.primary",
-                  fontWeight: 500,
-                  "&:hover": {opacity: 0.7},
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
+              <Box sx={navItemStyle}>
                 <Link
                   href="https://huchenghe.site"
                   target="_blank"
@@ -69,17 +73,7 @@ export default function Header() {
                   主 站
                 </Link>
               </Box>
-              <Box
-                sx={{
-                  textDecoration: "none",
-                  color: "text.primary",
-                  fontWeight: 500,
-                  "&:hover": {opacity: 0.7},
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
+              <Box sx={navItemStyle}>
                 <Link href="/about">关 于</Link>
               </Box>
             </Stack>

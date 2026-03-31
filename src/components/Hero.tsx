@@ -1,10 +1,26 @@
-import Link from "next/link";
-import TypeWriter from "./TypeWriter/TypeWriter";
+import Link from "next/link"
+import AdditionalText from "./AdditionalText"
+import TypeWriter from "./TypeWriter/TypeWriter"
 
 const HeroSection = () => {
   return (
     <section className="relative max-w-5xl mx-auto py-12 px-4 text-center">
-      <div className="h-screen w-full bg-[url('/webp/167387.webp')] dark:rounded-full dark:bg-[url('/webp/20230505529l83.webp')] bg-cover bg-fixed bg-center"></div>
+      <div className="relative">
+        <div className="h-screen w-full bg-[url('/webp/167387.webp')] dark:rounded-full dark:bg-[url('/webp/20230505529l83.webp')] bg-cover bg-fixed bg-center"></div>
+        <div className="absolute z-10 top-[10%] left-1/2 transform -translate-x-1/2 w-full max-w-5xl px-4 sm:left-1/2 sm:transform sm:-translate-x-1/2">
+          <AdditionalText />
+          <div className="mt-12">
+            <AdditionalText
+              quote={{
+                author: "jeff",
+                text: "那年拂过的风，不过是此生做过的梦",
+                english:
+                  "The wind that swept through that year is nothing but a dream of this life.",
+              }}
+            />
+          </div>
+        </div>
+      </div>
       <div>
         <div className="container flex flex-col items-center px-4 py-16 pb-24 mx-auto text-center lg:pb-56 md:py-32 md:px-10 lg:px-32 ">
           {/* 预留固定的高度，避免高度跳变 */}
@@ -29,10 +45,9 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-
       <div className="absolute z-10 bottom-0 left-0 w-full h-4/6 rounded-3xl bg-cover bg-center bg-gradient-to-t from-orange-300/50 to-transparent"></div>
     </section>
-  );
-};
+  )
+}
 
-export default HeroSection;
+export default HeroSection
