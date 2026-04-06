@@ -1,5 +1,6 @@
 import { getArticleDetailBySlug } from "@/api/article";
 import PreViewArticle from "@/components/MyEditor/PreViewArticle";
+import TocWrapper from "@/components/MyEditor/TocWithContent/TocWrapper";
 import logger from "@/utils/logger";
 import { redirect } from "next/navigation";
 
@@ -48,6 +49,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
     return (
       <div className="flex">
+        <TocWrapper containerId={slug}></TocWrapper>
         {/* {toc && <TableOfContents toc={toc} />} */}
         <div className="w-full flex">
           <PreViewArticle

@@ -44,6 +44,7 @@ export default function PreViewArticle({
       prose-pre:bg-transparent prose-pre:shadow-none prose-pre:p-0 prose-pre:m-0
       prose-pre:text-base prose-code:text-sm
       "
+      id={slug}
     >
       <ReactMarkdown
         key={slug}
