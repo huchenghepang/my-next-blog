@@ -1,5 +1,5 @@
 "use client"
-import {createTheme} from "@mui/material/styles"
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   colorSchemes: {
@@ -17,8 +17,8 @@ const theme = createTheme({
           dark: "#6d28d9",
         },
         background: {
-          default: "#fafafa", // 浅灰背景
-          paper: "#ffffff", // 卡片白色背景
+          default: "#ede3da", // 浅灰背景
+          paper: "#f7f2ef", // 卡片白色背景
         },
         text: {
           primary: "#1f2937", // 深灰文字
@@ -112,25 +112,25 @@ const theme = createTheme({
           borderRadius: "12px",
           variants: [
             {
-              props: {severity: "info"},
+              props: { severity: "info" },
               style: {
                 backgroundColor: "#60a5fa",
               },
             },
             {
-              props: {severity: "success"},
+              props: { severity: "success" },
               style: {
                 backgroundColor: "#34d399",
               },
             },
             {
-              props: {severity: "warning"},
+              props: { severity: "warning" },
               style: {
                 backgroundColor: "#fbbf24",
               },
             },
             {
-              props: {severity: "error"},
+              props: { severity: "error" },
               style: {
                 backgroundColor: "#f87171",
               },
@@ -216,6 +216,6 @@ const theme = createTheme({
   shape: {
     borderRadius: 12,
   },
-})
+});
 
 export default theme

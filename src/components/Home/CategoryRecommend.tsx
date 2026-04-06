@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import logger from "@/utils/logger";
 import { FC } from "react";
+import HomeSection from "./HomeSection";
 
 // 根据文件名生成组件
 const CategoryRecommend: FC = async () => {
@@ -13,22 +14,22 @@ const CategoryRecommend: FC = async () => {
     });
 
     return (
-      <section className="bg-white py-12 dark:bg-zinc-600  dark:text-white">
+      <HomeSection>
         <div className="max-w-5xl mx-auto px-4 text-center ">
-          <h2 className="text-3xl font-bold text-gray-800">分类导航</h2>
+          <h2 className="text-3xl font-bold">分类导航</h2>
           <div className="mt-6 flex flex-wrap justify-center gap-4 ">
             {categories.map((category) => (
               <a
                 key={category.id}
                 href={`/posts/?categoryid=${category.id}`}
-                className="bg-gray-200  hover:bg-blue-500 hover:text-white dark:hover:bg-cyan-200 dark:bg-zinc-600  dark:text-white px-6 py-2 rounded-full transition"
+                className="bg-gray-200  hover:bg-yellow-500 hover:text-gray-500 dark:hover:bg-yellow-200 dark:bg-zinc-600   px-6 py-2 rounded-full transition"
               >
                 {category.name}
               </a>
             ))}
           </div>
         </div>
-      </section>
+      </HomeSection>
     );
   } catch (error) {
     logger.error({

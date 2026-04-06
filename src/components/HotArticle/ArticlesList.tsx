@@ -3,7 +3,6 @@ import ArticleCard from "./ArticleCard";
 import DownArrowWrapper from "./DownArrowWrapper";
 
 interface ArticlesListProps {
-  // 这里是组件的属性
   articleList: any;
 }
 

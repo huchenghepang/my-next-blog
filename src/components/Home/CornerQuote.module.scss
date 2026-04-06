@@ -1,0 +1,91 @@
+.CornerQuote-Container {
+  position: relative;
+  display: inline-block;
+  text-align: right; // 右上角风格，文字右对齐
+
+  // 装饰元素 - 右侧竖线
+  .ornament {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: #e11d48;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, #e11d48, #f43f5e, transparent);
+    }
+  }
+
+  h3 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #e11d48;
+    margin: 0 0 8px 0;
+    font-family: monospace;
+  }
+
+  p {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #4b5563;
+    margin: 0;
+    font-style: italic;
+    max-width: 220px;
+    line-height: 1.4;
+
+    &::before {
+      content: "“";
+      font-size: 1.2rem;
+      color: #e11d48;
+      margin-right: 2px;
+    }
+
+    &::after {
+      content: "”";
+      font-size: 1.2rem;
+      color: #e11d48;
+      margin-left: 2px;
+      vertical-align: top;
+    }
+  }
+
+  // 悬浮效果
+  &:hover {
+    .ornament .line {
+      width: 60px;
+      transition: width 0.3s ease;
+    }
+
+    p {
+      color: #1f2937;
+      transition: color 0.2s ease;
+    }
+  }
+}
+
+// 响应式 - 移动端适配
+@media (max-width: 768px) {
+  .TopLeftTip-Container {
+    p {
+      max-width: 180px;
+      font-size: 0.8rem;
+    }
+
+    h3 {
+      font-size: 0.75rem;
+    }
+  }
+}

@@ -1,7 +1,5 @@
 // 定义自定义的错误日志参数类型
 
-import { CustomError } from "./error";
-import { MysqlError } from "./mysql_error";
 
 
 
@@ -35,34 +33,34 @@ type ErrorRecoverability =
 type levelType = 'info' | 'warn' | 'error' | 'debug' | 'fatal'
 
 interface Log {
-    message: string | Log;  // 日志的简短描述信息
-    requestMethod?: string;
-    requestPath?: string;
-    dateTime?: string;
-    detail?: string; // 详细的错误信息
-    timestamp?: string;  // 错误发生的时间
-    stack?: string | undefined;
-    level?: levelType;  // 日志级别
-    error?: Error | MysqlError | CustomError ;
-    request?: {
-        method?: 'GET' | 'POST' | 'PUT' | 'DELETE';  // 请求方法
-        url?: string;  // 请求的 URL
-        params?: Record<string, any>;  // 请求参数
-        requestId?: string;  // 请求 ID
-    };
-    user?: {
-        userId: string;  // 用户 ID
-        username: string;  // 用户名
-    };
-    server?: {
-        hostname: string;  // 服务器主机名
-        os: string;  // 操作系统信息
-    };
-    reason?: unknown;
-    version?: string;  // 应用版本
-    environment?: string;  // 环境（如：production, staging）
-    transactionId?: string;  // 事务 ID
-    promise?: unknown
+  message: string | Log; // 日志的简短描述信息
+  requestMethod?: string;
+  requestPath?: string;
+  dateTime?: string;
+  detail?: string; // 详细的错误信息
+  timestamp?: string; // 错误发生的时间
+  stack?: string | undefined;
+  level?: levelType; // 日志级别
+  error?: any;
+  request?: {
+    method?: "GET" | "POST" | "PUT" | "DELETE"; // 请求方法
+    url?: string; // 请求的 URL
+    params?: Record<string, any>; // 请求参数
+    requestId?: string; // 请求 ID
+  };
+  user?: {
+    userId: string; // 用户 ID
+    username: string; // 用户名
+  };
+  server?: {
+    hostname: string; // 服务器主机名
+    os: string; // 操作系统信息
+  };
+  reason?: unknown;
+  version?: string; // 应用版本
+  environment?: string; // 环境（如：production, staging）
+  transactionId?: string; // 事务 ID
+  promise?: unknown;
 }
 
 

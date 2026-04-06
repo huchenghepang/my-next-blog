@@ -1,14 +1,18 @@
-import {notes} from "@/prisma/generated/prisma/client"
-import {FC, use} from "react"
+import {FC} from "react"
 
 interface BlogProps {
   // Here are the component properties
-  notes: Promise<notes[]>
+  notes: {
+    id: string
+    name: string
+    summary?: string
+    is_archive?: boolean
+  }[]
 }
 
 // Generate a component based on the file name
 const Blog: FC<BlogProps> = ({notes}) => {
-  const allNotes = use(notes)
+  const allNotes = notes
   return (
     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
       {allNotes.map((note, index) => {
@@ -20,7 +24,7 @@ const Blog: FC<BlogProps> = ({notes}) => {
               </li>
               <li className="text-gray-600">Summary: {note.summary}</li>
               <li className="text-gray-600">
-                Archived: {note.is_archive.toString()}
+                Archived: {note.is_archive ? "Yes" : "No"}
               </li>
             </ul>
           </div>

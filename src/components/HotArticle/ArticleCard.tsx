@@ -26,23 +26,15 @@ const ArticleCard: FC<ArticleCardProps> = ({
       id={id}
       className="flex relative flex-col text-stone-200 rounded-xl overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-900 dark:to-purple-900 backdrop-blur-md p-6 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:backdrop-blur-lg hover:shadow-xl"
     >
-      <a
-        rel="noopener noreferrer"
-        href={href + "/"}
-        aria-label="Te nulla oportere reprimique his dolorum"
-      ></a>
+      <a rel="noopener noreferrer" href={href + "/"}></a>
       <div className="flex flex-col flex-1">
-        <a
-          rel="noopener noreferrer"
-          href={href + "/"}
-          aria-label="Te nulla oportere reprimique his dolorum"
-        ></a>
+        <a rel="noopener noreferrer" href={href + "/"}></a>
         <a
           rel="noopener noreferrer"
           href={href + "/"}
           className="z-20 text-xs tracking-wider uppercase hover:underline text-stone-200 dark:text-gray-100"
         >
-          {title} 
+          {title}
         </a>
         <h3 className="flex-1 py-2 text-lg text-stone-200 font-semibold leading-snug  dark:text-gray-100">
           {summary}
@@ -51,7 +43,9 @@ const ArticleCard: FC<ArticleCardProps> = ({
           <span>{datetime}</span>
           <span>{formatNumber(views)}</span>
         </div>
-        <div className={`z-0 absolute bottom-3 right-2 left-3 w-full h-full bg-cover bg-center bg-gradient-to-t from-yellow-400/25 to-transparent1`}></div>
+        <div
+          className={`z-0 absolute bottom-3 right-2 left-3 w-full h-full bg-cover bg-center bg-gradient-to-t from-yellow-400/25 to-transparent1`}
+        ></div>
       </div>
     </article>
   );

@@ -1,30 +1,28 @@
 "use client";
+import { ArticleInfoSimple } from "@/app/api/article/slug/route";
 import { CustomResponse } from "@/types/customResponse";
-import { ArticleInfoResponse } from "@/types/response/article.r";
 import { fetcherClientCnm } from "@/utils/fetcher/fetcherCnm";
 import { formatDateUTC } from "@/utils/format/formatDatetime";
-import { Tag } from "antd";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsEye } from "react-icons/bs";
 import { CiCalendarDate } from "react-icons/ci";
 
 interface ArticleInfoProps {
-  articleId: string;
+  slug: string;
 }
 
-const ArticleInfo = ({ articleId }: ArticleInfoProps) => {
-  const [articleInfo, setArticleInfo] = useState<ArticleInfoResponse | null>(
-    null
+const ArticleInfo = ({ slug }: ArticleInfoProps) => {
+  const [articleInfo, setArticleInfo] = useState<ArticleInfoSimple | null>(
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  // const router = useRouter();
   useEffect(() => {
-    fetcherClientCnm(`/api/article/${articleId}`)
+    fetcherClientCnm(`/api/article/slug?slug=${slug}`)
       .then(({ success, body }) => {
         if (!success) setError("无法加载数据");
-        const article = body as CustomResponse<ArticleInfoResponse>;
+        const article = body as CustomResponse<ArticleInfoSimple>;
         setArticleInfo(article.data);
       })
       .catch((err) => {
@@ -33,7 +31,7 @@ const ArticleInfo = ({ articleId }: ArticleInfoProps) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [articleId]);
+  }, [slug]);
 
   if (loading) {
     return <p className="text-gray-500 text-sm">加载中...</p>;
@@ -43,9 +41,6 @@ const ArticleInfo = ({ articleId }: ArticleInfoProps) => {
     return <p className="text-red-500 text-sm">{error}</p>;
   }
 
-  const handleClick = (id:number) => {
-      router.push(`/article/tags/${id}`);
-    };
   return (
     <div className="flex justify-between space-y-1 items-center clearfix border-t border-b">
       {/* 阅读量 */}
@@ -54,21 +49,6 @@ const ArticleInfo = ({ articleId }: ArticleInfoProps) => {
         <span className="font-medium text-gray-700">
           {articleInfo?.reading}
         </span>
-      </div>
-      <div className="cursor-pointer flex flex-wrap gap-2">
-        {articleInfo?.note_tags.map((tag, index) => {
-          // 生成随机颜色（HSL 方式，让颜色更协调）
-          const randomColor = `hsl(${(index * 60) % 360}, 70%, 70%)`;
-          return (
-            <Tag
-              key={tag.tags.id}
-              style={{ backgroundColor: randomColor, color: "white" }}
-              onClick={() => handleClick(tag.tags.id)}
-            >
-              {tag.tags.name}
-            </Tag>
-          );
-        })}
       </div>
 
       {/* 编辑时间 */}

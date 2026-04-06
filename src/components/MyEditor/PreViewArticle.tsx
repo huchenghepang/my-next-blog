@@ -7,9 +7,9 @@ import CodeBlock from "./CodeBlock/CodeBlock";
 import MyImageComponent from "./MyImage";
 
 interface PreViewArticleProps {
-  id: string;
+  slug: string;
   text: string;
-  toc: HeadList[] | undefined;
+  toc?: HeadList[];
   author?: string;
 }
 
@@ -25,7 +25,11 @@ function getHeaderId(
   return item ? `header-${item.line}` : "";
 }
 
-export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
+export default function PreViewArticle({
+  slug,
+  text,
+  toc,
+}: PreViewArticleProps) {
   return (
     <div
       className="
@@ -42,7 +46,7 @@ export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
       "
     >
       <ReactMarkdown
-        key={id}
+        key={slug}
         rehypePlugins={[rehypeRaw]} // 允许解析 HTML
         remarkPlugins={[remarkGfm]} // 让 Markdown 支持表格、删除线等
         components={{
@@ -139,7 +143,7 @@ export default function PreViewArticle({ id, text, toc }: PreViewArticleProps) {
       >
         {text}
       </ReactMarkdown>
-      <ArticleInfo articleId={id}></ArticleInfo>
+      <ArticleInfo slug={slug}></ArticleInfo>
     </div>
   );
 }
