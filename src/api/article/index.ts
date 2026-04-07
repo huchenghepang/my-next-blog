@@ -2,6 +2,7 @@ import {
   Article,
   ArticleListRequest,
   GetArticleCountDto,
+  LatestArticleDto,
   PaginationResponse,
 } from "@/types";
 import { clientAPI } from "../client";
@@ -33,4 +34,12 @@ export const getArticleDetailBySlug = async (
   slug: string,
 ): Promise<Article> => {
   return clientAPI.get(`/api/article/slug/${slug}`);
+};
+
+
+/**
+ * 获取最新的公开文章
+ */
+export const getLatestPublicArticle = async (): Promise<LatestArticleDto> => {
+  return clientAPI.get("/api/article/latest");
 };

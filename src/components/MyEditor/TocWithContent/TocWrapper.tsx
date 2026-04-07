@@ -117,7 +117,7 @@ export default function TocWrapper({
 
   if (!isReady || toc.length === 0) {
     return (
-      <div className="fixed min-w-52 left-0 bg-white shadow-lg rounded-lg border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto">
+      <div className="fixed min-w-64 left-0 bg-white shadow-lg rounded-lg border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto">
         <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white px-4 pt-4">
           目录
         </h2>

@@ -193,7 +193,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
   return (
     <nav
       ref={tocRef}
-      className={`fixed min-w-52 custom-scrollbar left-0 bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto transition-transform duration-300 ${
+      className={`fixed min-w-64 max-w-96 custom-scrollbar left-0 bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto transition-transform duration-300 ${
         isVisible ? "translate-x-0" : "-translate-x-full"
       } md:block`}
       onTouchStart={handleTouchStart}

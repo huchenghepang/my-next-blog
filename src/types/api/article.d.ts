@@ -109,3 +109,9 @@ export interface Article {
   /** 文章的标签 */
   articles_tags?: ArticlesTag[];
 }
+
+export interface LatestArticleDto {
+  public_id: string;
+  title: string;
+  slug: string;
+}

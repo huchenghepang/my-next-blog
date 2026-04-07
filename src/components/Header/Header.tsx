@@ -1,8 +1,8 @@
-import {AppBar, Box, Container, Stack, Toolbar} from "@mui/material"
-import Link from "next/link"
-import ThemeMuiToggle from "../ThemeMuiToggle"
-import HeaderClient from "./HeaderClient"
-import Logo from "./Logo"
+import { AppBar, Box, Container, Stack, Toolbar } from "@mui/material";
+import Link from "next/link";
+import ThemeMuiToggle from "../ThemeMuiToggle";
+import HeaderClient from "./HeaderClient";
+import Logo from "./Logo";
 const navItemStyle = {
   textDecoration: "none",
   color: "text.primary",
@@ -27,7 +27,7 @@ const navItemStyle = {
   "&:hover": {
     opacity: 0.7,
   },
-} as const
+} as const;
 export default function Header() {
   return (
     <HeaderClient>
@@ -46,7 +46,7 @@ export default function Header() {
         <Container maxWidth="xl">
           <Toolbar
             disableGutters
-            sx={{justifyContent: "space-between", minHeight: "56px"}}
+            sx={{ justifyContent: "space-between", minHeight: "56px" }}
           >
             {/* Logo - 服务端渲染 */}
             <Logo link="/" title="返回首页" />
@@ -56,13 +56,13 @@ export default function Header() {
               direction="row"
               spacing={3}
               sx={{
-                display: {xs: "none", md: "flex"},
+                display: { xs: "none", md: "flex" },
                 alignItems: "center",
                 height: "100%",
               }}
             >
               <Box sx={navItemStyle}>
-                <Link href="/posts">文 章</Link>
+                <Link href="/post">文 章</Link>
               </Box>
               <Box sx={navItemStyle}>
                 <Link
@@ -79,7 +79,7 @@ export default function Header() {
             </Stack>
 
             {/* 右侧功能区 - 服务端渲染 */}
-            <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <ThemeMuiToggle />
               {/* 移动端搜索按钮和桌面端搜索框通过客户端组件处理 */}
             </Box>
@@ -87,5 +87,5 @@ export default function Header() {
         </Container>
       </AppBar>
     </HeaderClient>
-  )
+  );
 }

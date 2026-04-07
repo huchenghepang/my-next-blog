@@ -7,6 +7,7 @@ import CornerQuote from "@/components/Home/CornerQuote";
 import HomeSection from "@/components/Home/HomeSection";
 import SideTitle from "@/components/Home/SideTitle";
 import Footer from "@/components/layout/footer";
+import { GalaxyBackground } from "@/components/reactbit/Galaxy";
 
 import { unstable_cache } from "next/cache";
 
@@ -91,6 +92,7 @@ export default async function Home() {
           content="2025 Jeff的云中书"
           icpNumber="赣ICP备2024040386号"
         ></Footer>
+        <GalaxyBackground></GalaxyBackground>
       </div>
     </>
   );
