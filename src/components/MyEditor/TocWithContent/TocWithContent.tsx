@@ -2,7 +2,7 @@
 import useSlidePage from "@/hooks/useSlidePage";
 import { HeadList } from "@/types/custom-editor";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import "./TocWithContent.scss";
+import TocWithContentStyle from "./TocWithContent.module.scss";
 
 interface TableOfContentsProps {
   toc: HeadList[];
@@ -193,17 +193,19 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
   return (
     <nav
       ref={tocRef}
-      className={`fixed min-w-64 max-w-96 custom-scrollbar left-0 bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 z-10 h-screen overflow-auto transition-transform duration-300 ${
+      className={`fixed min-w-64 max-w-96  left-0 bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 overflow-x-visible z-10 h-full transition-transform duration-300 ${
         isVisible ? "translate-x-0" : "-translate-x-full"
       } md:block`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white px-4 pt-4">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white px-4 pt-4 border-b-2">
         目录
       </h2>
-      <ul className="max-md:pb-6 space-y-2 text-sm px-4">
+      <ul
+        className={`max-md:pb-6  space-y-2 text-sm px-4 h-full overflow-auto ${TocWithContentStyle["custom-scrollbar"]}`}
+      >
         {toc.map((item) => (
           <li
             key={item.line}

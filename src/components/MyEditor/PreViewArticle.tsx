@@ -11,6 +11,7 @@ interface PreViewArticleProps {
   text: string;
   toc?: HeadList[];
   author?: string;
+  title: string;
 }
 
 function getHeaderId(
@@ -29,6 +30,7 @@ export default function PreViewArticle({
   slug,
   text,
   toc,
+  title,
 }: PreViewArticleProps) {
   return (
     <div
@@ -46,6 +48,7 @@ export default function PreViewArticle({
       "
       id={slug}
     >
+      <h1 className="text-center">{title}</h1>
       <ReactMarkdown
         key={slug}
         rehypePlugins={[rehypeRaw]} // 允许解析 HTML

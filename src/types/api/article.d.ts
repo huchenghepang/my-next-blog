@@ -18,28 +18,23 @@ export interface TocItem {
 
 // 定义标签项的类型 (对应 #/definitions/240420051)
 export interface TagItem {
-  // 根据实际结构补充字段，例如：
-  // id?: number;
-  // name?: string;
-  [key: string]: any;
+  id: number;
+  name: string;
+  slug: string;
 }
 
 // 定义文章分类详情的类型 (对应 #/definitions/240420053)
 export interface ArticleCategory {
-  // 根据实际结构补充字段，例如：
-  // id?: number;
-  // name?: string;
-  // slug?: string;
-  [key: string]: any;
+  id: number;
+  name: string;
+  slug: string;
 }
 
 // 定义用户（创建者/编辑者）的类型 (对应 #/definitions/240420054)
 export interface User {
-  // 根据实际结构补充字段，例如：
-  // id?: string;
-  // name?: string;
-  // email?: string;
-  [key: string]: any;
+  userId: string;
+  userName: string;
+  headImgUrl?: string;
 }
 
 // 定义文章标签关联的类型 (对应 #/definitions/240420055)
