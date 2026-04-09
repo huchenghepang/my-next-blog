@@ -8,11 +8,12 @@ import HomeSection from "@/components/Home/HomeSection";
 import SideTitle from "@/components/Home/SideTitle";
 import Footer from "@/components/layout/footer";
 import { GalaxyBackground } from "@/components/reactbit/Galaxy";
+import { Dynamic } from "@/types/my.next";
 
 import { unstable_cache } from "next/cache";
 
-export const revalidate = 3600; // 1小时
-export const dynamic = "force-static"; //
+export const revalidate = 3600;
+export const dynamic: Dynamic = "force-static";
 
 const getCachedArticles = unstable_cache(
   async () => {
@@ -70,10 +71,10 @@ export default async function Home() {
 
         <HeroSection></HeroSection>
         <HomeSection>
-          <div className="flex justify-center  max-sm:flex-col  max-sm:items-center">
+          <div className="flex justify-center max-sm:flex-col max-sm:items-center">
             {dataList.map((article, index) => {
               return (
-                <div key={article.id}>
+                <div key={article.id} className="w-full mx-auto">
                   <BookCard index={index} article={article} />
                 </div>
               );

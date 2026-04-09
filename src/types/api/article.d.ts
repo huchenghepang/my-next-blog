@@ -6,7 +6,6 @@ export interface GetArticleCountDto {
   count: number;
   name: string;
   slug: string;
-  [property: string]: any;
 }
 export interface TocItem {
   // 根据实际结构补充字段，例如：
@@ -110,3 +109,45 @@ export interface LatestArticleDto {
   title: string;
   slug: string;
 }
+
+
+
+
+/**
+ * GetArticleCountDto
+ */
+export interface GetArticleCountDto {
+  category_id: number;
+  count: number;
+  name: string;
+  slug: string;
+}
+
+/**
+ * CategoryResponseDto
+ */
+export interface CategoryResponseDto {
+    /**
+     * 创建时间
+     */
+    created_at: Date;
+    /**
+     * 分类ID
+     */
+    id: number;
+    level: number;
+    name: string;
+    /**
+     * 父分类ID
+     */
+    parent_id?: number | null;
+    /**
+     * 分类路径
+     */
+    slug?: null | string;
+    /**
+     * 更新时间
+     */
+    updated_at: Date;
+}
+

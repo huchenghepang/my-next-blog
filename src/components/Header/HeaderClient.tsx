@@ -108,7 +108,7 @@ export default function HeaderClient({children}: HeaderClientProps) {
             },
           }}
         >
-          <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Paper
               component="form"
               sx={{
@@ -122,11 +122,11 @@ export default function HeaderClient({children}: HeaderClientProps) {
               }}
             >
               <InputBase
-                sx={{ml: 1, flex: 1}}
+                sx={{ ml: 1, flex: 1 }}
                 placeholder="搜索文章..."
                 autoFocus
               />
-              <IconButton type="submit" sx={{p: "10px"}} aria-label="search">
+              <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
                 <SearchIcon />
               </IconButton>
             </Paper>
@@ -144,15 +144,15 @@ export default function HeaderClient({children}: HeaderClientProps) {
         onClose={() => setMobileMenuOpen(false)}
         slotProps={{
           paper: {
-            sx: {width: "70%", maxWidth: 280},
+            sx: { width: "70%", maxWidth: 280 },
           },
         }}
       >
-        <Box sx={{p: 2}}>
+        <Box sx={{ p: 2 }}>
           <List>
             <ListItem
               component={Link}
-              href="/posts"
+              href="/post"
               onClick={() => setMobileMenuOpen(false)}
             >
               <ListItemText primary="文 章" />
@@ -193,7 +193,7 @@ export default function HeaderClient({children}: HeaderClientProps) {
             sx={{
               backgroundColor: "primary.main",
               color: "white",
-              "&:hover": {backgroundColor: "primary.dark"},
+              "&:hover": { backgroundColor: "primary.dark" },
               boxShadow: 3,
             }}
           >
@@ -204,7 +204,7 @@ export default function HeaderClient({children}: HeaderClientProps) {
             sx={{
               backgroundColor: "primary.main",
               color: "white",
-              "&:hover": {backgroundColor: "primary.dark"},
+              "&:hover": { backgroundColor: "primary.dark" },
               boxShadow: 3,
             }}
           >
@@ -213,5 +213,5 @@ export default function HeaderClient({children}: HeaderClientProps) {
         </Box>
       )}
     </>
-  )
+  );
 }

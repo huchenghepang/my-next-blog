@@ -43,3 +43,24 @@ export const getArticleDetailBySlug = async (
 export const getLatestPublicArticle = async (): Promise<LatestArticleDto> => {
   return clientAPI.get("/api/article/latest");
 };
+
+
+/**
+ * 获取文章的分类数据
+ */
+export const getArticleCategoryData = async (): Promise<
+  PaginationResponse<GetArticleCountDto>
+> => {
+  return clientAPI.get("/api/article-category/count");
+};
+
+
+/**
+ * 获取文章的分类
+ */
+export const getArticleCategoryList = async (): Promise<
+  PaginationResponse<GetArticleCountDto>
+> => {
+  return clientAPI.get("/api/article-category/count");
+};
+

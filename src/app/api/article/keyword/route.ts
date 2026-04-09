@@ -10,7 +10,6 @@ export const GET = createApiHandler(async (req) => {
   const data = await parseRequestDataAndQueryData<any, { keyword: string }>(
     req,
   );
-  console.log(data);
 
   const article = await prisma.notes.findFirst({
     select: {
