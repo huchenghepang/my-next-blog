@@ -6,6 +6,7 @@
   "aiNumber": 1,
   "themeColorCode": "",
   "scopes": [
+    "empty",
     "root",
     "backend",
     "frontend",
