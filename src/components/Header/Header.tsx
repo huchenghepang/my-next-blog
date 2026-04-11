@@ -1,3 +1,4 @@
+import { getCacheLatestArticle } from "@/api/cache";
 import { AppBar, Box, Container, Stack, Toolbar } from "@mui/material";
 import Link from "next/link";
 import ThemeMuiToggle from "../ThemeMuiToggle";
@@ -28,7 +29,9 @@ const navItemStyle = {
     opacity: 0.7,
   },
 } as const;
-export default function Header() {
+export default async function Header() {
+  const { slug } = await getCacheLatestArticle();
+
   return (
     <HeaderClient>
       <AppBar
@@ -62,7 +65,7 @@ export default function Header() {
               }}
             >
               <Box sx={navItemStyle}>
-                <Link href="/post">文 章</Link>
+                <Link href={slug}>文 章</Link>
               </Box>
               <Box sx={navItemStyle}>
                 <Link

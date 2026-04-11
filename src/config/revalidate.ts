@@ -21,5 +21,12 @@ export const CacheKey = {
   HOME: {
     HOME: "home",
     CATEGORY_COUNT_DATA: "category_count_data",
+    ARTICLES: "home-articles",
+  },
+  /**
+   * 文章
+   */
+  ARTICLE: {
+    LATEST_ARTICLE: "post_latest_article",
   },
 };

@@ -175,30 +175,30 @@ export class FetchClient {
           ...this.defaultConfig.headers,
           ...config.headers,
         },
-      }
+      };
 
       // 处理 params
-      const {params, timeout = this.timeout, ...restConfig} = mergedConfig
-      const fullURL = this.buildURL(url, params)
+      const { params, timeout = this.timeout, ...restConfig } = mergedConfig;
+      const fullURL = this.buildURL(url, params);
 
       // 执行请求拦截器
       mergedConfig = await this.runRequestInterceptors({
         ...restConfig,
         url: fullURL,
-      } as RequestConfig)
+      } as RequestConfig);
 
       // 发起请求
       const response = await this.fetchWithTimeout(
         fullURL,
         mergedConfig,
         timeout,
-      )
+      );
 
       // 执行响应拦截器
-      const result = await this.runResponseInterceptors<T>(response)
-      console.log("Response:", result)
+      const result = await this.runResponseInterceptors<T>(response);
+      // console.log("Response:", result)
 
-      return result as T
+      return result as T;
     } catch (error) {
       // 执行错误拦截器
       throw await this.runResponseErrorInterceptors(error)

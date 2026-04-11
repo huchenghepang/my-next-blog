@@ -1,9 +1,10 @@
-import Link from "next/link";
 import AdditionalText from "./AdditionalText";
 import HomeSection from "./Home/HomeSection";
+import { AboutLink } from "./MyLink/AboutLink";
+import { LatestArticleLink } from "./MyLink/LatestArticleLink";
 import TypeWriter from "./TypeWriter/TypeWriter";
 
-const HeroSection = () => {
+const HeroSection = ({ slug }: { slug: string }) => {
   return (
     <HomeSection>
       <div className="relative">
@@ -30,23 +31,13 @@ const HeroSection = () => {
             无论如何，希望你我，毫无疑问，活的幸福！
           </p>
 
-          <div className="flex flex-wrap justify-center">
-            <button
-              type="button"
-              className="px-8 z-20 py-3 m-2 text-lg border-sky-300 bg-sky-600 text-white hover:bg-slate-500 dark:hover:bg-slate-400 hover:text-sky-300 font-semibold rounded dark:bg-gray-100 dark:text-gray-900"
-            >
-              <Link href={"/posts/20"}>最新 文章</Link>
-            </button>
-            <button
-              type="button"
-              className="px-8 z-20 py-3 m-2 text-lg border rounded bg-yellow-100 text-slate-600 hover:bg-slate-500 hover:text-white bold font-semibold dark:border-gray-300 "
-            >
-              <Link href={"/about"}>了解 更多</Link>
-            </button>
+          <div className="relative z-20 flex flex-wrap justify-center">
+            <LatestArticleLink slug={slug} />
+            <AboutLink />
           </div>
         </div>
       </div>
-      <div className="absolute z-10 bottom-0 left-0 w-full h-4/6 rounded-3xl bg-cover bg-center bg-gradient-to-t from-orange-300/50 to-transparent"></div>
+      <div className="absolute z-0 bottom-0 left-0 w-full h-4/6 rounded-3xl bg-cover bg-center bg-gradient-to-t from-orange-300/50 to-transparent"></div>
     </HomeSection>
   );
 };

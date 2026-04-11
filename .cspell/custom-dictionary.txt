@@ -1,3 +1,4 @@
+@tailwind
 Appmain
 breakline
 bullmq
@@ -28,6 +29,7 @@ NEXTAUTH
 nostream
 reactbit
 Segoe
+styl
 tagid
 toplevel
 tris

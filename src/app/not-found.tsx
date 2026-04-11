@@ -1,23 +1,24 @@
-import Link from "next/link";
-import React from "react";
-import "./NoFound.scss";
+import dynamic from "next/dynamic";
 
-// 根据文件名生成组件
-const NoFound: React.FC = () => {
-  return (
-    <div className="not-found">
-      <div className="not-found-container">
-        <h1 className="not-found-title">404</h1>
-        <p className="not-found-message">
-          🧑‍🌾同学，你真的很优秀，找到了不存在的事物👍
-        </p>
-        <p className="not-found-message">🤦‍♂️抱歉！您要找的页面不存在🫣</p>
-        <Link href="/" className="not-found-button">
-          返回首页
-        </Link>
+// ✅ 动态导入实际组件 + 样式，避免预加载
+const NoFoundContent = dynamic(
+  () => import("@/components/NoFound/NoFoundContent"),
+  {
+    loading: () => (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-gray-500">加载中...</div>
       </div>
-    </div>
-  );
-};
+    ),
+    ssr: true, // ✅ 404 页面建议保留 SSR，利于 SEO
+  },
+);
 
-export default NoFound;
+export default function NotFound() {
+  return <NoFoundContent />;
+}
+
+export const metadata = {
+  title: "404 - 页面未找到 | 护城河的天空之城",
+  description: "抱歉，您访问的页面不存在。",
+  robots: { index: false, follow: false },
+};

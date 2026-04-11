@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: config.siteName,
   description: "护城河的天空之城",
   keywords: ["技术", "博客", "文章"],
-  icons: "/favicon.ico",
+  icons: "favicon.ico",
 };
 
 // const loadColor = `(function () { const t = localStorage.getItem("theme");if (t === 'light' || t === 'dark') { document.documentElement.classList.add(t); } })();`
