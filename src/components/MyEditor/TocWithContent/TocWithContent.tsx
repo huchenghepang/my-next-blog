@@ -13,7 +13,7 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
     toc[0]?.line || null,
   );
   const [isVisible, setIsVisible] = useState(true);
-  const tocRef = useRef<HTMLElement>(null);
+  const tocRef = useRef<HTMLUListElement>(null);
   const startX = useRef(0);
   const scrollingRef = useRef(false); // 防止滚动时重复触发
   const activeLineRef = useRef(activeLine); // 用于防抖函数中获取最新值
@@ -124,10 +124,12 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
 
         if (isAbove || isBelow) {
           scrollingRef.current = true;
+          console.log(itemOffsetTop, containerTop, containerBottom);
           tocContainer.scrollTo({
             top: itemOffsetTop - 60,
             behavior: "smooth",
           });
+
           // 滚动完成后重置标志
           setTimeout(() => {
             scrollingRef.current = false;
@@ -192,7 +194,6 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
 
   return (
     <nav
-      ref={tocRef}
       className={`fixed min-w-64 max-w-96  left-0 bg-white shadow-lg rounded-lg max-md:pb-4 border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-700 overflow-x-visible z-10 h-full transition-transform duration-300 ${
         isVisible ? "translate-x-0" : "-translate-x-full"
       } md:block`}
@@ -204,7 +205,8 @@ export default function TableOfContents({ toc }: TableOfContentsProps) {
         目录
       </h2>
       <ul
-        className={`max-md:pb-6  space-y-2 text-sm px-4 h-full overflow-auto ${TocWithContentStyle["custom-scrollbar"]}`}
+        ref={tocRef}
+        className={`max-md:pb-6  text-sm px-4 h-full scroll-auto  ${TocWithContentStyle["custom-scrollbar"]}`}
       >
         {toc.map((item) => (
           <li

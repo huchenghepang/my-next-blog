@@ -74,3 +74,24 @@ clientAPI.addResponseInterceptor(async response => {
   }
   return response
 })
+
+
+export const proxyClient = initClient("/api/proxy", {
+  timeout: 10000,
+  headers: {
+    "X-App-Version": "1.0.0",
+  },
+});
+
+proxyClient.addResponseInterceptor(async (response) => {
+  const json = await response.json();
+  if (json.code === 200 || json.code === 201) {
+    if (json.data) {
+      return json.data;
+    } else {
+      return json;
+    }
+  }
+  return response;
+});
+

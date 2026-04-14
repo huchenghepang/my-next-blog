@@ -77,7 +77,7 @@ export default async function Header() {
                 </Link>
               </Box>
               <Box sx={navItemStyle}>
-                <Link href="/about">关 于</Link>
+                <Link href="/post/category">分 类</Link>
               </Box>
             </Stack>
 
