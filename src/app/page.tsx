@@ -1,4 +1,5 @@
 import { getCachedArticles, getCacheLatestArticle } from "@/api/cache";
+import SlideInCss from "@/components/Animation/SlideInCss";
 import BookCard from "@/components/ArticleList/BookCard";
 import Header from "@/components/Header/Header";
 import HeroSection from "@/components/Hero";
@@ -38,7 +39,12 @@ export default async function Home() {
           <div className="flex justify-center max-sm:flex-col max-sm:items-center">
             {dataList.map((article, index) => (
               <div key={article.id} className="w-full mx-auto">
-                <BookCard index={index} article={article} />
+                <SlideInCss
+                  direction={index % 2 === 0 ? "up" : "down"}
+                  delay={index * 400}
+                >
+                  <BookCard index={index} article={article} />
+                </SlideInCss>
               </div>
             ))}
           </div>

@@ -1,0 +1,125 @@
+/* styles/slide-in.css */
+.slide-in {
+    /* 初始状态 */
+    opacity: 0;
+    will-change: transform, opacity;
+
+    /* 过渡动画 */
+    transition-property: transform, opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 可见状态 */
+.slide-in.visible {
+    opacity: 1;
+    transform: translate(0, 0) !important;
+}
+
+/* 方向预设 */
+.slide-in.up {
+    transform: translateY(150px);
+}
+
+.slide-in.down {
+    transform: translateY(-150px);
+}
+
+.slide-in.left {
+    transform: translateX(150px);
+}
+
+.slide-in.right {
+    transform: translateX(-150px);
+}
+
+/* 不同距离变体 */
+.slide-in.distance-sm.up {
+    transform: translateY(50px);
+}
+
+.slide-in.distance-sm.down {
+    transform: translateY(-50px);
+}
+
+.slide-in.distance-sm.left {
+    transform: translateX(50px);
+}
+
+.slide-in.distance-sm.right {
+    transform: translateX(-50px);
+}
+
+.slide-in.distance-lg.up {
+    transform: translateY(300px);
+}
+
+.slide-in.distance-lg.down {
+    transform: translateY(-300px);
+}
+
+.slide-in.distance-lg.left {
+    transform: translateX(300px);
+}
+
+.slide-in.distance-lg.right {
+    transform: translateX(-300px);
+}
+
+/* 不同时长 */
+.slide-in.duration-fast {
+    transition-duration: 300ms;
+}
+
+.slide-in.duration-normal {
+    transition-duration: 500ms;
+}
+
+.slide-in.duration-slow {
+    transition-duration: 800ms;
+}
+
+/* 不同缓动函数 */
+.slide-in.easing-linear {
+    transition-timing-function: linear;
+}
+
+.slide-in.easing-ease {
+    transition-timing-function: ease;
+}
+
+.slide-in.easing-ease-in {
+    transition-timing-function: ease-in;
+}
+
+.slide-in.easing-ease-out {
+    transition-timing-function: ease-out;
+}
+
+.slide-in.easing-ease-in-out {
+    transition-timing-function: ease-in-out;
+}
+
+.slide-in.easing-bounce {
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 延迟动画 */
+.slide-in.delay-100 {
+    transition-delay: 100ms;
+}
+
+.slide-in.delay-200 {
+    transition-delay: 200ms;
+}
+
+.slide-in.delay-300 {
+    transition-delay: 300ms;
+}
+
+.slide-in.delay-400 {
+    transition-delay: 400ms;
+}
+
+.slide-in.delay-500 {
+    transition-delay: 500ms;
+}
