@@ -1,4 +1,4 @@
-import config from "@/lib/config";
+import config from "@/config/config";
 import { saveFile, saveFileInfoIntoDB } from "@/utils/file/fileHelper";
 import logger from "@/utils/logger";
 import {

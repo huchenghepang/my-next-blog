@@ -166,10 +166,10 @@ export default function HeaderClient({children}: HeaderClientProps) {
             </ListItem>
             <ListItem
               component={Link}
-              href="/about"
+              href="/post/category"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <ListItemText primary="关 于" />
+              <ListItemText primary="分 类" />
             </ListItem>
           </List>
         </Box>

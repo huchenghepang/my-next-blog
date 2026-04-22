@@ -4,7 +4,7 @@ interface EmptyStateProps {
 }
 export default function EmptyState({
   message = "暂无文章",
-  hint = "该分类下还没有内容，换个分类看看吧～",
+  hint = "抱歉，还没有相关文章",
 }: EmptyStateProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 p-12 text-center">

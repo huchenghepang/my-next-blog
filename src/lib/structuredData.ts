@@ -44,6 +44,7 @@ export function generateArticleStructuredData({
       "@type": "Person",
       name:
         article.external_author || article.creator?.userName || defaultAuthor,
+      url: article.external_url || siteUrl,
     },
     publisher: {
       "@type": "Organization",

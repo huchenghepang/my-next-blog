@@ -1,5 +1,5 @@
 "use client";
-import Galaxy from "./Galaxy.jsx";
+import Galaxy from "./GalaxyCp.jsx";
 export function GalaxyBackground() {
   return (
     <div

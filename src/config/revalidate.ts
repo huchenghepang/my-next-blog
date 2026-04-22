@@ -28,5 +28,7 @@ export const CacheKey = {
    */
   ARTICLE: {
     LATEST_ARTICLE: "post_latest_article",
+    CATEGORIES: "post_categories",
+    ARTICLES: "post_articles",
   },
 };

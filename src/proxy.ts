@@ -37,7 +37,9 @@ function faviconMiddleware(req: NextRequest) {
 // 主中间件：按顺序执行多个中间件
 export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
-
+    if (pathname === "/favicon.ico" || pathname === "/sitemap.xml") {
+      return NextResponse.next();
+    }
     // 优先拦截 favicon.ico 请求
 
     // 针对 `/dashboard` 和 `/admin` 路径的特定路由

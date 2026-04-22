@@ -26,11 +26,15 @@ export default async function Home() {
         <SideTitle text="生命中的每一步都意味着可能性" />
 
         <div className="absolute left-12 max-sm:top-20 sm:top-30">
-          <CornerQuote title="Science" text="can't save the soul!" />
+          <SlideInCss direction="right">
+            <CornerQuote title="Science" text="can't save the soul!" />
+          </SlideInCss>
         </div>
 
         <div className="absolute w-fit left-60 max-sm:left-50 top-60 max-sm:top-20 sm:top-30">
-          <CornerQuote title="Philosophy" text="can not lead to freedom" />
+          <SlideInCss direction="left" delay={500}>
+            <CornerQuote title="Philosophy" text="can not lead to freedom" />
+          </SlideInCss>
         </div>
 
         <HeroSection slug={slug} />

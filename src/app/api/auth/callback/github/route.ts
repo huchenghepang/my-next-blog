@@ -1,4 +1,4 @@
-import config from "@/lib/config";
+import config from "@/config/config";
 import { createApiHandler } from "@/utils/createApiHandler";
 import logger from "@/utils/logger";
 import { sendError } from "@/utils/responseHandler/responseHandler";
