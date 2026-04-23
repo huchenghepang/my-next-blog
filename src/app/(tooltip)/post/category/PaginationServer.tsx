@@ -1,4 +1,3 @@
-// src/app/(tooltip)/post/category/Pagination.tsx
 "use client";
 
 import { Pagination, PaginationItem } from "@mui/material";
@@ -31,7 +30,7 @@ export default function PaginationServer({
 
   const createPageUrl = (targetPage: number) => {
     const path = categorySlug
-      ? `${basePath || pathname}/${categorySlug}`
+      ? `${basePath || pathname}`
       : basePath || pathname;
 
     const search = new URLSearchParams({

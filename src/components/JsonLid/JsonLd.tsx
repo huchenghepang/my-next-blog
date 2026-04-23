@@ -1,11 +1,18 @@
 import { ReactNode } from "react";
-import { Article, BreadcrumbList, WebSite, WithContext } from "schema-dts";
+import {
+  Article,
+  BreadcrumbList,
+  ItemList,
+  WebSite,
+  WithContext,
+} from "schema-dts";
 
 // 定义支持的 Schema 类型
 type SupportedSchema =
   | WithContext<Article>
   | WithContext<BreadcrumbList>
   | WithContext<WebSite>
+  | WithContext<ItemList>
   | WithContext<any>; // 兜底类型
 
 interface JsonLdProps {
