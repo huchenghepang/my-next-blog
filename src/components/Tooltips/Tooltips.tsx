@@ -1,8 +1,8 @@
 "use client";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiCircleChevUp } from "react-icons/ci";
-import {IoIosContact} from "react-icons/io"
-
+import { FaGithub } from "react-icons/fa";
+import { IoIosContact } from "react-icons/io";
 const backTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
@@ -24,9 +24,23 @@ export default function ToolTips() {
           </span>
         </li>
 
+        {/* github  */}
+        <li className="group  flex text-orange-300 items-center  space-x-2 cursor-pointer">
+          <FaGithub
+            className="text-3xl group-hover:text-yellow-600 transition-all"
+            size={36}
+          />
+          <span className="hidden group-hover:block text-sm bg-gray-800 text-white px-2 py-1 rounded-lg">
+            <a
+              href="https://github.com/huchenghepang"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              我的github
+            </a>
+          </span>
+        </li>
 
-
-        {/* 返回顶部按钮 */}
         <li className="group flex items-center space-x-2 cursor-pointer">
           <CiCircleChevUp
             id="theme-toggle-btn"
