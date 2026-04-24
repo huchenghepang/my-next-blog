@@ -18,7 +18,7 @@ model Permissions {
   Permissions       Permissions?      @relation("PermissionsToPermissions", fields: [parent_id], references: [permission_id], onDelete: Cascade)
   other_Permissions Permissions[]     @relation("PermissionsToPermissions")
   RolePermissions   RolePermissions[]
-
+  @@map("permissions")
   @@index([parent_id])
 }
 
@@ -30,6 +30,7 @@ model RolePermissions {
 
   @@id([role_id, permission_id])
   @@index([permission_id])
+  @@map("role_permissions")
 }
 
 model Roles {
@@ -40,6 +41,8 @@ model Roles {
   updated_at      DateTime?
   RolePermissions RolePermissions[]
   user_roles      user_roles[]
+
+  @@map("roles")
 }
 
 model account {
