@@ -1,0 +1,65 @@
+/* 自定义文本选中颜色 */
+::selection {
+    background-color: #56bad6;
+    /* 选中时的背景色 */
+    color: #ffffff;
+    /* 选中时的文本颜色 */
+}
+
+/* 基础滚动条样式 - 移动端优先 */
+.custom-scroll {
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+    /* Firefox */
+}
+
+/* Webkit 浏览器（Chrome/Safari/Edge） */
+.custom-scroll::-webkit-scrollbar {
+    width: 4px;
+    /* 移动端更细 */
+    height: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.8);
+}
+
+/* 桌面端增强（屏幕宽度 ≥ 768px） */
+@media (min-width: 768px) {
+    .custom-scroll::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background: rgba(75, 85, 99, 0.6);
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(75, 85, 99, 0.9);
+    }
+}
+
+/* 隐藏滚动条但保留滚动功能（用于某些场景） */
+.scroll-hidden {
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}

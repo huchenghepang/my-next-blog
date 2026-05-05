@@ -7,7 +7,10 @@ Bykey
 categoryid
 Chev
 Contions
+Conv
+convs
 coreutils
+deepseek
 DOTENV
 endgroup
 ENVDEVELOPMENT
@@ -28,6 +31,7 @@ lerp
 Neue
 NEXTAUTH
 nostream
+partialize
 reactbit
 Segoe
 styl
@@ -36,6 +40,8 @@ toplevel
 tris
 trisn
 webfactory
+wechat
 willsoto
+yunzhongshu
 Zheng
 zhuye

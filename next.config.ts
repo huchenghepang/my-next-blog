@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/api/chat/:path*",
+        destination: "http://localhost:13011/api/chat/:path*",
+      },
+      {
         source: "/api/proxy/:path*",
         destination: `${API_TARGET}/:path*`,
       },
