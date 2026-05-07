@@ -8,6 +8,7 @@ import {
 import LoginModal from "@/components/auth/LoginModal";
 import ChatInput from "@/components/chat/ChatInput";
 import ConversationList from "@/components/chat/ConversationList";
+import ThemeMuiToggle from "@/components/ThemeMuiToggle";
 import { useAuthStore } from "@/store/authStore";
 import "@/styles/scrollbar.css";
 import { useConfirm } from "material-ui-confirm";
@@ -75,7 +76,7 @@ function ChatPage() {
         </SyntaxHighlighter>
       ) : (
         <code
-          className={`${className} bg-gray-800 px-1 py-0.5 rounded text-sm`}
+          className={`${className} bg-gray-300/80 dark:bg-gray-700/80 px-1 py-0.5 rounded text-sm`}
           {...props}
         >
           {children}
@@ -152,7 +153,7 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100">
+    <div className="flex h-screen ">
       {/* ✅ 登录模态框 - 按需弹出，非强制 */}
       <LoginModal
         open={showLoginModal}
@@ -174,19 +175,20 @@ function ChatPage() {
       {/* ✅ 主聊天区 */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* 顶部导航栏 */}
-        <header className="border-b border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/75 sticky top-0 z-10">
+        <header className=" sticky top-0 z-10">
           <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">WA</span>
               </div>
-              <h1 className="font-semibold text-gray-100">World AI</h1>
-              <span className="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded-full">
-                Beta
-              </span>
+              <h1 className="font-semibold text-gray-900 dark:text-gray-100">
+                World AI
+              </h1>
+              <span className="text-xs  px-2 py-0.5 rounded-full">Beta</span>
             </div>
 
             <div className="flex items-center gap-2">
+              <ThemeMuiToggle />
               {/* 登录状态按钮 */}
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
@@ -203,7 +205,7 @@ function ChatPage() {
               ) : (
                 <button
                   onClick={() => setShowLoginModal(true)}
-                  className="px-4 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+                  className="px-4 py-1.5 text-sm bg-sky-500 hover:bg-sky-300 text-white  rounded-lg transition-colors"
                   title="登录可同步历史记录"
                 >
                   登录
@@ -213,7 +215,7 @@ function ChatPage() {
               {/* 其他操作按钮 */}
               <button
                 onClick={handleNewConversation}
-                className="px-3 py-1.5 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
+                className="px-3 py-1.5 text-sm text-gray-400 hover:text-gray-400 hover:bg-gray-800 rounded-lg transition-colors"
                 title="新会话"
               >
                 ✨
@@ -231,8 +233,10 @@ function ChatPage() {
                 <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6">
                   <span className="text-3xl">🤖</span>
                 </div>
-                <h2 className="text-2xl font-semibold mb-2">World AI</h2>
-                <p className="text-gray-400 mb-6">
+                <h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                  World AI
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 mb-6">
                   由AI创造World，随时为您解答问题
                 </p>
 
@@ -241,11 +245,11 @@ function ChatPage() {
                   <div className="flex items-center gap-3 mb-6">
                     <button
                       onClick={() => setShowLoginModal(true)}
-                      className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-medium transition-colors"
+                      className="px-5 py-2 bg-sky-500 hover:bg-sky-300 text-white rounded-xl text-sm font-medium transition-colors"
                     >
                       🔐 登录
                     </button>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-500">
                       或直接在下方开始对话
                     </span>
                   </div>
@@ -268,7 +272,7 @@ function ChatPage() {
                           handleSubmit(new Event("submit") as any);
                         }, 0);
                       }}
-                      className="text-left px-4 py-3 rounded-xl text-sm transition-colors border bg-gray-800/50 hover:bg-gray-800 text-gray-300 border-gray-700"
+                      className="text-left px-4 py-3 rounded-xl text-sm transition-colors border bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700"
                     >
                       {suggestion}
                     </button>
@@ -277,7 +281,7 @@ function ChatPage() {
               </div>
             ) : (
               // 消息列表
-              <div className="space-y-6">
+              <div className="space-y-6 ">
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
@@ -286,8 +290,8 @@ function ChatPage() {
                     <div
                       className={`max-w-[85%] ${
                         msg.role === "user"
-                          ? "bg-blue-600 rounded-2xl rounded-br-md"
-                          : "bg-gray-800 rounded-2xl rounded-tl-md"
+                          ? "bg-[#99b1dd] text-[#0f1115]  backdrop-blur-sm rounded-2xl rounded-br-md"
+                          : " dark:bg-gray-800/90 dark:text-slate-50 backdrop-blur-sm rounded-2xl rounded-tl-md shadow-sm"
                       } px-4 py-3`}
                     >
                       {/* 思考过程 */}
@@ -295,10 +299,10 @@ function ChatPage() {
                         msg.reasoningContent &&
                         showThinking && (
                           <details className="mb-3 text-sm">
-                            <summary className="cursor-pointer text-purple-400 font-medium text-xs uppercase tracking-wide">
+                            <summary className="cursor-pointer  font-medium text-xs uppercase tracking-wide dark:text-slate-300">
                               📝 思考过程
                             </summary>
-                            <div className="mt-2 p-3 bg-gray-900/50 rounded-lg text-gray-400 text-xs whitespace-pre-wrap border border-gray-700">
+                            <div className="mt-2 p-3 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg  dark:text-gray-300 text-xs whitespace-pre-wrap border border-gray-300/50 dark:border-gray-700/50">
                               {msg.reasoningContent}
                             </div>
                           </details>
@@ -306,14 +310,14 @@ function ChatPage() {
 
                       {/* 消息内容 */}
                       {msg.role === "assistant" ? (
-                        <div className="prose prose-invert prose-sm max-w-none">
+                        <div className="prose prose-sm dark:prose-invert max-w-none">
                           <ReactMarkdown components={MarkdownComponents}>
                             {msg.content ||
                               (isLoading && !msg.content ? "▊" : "")}
                           </ReactMarkdown>
                         </div>
                       ) : (
-                        <p className="whitespace-pre-wrap text-gray-100 text-sm">
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed">
                           {msg.content}
                         </p>
                       )}
@@ -325,7 +329,7 @@ function ChatPage() {
                 {isLoading &&
                   messages[messages.length - 1]?.role === "assistant" && (
                     <div className="flex justify-start">
-                      <div className="bg-gray-800 rounded-2xl rounded-tl-md px-4 py-3">
+                      <div className="  backdrop-blur-sm rounded-2xl rounded-tl-md px-4 py-3">
                         <div className="flex gap-1">
                           {[0, 150, 300].map((delay) => (
                             <span
@@ -341,11 +345,13 @@ function ChatPage() {
 
                 {/* 错误提示 */}
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-                    <p className="text-red-400 text-sm">⚠️ {error.message}</p>
+                  <div className=" border border-red-200 dark:border-red-500/30 rounded-xl p-4 text-center">
+                    <p className=" dark:text-red-400 text-sm">
+                      ⚠️ {error.message}
+                    </p>
                     <button
                       onClick={() => window.location.reload()}
-                      className="mt-2 text-sm text-red-400 underline hover:text-red-300"
+                      className="mt-2 text-sm text-red-500 dark:text-red-400 underline hover:text-red-600 dark:hover:text-red-300"
                     >
                       重试
                     </button>
@@ -378,7 +384,7 @@ function ChatPage() {
         {/* 底部匿名提示 */}
         {!isAuthenticated && messages.length > 0 && (
           <div className="px-4 py-2 text-center">
-            <span className="text-xs text-gray-500 bg-gray-800/50 px-3 py-1 rounded-full">
+            <span className="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800/50 px-3 py-1 rounded-full">
               💡 未登录状态下，对话记录仅保存在当前设备，刷新页面后可能丢失
             </span>
           </div>

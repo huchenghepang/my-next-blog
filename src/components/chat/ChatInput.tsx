@@ -69,13 +69,14 @@ export default function ChatInput({
   };
 
   return (
-    <div className="border-t border-gray-800 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/75 custom-scroll">
+    <div className="border-t border-gray-200 dark:border-gray-800 backdrop-blur custom-scroll">
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* 输入框容器 */}
         <div
           className="relative 
-          bg-gray-800 rounded-2xl border border-gray-700 focus-within:border-blue-500/50 
-        focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200 pb-8"
+          bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 
+          focus-within:border-amber-500/50 focus-within:ring-2 focus-within:ring-amber-500/20 
+          transition-all duration-200 pb-8 shadow-sm"
         >
           {/* 文本输入区 */}
           <textarea
@@ -86,8 +87,9 @@ export default function ChatInput({
             placeholder={placeholder}
             disabled={isLoading}
             rows={1}
-            className="w-full bg-transparent px-4 pt-4 pb-16 text-gray-100 placeholder-gray-500
-             focus:outline-none resize-none disabled:opacity-50 text-sm min-h-[56px] max-h-[200px]"
+            className="w-full bg-transparent px-4 pt-4 pb-16 text-gray-900 dark:text-gray-100 
+            placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none resize-none 
+            disabled:opacity-50 text-sm min-h-[56px] max-h-[200px]"
           />
 
           {/* 底部控制栏 */}
@@ -100,8 +102,8 @@ export default function ChatInput({
                 onClick={handleThinkingToggle}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                   thinkingEnabled
-                    ? "bg-purple-600/20 text-purple-300 border border-purple-600/30"
-                    : "bg-gray-700/50 text-gray-400 border border-gray-600/50 hover:bg-gray-700 hover:text-gray-300"
+                    ? "bg-purple-50 dark:bg-purple-600/20 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-600/30"
+                    : "bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-600/50 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-300"
                 }`}
               >
                 <svg
@@ -126,8 +128,8 @@ export default function ChatInput({
                 onClick={() => setSearchEnabled(!searchEnabled)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                   searchEnabled
-                    ? "bg-blue-600/20 text-blue-300 border border-blue-600/30"
-                    : "bg-gray-700/50 text-gray-400 border border-gray-600/50 hover:bg-gray-700 hover:text-gray-300"
+                    ? "bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-600/30"
+                    : "bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-600/50 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-300"
                 }`}
               >
                 <svg
@@ -153,7 +155,9 @@ export default function ChatInput({
               <button
                 type="button"
                 disabled={isLoading}
-                className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-700/50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 
+                hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg transition-colors 
+                disabled:opacity-50 disabled:cursor-not-allowed"
                 title="添加附件"
               >
                 <svg
@@ -176,7 +180,8 @@ export default function ChatInput({
                 <button
                   type="button"
                   onClick={onStop}
-                  className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
+                  className="p-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 
+                  text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
                   title="停止生成"
                 >
                   <svg
@@ -193,7 +198,9 @@ export default function ChatInput({
                   type="button"
                   onClick={handleSubmit}
                   disabled={!value.trim()}
-                  className="p-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+                  className="p-2 bg-amber-500 dark:bg-amber-600 hover:bg-amber-600 dark:hover:bg-amber-700 
+                  disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:text-gray-400 dark:disabled:text-gray-500 
+                  text-white rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
                   title="发送消息"
                 >
                   <svg
@@ -216,7 +223,7 @@ export default function ChatInput({
         </div>
 
         {/* 提示信息 */}
-        <p className="flex items-center justify-center gap-1 text-xs text-gray-500 text-center mt-3">
+        <p className="flex items-center justify-center gap-1 text-xs text-gray-400 dark:text-gray-500 text-center mt-3">
           <svg
             className="w-3 h-3 flex-shrink-0"
             fill="none"

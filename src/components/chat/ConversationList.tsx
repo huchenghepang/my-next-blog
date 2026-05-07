@@ -77,16 +77,17 @@ export default function ConversationList({
     : groupedConversations;
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 border-r border-gray-800 w-64 shrink-0">
+    <div className="flex flex-col h-full border-r border-gray-800 w-64 shrink-0">
       {/* 搜索 + 新建 */}
       <div className="p-4 border-b border-gray-800">
         <button
           onClick={onCreateNew}
           disabled={!isAuthenticated}
-          className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors mb-3 ${
+          className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors mb-3  ${
             isAuthenticated
-              ? "bg-blue-600 hover:bg-blue-500 text-white"
+              ? "bg-violet-600 hover:bg-violet-500 text-white"
               : "bg-gray-700/50 text-gray-500 cursor-not-allowed"
+          }
           }`}
         >
           ✨ 新对话
@@ -98,10 +99,10 @@ export default function ConversationList({
             placeholder="搜索会话..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         ) : (
-          <div className="text-center text-gray-500 text-xs py-2 bg-gray-800/50 rounded-lg">
+          <div className="text-center text-gray-500 text-xs py-2 bg-gray-100 dark:bg-gray-800/50 rounded-lg">
             登录后查看历史会话
           </div>
         )}
@@ -111,10 +112,12 @@ export default function ConversationList({
       <div className="flex-1 overflow-y-auto custom-scroll p-2">
         {!isAuthenticated ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
-            <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mb-3">
+            <div className="w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-xl flex items-center justify-center mb-3">
               <span className="text-2xl">🔐</span>
             </div>
-            <p className="text-gray-400 text-sm mb-2">登录后可保存对话历史</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+              登录后可保存对话历史
+            </p>
             <p className="text-gray-500 text-xs">支持多设备同步</p>
           </div>
         ) : loading ? (
@@ -136,9 +139,9 @@ export default function ConversationList({
                   <div
                     key={conv.id}
                     onClick={() => onSelect(conv.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left group hover:bg-gray-800 transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left group hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                   >
-                    <span className="flex-1 text-sm text-gray-200 truncate">
+                    <span className="flex-1 text-sm text-gray-900 dark:text-gray-200 truncate">
                       {conv.title}
                     </span>
                     <button
@@ -169,14 +172,14 @@ export default function ConversationList({
                 "U"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-gray-200 truncate">
+              <p className="text-sm text-gray-900 dark:text-gray-200 truncate">
                 {currentUser.username || currentUser.account}
               </p>
               <p className="text-xs text-gray-500">在线</p>
             </div>
           </div>
         ) : (
-          <button className="flex items-center gap-2 text-gray-400 hover:text-gray-200 text-sm w-full px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+          <button className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 text-sm w-full px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
             ⚙️ 设置
           </button>
         )}
