@@ -11,12 +11,18 @@ export default function ConversationList({
   onDelete,
   isAuthenticated,
   currentUser,
+  tempConversations = [], // 添加临时会话参数
+  onRefresh, // 添加刷新回调
+  refreshTrigger, // 添加刷新触发器
 }: {
   onSelect: (id: string) => void;
   onCreateNew: () => void;
   onDelete: (id: string) => void;
   isAuthenticated?: boolean;
   currentUser?: UserInfo | null;
+  tempConversations?: { id: string; title: string; createdAt: string }[];
+  onRefresh?: () => void; // 刷新回调函数
+  refreshTrigger?: number; // 刷新触发器
 }) {
   const [conversations, setConversations] = useState<ConversationEntity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,10 +55,28 @@ export default function ConversationList({
     return () => {
       mounted = false;
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, refreshTrigger]);
+
+  // 合并持久化会话和临时会话
+  const allConversations = [
+    ...conversations,
+    ...tempConversations.map((temp) => {
+      const now = new Date();
+      return {
+        id: temp.id,
+        title: temp.title || "新会话",
+        updatedAt: now,
+        createdAt: now,
+        userId: 0, // 临时会话使用0作为userId占位符
+        messageCount: 0, // 占位符
+        status: "ACTIVE", // 占位符
+        tokenCount: 0, // 占位符
+      } as ConversationEntity;
+    }),
+  ];
 
   // 按日期分组
-  const groupedConversations = conversations.reduce(
+  const groupedConversations = allConversations.reduce(
     (acc, conv) => {
       const date = new Date(conv.updatedAt).toLocaleDateString("zh-CN", {
         month: "short",

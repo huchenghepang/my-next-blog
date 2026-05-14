@@ -5,6 +5,7 @@ import {
   CreateConversationRequest,
   HistoryMessageAndConversation,
   UpdateConversationRequest,
+  UpdateConversationTitleRequest,
 } from "@/schema";
 import { IDRequest } from "@/schema/normal";
 import { browserAPI } from "../frontendClient";
@@ -55,4 +56,16 @@ export function reqUpdateConversation(
   data: UpdateConversationRequest,
 ): Promise<ConversationEntity> {
   return browserAPI.put(`/api/chat/conversations/${id}`, data);
+}
+
+
+/**
+ * 生成对话的标题
+ */
+export function reqGenerateConversationTitle(
+  conversationId: IDRequest["id"],
+  data: UpdateConversationTitleRequest,
+): Promise<string> {
+  // 使用默认API客户端，但这个请求可能需要更长时间
+  return browserAPI.post(`/api/chat/conversations/${conversationId}/title`, data);
 }

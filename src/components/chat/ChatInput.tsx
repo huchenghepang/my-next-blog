@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/* 
+ * ChatInput 组件
+ * 负责处理用户的输入和发送消息
+ * 注意：此组件不处理会话创建逻辑，会话创建在父组件中完成
+ */
 interface ChatInputProps {
   value: string;
   onChange: (value: string) => void;

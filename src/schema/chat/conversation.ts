@@ -108,3 +108,14 @@ export const UpdateConversationRequestSchema = z.object({
 export type UpdateConversationRequest = z.infer<
   typeof UpdateConversationRequestSchema
 >;
+
+
+
+
+export const UpdateConversationTitleRequestSchema = z.object({
+  isAiGenerated: z.union([z.boolean(), z.null()]).optional(),
+  title: z.string(),
+});
+export type UpdateConversationTitleRequest = z.infer<
+  typeof UpdateConversationTitleRequestSchema
+>;
