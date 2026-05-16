@@ -1,9 +1,9 @@
 "use client";
 
 import { reqConversationsList } from "@/api/chat/conversation";
-import { ConversationEntity } from "@/schema";
+import { ConversationDataList, ConversationEntity } from "@/schema";
 import { UserInfo } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function ConversationList({
   onSelect,
@@ -26,28 +26,51 @@ export default function ConversationList({
 }) {
   const [conversations, setConversations] = useState<ConversationEntity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const observer = useRef<IntersectionObserver | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // 仅登录后拉取数据
   useEffect(() => {
     if (!isAuthenticated) {
       setConversations([]);
       setLoading(false);
+      setHasMore(true);
+      setPage(1);
       return;
     }
 
     let mounted = true;
-    const fetchConversations = async () => {
+    const fetchConversations = async (resetPage = true) => {
       try {
-        const res = await reqConversationsList({ page: 1, pageSize: 50 });
+        const currentPage = resetPage ? 1 : page;
+        const res: ConversationDataList = await reqConversationsList({
+          page: currentPage,
+          pageSize: 20,
+          keyword: searchQuery || undefined,
+        });
+
         if (mounted) {
-          setConversations(res.items || []);
+          if (resetPage) {
+            setConversations(res.items || []);
+            setPage(1);
+          } else {
+            setConversations((prev) => [...prev, ...res.items]);
+            setPage((prev) => prev + 1);
+          }
+          setHasMore(res.items.length > 0 && res.items.length === 20); // 假设每页20条记录
         }
         console.log("aaaa", res);
       } catch (err) {
         console.warn("加载会话失败", err);
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          setLoadingMore(false);
+        }
       }
     };
 
@@ -55,7 +78,73 @@ export default function ConversationList({
     return () => {
       mounted = false;
     };
-  }, [isAuthenticated, refreshTrigger]);
+  }, [isAuthenticated, refreshTrigger, searchQuery]);
+
+  /*
+   * 加载更多数据
+   */
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore || !isAuthenticated) return;
+
+    setLoadingMore(true);
+    try {
+      const res: ConversationDataList = await reqConversationsList({
+        page: page + 1,
+        pageSize: 20,
+        keyword: searchQuery || undefined,
+      });
+
+      if (res.items && res.items.length > 0) {
+        setConversations((prev) => [...prev, ...res.items]);
+        setPage((prev) => prev + 1);
+        setHasMore(res.items.length === 20); // 如果返回的数量等于pageSize，说明还有下一页
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.warn("加载更多会话失败", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, isAuthenticated, page, searchQuery]);
+
+  /*
+   * 触底加载更多逻辑
+   */
+  useEffect(() => {
+    if (!isAuthenticated || loading || loadingMore) return;
+
+    const currentObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMore();
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (sentinelRef.current) {
+      currentObserver.observe(sentinelRef.current);
+    }
+
+    observer.current = currentObserver;
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [isAuthenticated, loading, loadingMore, hasMore, loadMore]);
+
+  // 搜索查询变化时重置分页
+  useEffect(() => {
+    if (isAuthenticated && searchQuery) {
+      setLoading(true);
+      setConversations([]);
+      setPage(1);
+      setHasMore(true);
+    }
+  }, [searchQuery, isAuthenticated]);
 
   // 合并持久化会话和临时会话
   const allConversations = [
@@ -133,7 +222,7 @@ export default function ConversationList({
       </div>
 
       {/* 会话列表 */}
-      <div className="flex-1 overflow-y-auto custom-scroll p-2">
+      <div className="flex-1 overflow-y-auto custom-scroll p-2 cursor-pointer">
         {!isAuthenticated ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-xl flex items-center justify-center mb-3">
@@ -153,36 +242,50 @@ export default function ConversationList({
             {searchQuery ? "无匹配结果" : "暂无会话"}
           </div>
         ) : (
-          Object.entries(filteredGroups).map(([date, convs]) => (
-            <div key={date} className="mb-4">
-              <h3 className="px-3 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {date}
-              </h3>
-              <div className="space-y-1">
-                {convs.map((conv) => (
-                  <div
-                    key={conv.id}
-                    onClick={() => onSelect(conv.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left group hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    <span className="flex-1 text-sm text-gray-900 dark:text-gray-200 truncate">
-                      {conv.title}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(conv.id);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 transition-opacity"
-                      title="删除会话"
+          <>
+            {Object.entries(filteredGroups).map(([date, convs]) => (
+              <div key={date} className="mb-4">
+                <h3 className="px-3 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {date}
+                </h3>
+                <div className="space-y-1">
+                  {convs.map((conv) => (
+                    <div
+                      key={conv.id}
+                      onClick={() => onSelect(conv.id)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left group hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                     >
-                      🗑️
-                    </button>
-                  </div>
-                ))}
+                      <span className="flex-1 text-sm text-gray-900 dark:text-gray-200 truncate">
+                        {conv.title}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(conv.id);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 transition-opacity"
+                        title="删除会话"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
+            ))}
+            {/* 触底加载更多指示器 */}
+            <div
+              ref={sentinelRef}
+              className="h-10 flex items-center justify-center"
+            >
+              {loadingMore && (
+                <div className="text-gray-500 text-sm">加载中...</div>
+              )}
+              {!hasMore && !loadingMore && (
+                <div className="text-gray-500 text-sm">没有更多会话了</div>
+              )}
             </div>
-          ))
+          </>
         )}
       </div>
 

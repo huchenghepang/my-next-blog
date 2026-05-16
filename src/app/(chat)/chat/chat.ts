@@ -30,6 +30,7 @@ export function useSSEChat(apiUrl: string) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false); // 新增：追踪流式输出状态
   const abortControllerRef = useRef<AbortController | null>(null);
   const sessionIdRef = useRef<string | null>(null);
 
@@ -47,6 +48,7 @@ export function useSSEChat(apiUrl: string) {
         thinking_enabled?: boolean;
         search_enabled?: boolean;
         chat_session_id?: string | null;
+        parent_message_id?: string | null;
       },
     ) => {
       if (!prompt.trim() || isLoading) return;
@@ -64,6 +66,7 @@ export function useSSEChat(apiUrl: string) {
       setMessages((prev) => [...prev, userMessage]);
 
       setIsLoading(true);
+      setIsStreaming(true); // 开始流式输出
       setError(null);
 
       // 取消之前的请求
@@ -82,7 +85,7 @@ export function useSSEChat(apiUrl: string) {
           thinking_enabled: options?.thinking_enabled || false,
           search_enabled: options?.search_enabled || false,
           preempt: false,
-          parent_message_id: null,
+          parent_message_id: options?.parent_message_id || null,
           ref_file_ids: null,
           service_id: null,
         };
@@ -149,32 +152,37 @@ export function useSSEChat(apiUrl: string) {
 
               try {
                 const chunk = JSON.parse(data);
-                console.log("收到 chunk:", chunk);
+                // console.log("收到 chunk:", chunk);
 
                 // ========== 处理元数据消息（后端自定义的 meta chunk） ==========
                 if (chunk.object === "chat.completion.meta") {
-                  // 获取消息 ID
-                  if (chunk.message_id && !assistantMessageId) {
-                    assistantMessageId = chunk.message_id;
+                  // 获取消息 ID (可能在 meta 对象中)
+                  const messageId = chunk.meta?.message_id || chunk.message_id;
+                  if (messageId && !assistantMessageId) {
+                    assistantMessageId = messageId;
                     console.log("获取到消息 ID:", assistantMessageId);
                   }
 
                   // 如果后端返回了用户消息的 ID，更新用户消息
-                  if (chunk.user_message_id && !userMessageIdUpdated) {
+                  const userMessageId =
+                    chunk.meta?.user_message_id || chunk.user_message_id;
+                  if (userMessageId && !userMessageIdUpdated) {
                     setMessages((prev) =>
                       prev.map((msg) =>
                         msg.id === tempUserId
-                          ? { ...msg, id: chunk.user_message_id }
+                          ? { ...msg, id: userMessageId }
                           : msg,
                       ),
                     );
                     userMessageIdUpdated = true;
                   }
 
-                  // 更新 session_id
-                  if (chunk.chat_session_id) {
-                    sessionIdRef.current = chunk.chat_session_id;
-                    console.log("更新 session_id:", chunk.chat_session_id);
+                  // 更新 session_id (可能在 meta 对象中)
+                  const chatSessionId =
+                    chunk.meta?.chat_session_id || chunk.chat_session_id;
+                  if (chatSessionId) {
+                    sessionIdRef.current = chatSessionId;
+                    // console.log("更新 session_id:", chatSessionId);
                   }
                   continue;
                 }
@@ -264,6 +272,7 @@ export function useSSEChat(apiUrl: string) {
         }
       } finally {
         setIsLoading(false);
+        setIsStreaming(false); // 流式输出结束
         abortControllerRef.current = null;
       }
     },
@@ -295,6 +304,7 @@ export function useSSEChat(apiUrl: string) {
   return {
     messages,
     isLoading,
+    isStreaming, // 暴露流式输出状态
     error,
     sendMessage,
     stopGeneration,

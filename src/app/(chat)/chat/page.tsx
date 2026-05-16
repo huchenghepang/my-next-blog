@@ -13,30 +13,46 @@ import ConversationList from "@/components/chat/ConversationList";
 import ThemeMuiToggle from "@/components/ThemeMuiToggle";
 import { useAuthStore } from "@/store/authStore";
 import "@/styles/scrollbar.css";
+import { Fab } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { IoArrowUpCircleOutline } from "react-icons/io5";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Message, useSSEChat } from "./chat";
 
 function ChatPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [input, setInput] = useState("");
   const [showThinking, setShowThinking] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentConvId, setCurrentConvId] = useState<string | null>(null);
   const [tempConvId, setTempConvId] = useState<string | null>(null); // 用于临时会话
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0); // 用于强制刷新会话列表
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true); // 控制是否自动滚动到底部
+  const [showScrollTop, setShowScrollTop] = useState(false); // 控制是否显示滚动到顶部按钮
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false); // 控制移动端侧边栏显示
+  const latestAssistantMessageId = useRef<string | null>(null); // 跟踪最新的AI消息ID
 
   const {
     isAuthenticated,
     userInfo: user,
-    logout,
+    logout: originalLogout,
   } = useAuthStore((state) => state);
+
+  // 包装登出函数，在登出时清理URL参数
+  const logout = () => {
+    originalLogout();
+    router.push("/chat");
+  };
 
   const {
     messages,
     isLoading,
+    isStreaming,
     error,
     sendMessage,
     stopGeneration,
@@ -46,10 +62,99 @@ function ChatPage() {
   } = useSSEChat("/api/chat/completion");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+  // 页面加载时检查URL参数并加载对应会话
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const convId = searchParams.get("conv");
+    if (convId && isAuthenticated) {
+      handleSelectConversation(convId);
+    }
+  }, [isAuthenticated]);
+
+  // 监听消息变化，更新最新的AI消息ID
+  useEffect(() => {
+    if (messages.length > 0) {
+      // 从后往前查找，找到最后一条AI消息
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === "assistant") {
+          latestAssistantMessageId.current = messages[i].id;
+          break;
+        }
+      }
+    }
   }, [messages]);
+
+  // 监听会话ID变化，处理URL更新
+  useEffect(() => {
+    if (!currentConvId && !tempConvId && isAuthenticated) {
+      // 如果没有活动会话，清理URL参数
+      router.push("/chat");
+    }
+  }, [currentConvId, tempConvId, isAuthenticated]);
+
+  // 滚动处理逻辑
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      // 计算容器底部位置
+      const bottomPosition = container.scrollHeight - container.clientHeight;
+      // 计算当前滚动位置
+      const currentPosition = container.scrollTop;
+
+      // 如果用户滚动到了距离底部50像素以内，认为是想要看最新内容，恢复自动滚动
+      // 如果用户滚动远离底部超过50像素，认为是正在查看历史内容，停止自动滚动
+      const distanceFromBottom = bottomPosition - currentPosition;
+      const threshold = 50; // 阈值，可根据需要调整
+
+      if (distanceFromBottom <= threshold) {
+        // 用户接近底部，允许自动滚动
+        setShouldAutoScroll(true);
+      } else {
+        // 用户远离底部，停止自动滚动
+        setShouldAutoScroll(false);
+      }
+
+      // 控制滚动到顶部按钮的显示 - 当滚动超过一定距离时显示
+      setShowScrollTop(currentPosition > 300);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // 滚动到底部逻辑 - 只有在 shouldAutoScroll 为 true 时才执行
+  useEffect(() => {
+    if (shouldAutoScroll) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, shouldAutoScroll]);
+
+  // 当流式输出结束时，如果用户当前在底部，则继续保持自动滚动
+  // 如果用户不在底部，则维持现状，不强制滚动
+  useEffect(() => {
+    if (!isStreaming) {
+      // 流式输出结束时，检查用户是否在底部
+      const container = messagesContainerRef.current;
+      if (container) {
+        const bottomPosition = container.scrollHeight - container.clientHeight;
+        const currentPosition = container.scrollTop;
+        const distanceFromBottom = bottomPosition - currentPosition;
+        const threshold = 50; // 阈值
+
+        // 如果用户在底部附近（阈值内），则恢复自动滚动
+        if (distanceFromBottom <= threshold) {
+          setShouldAutoScroll(true);
+        }
+        // 如果用户远离底部，则维持当前滚动状态，不改变shouldAutoScroll
+      }
+    }
+  }, [isStreaming]);
 
   // 监听消息变化，当AI回复达到3的倍数但小于15次时，自动生成标题
   useEffect(() => {
@@ -85,10 +190,11 @@ function ChatPage() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    // 检查是否是第一次发送消息，如果是则创建新会话
-    let sessionId = currentConvId;
-    if (!sessionId) {
-      // 这是第一次发送消息，需要创建会话
+    // 检查是否是第一次发送消息，如果是则创建新会话（仅对已认证用户）
+    let sessionId = null; // 默认不传递会话ID，让后端自动处理
+
+    if (!currentConvId && isAuthenticated) {
+      // 这是第一次发送消息，需要创建会话（仅对已认证用户）
       try {
         const conversation = await reqCreateConversation({
           title: input.substring(0, 30) + (input.length > 30 ? "..." : ""), // 使用第一条消息的前30个字符作为标题
@@ -103,13 +209,20 @@ function ChatPage() {
         console.error("创建会话失败:", error);
         return; // 如果创建会话失败，则不发送消息
       }
+    } else if (currentConvId) {
+      // 如果已有会话ID，使用它（适用于已认证用户和临时会话）
+      sessionId = currentConvId;
     }
+
+    // 对于新对话，parent_message_id 应该是 null；对于后续消息，使用最新的AI消息ID
+    const parentMessageId = latestAssistantMessageId.current;
 
     sendMessage(input, {
       model: "deepseek-v4-flash",
-      chat_session_id: sessionId ?? undefined,
+      chat_session_id: sessionId || undefined, // 只有当sessionId存在时才传递
       thinking_enabled: showThinking,
       search_enabled: false,
+      parent_message_id: parentMessageId, // 传递父消息ID以提供上下文，新对话时为null
     });
     setInput("");
   };
@@ -206,6 +319,11 @@ function ChatPage() {
     setTempConvId(newTempId);
     setCurrentConvId(null); // 实际会话ID设为null，直到发送第一条消息
     newSession();
+
+    // 清理URL中的会话参数，回到默认聊天页面
+    if (isAuthenticated) {
+      router.push("/chat");
+    }
   };
 
   // 生成对话标题
@@ -417,11 +535,26 @@ function ChatPage() {
         };
       });
       setMessages(chatMessages);
+
+      // 更新URL路径以包含会话ID（仅对登录用户）
+      if (isAuthenticated && id && !id.startsWith("temp_")) {
+        router.push(`/chat?conv=${id}`);
+      }
     } catch (error) {
       console.error("加载会话历史失败:", error);
     }
   };
   const confirm = useConfirm();
+  // 滚动到顶部
+  const scrollToTop = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
   // 删除会话 - 仅登录用户可操作持久化会话，匿名用户仅清空本地
   const handleDeleteConversation = async (id: string) => {
     const frag = await confirm({
@@ -451,6 +584,10 @@ function ChatPage() {
     try {
       await reqDeleteConversation(id); // 登录用户调用后端删除
       if (id === currentConvId) {
+        // 清理URL中的会话参数，回到默认聊天页面
+        if (isAuthenticated) {
+          router.push("/chat");
+        }
         handleNewConversation();
       }
     } catch (err) {
@@ -459,7 +596,7 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen">
       {/* ✅ 登录模态框 - 按需弹出，非强制 */}
       <LoginModal
         open={showLoginModal}
@@ -469,34 +606,110 @@ function ChatPage() {
         }}
       />
 
-      {/* ✅ 侧边栏 - 匿名用户显示简化版 */}
-      <ConversationList
-        onSelect={handleSelectConversation}
-        onCreateNew={handleNewConversation}
-        onDelete={handleDeleteConversation}
-        isAuthenticated={isAuthenticated}
-        currentUser={user}
-        tempConversations={
-          tempConvId
-            ? [
-                {
-                  id: tempConvId,
-                  title: "新会话",
-                  createdAt: new Date().toISOString(),
-                },
-              ]
-            : []
-        }
-        onRefresh={refreshConversations}
-        refreshTrigger={refreshTrigger}
-      />
+      {/* ✅ 侧边栏 - 匿名用户显示简化版 (桌面端) */}
+      <div className="hidden md:flex">
+        <ConversationList
+          onSelect={handleSelectConversation}
+          onCreateNew={handleNewConversation}
+          onDelete={handleDeleteConversation}
+          isAuthenticated={isAuthenticated}
+          currentUser={user}
+          tempConversations={
+            tempConvId
+              ? [
+                  {
+                    id: tempConvId,
+                    title: "新会话",
+                    createdAt: new Date().toISOString(),
+                  },
+                ]
+              : []
+          }
+          onRefresh={refreshConversations}
+          refreshTrigger={refreshTrigger}
+        />
+      </div>
+
+      {/* 移动端侧边栏抽屉 */}
+      {showMobileSidebar && (
+        <div className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden flex">
+          <div className="w-64 bg-white dark:bg-gray-900 h-full shadow-xl">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                会话列表
+              </h2>
+              <button
+                onClick={() => setShowMobileSidebar(false)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+            <ConversationList
+              onSelect={(id) => {
+                handleSelectConversation(id);
+                setShowMobileSidebar(false);
+              }}
+              onCreateNew={() => {
+                handleNewConversation();
+                setShowMobileSidebar(false);
+              }}
+              onDelete={handleDeleteConversation}
+              isAuthenticated={isAuthenticated}
+              currentUser={user}
+              tempConversations={
+                tempConvId
+                  ? [
+                      {
+                        id: tempConvId,
+                        title: "新会话",
+                        createdAt: new Date().toISOString(),
+                      },
+                    ]
+                  : []
+              }
+              onRefresh={refreshConversations}
+              refreshTrigger={refreshTrigger}
+            />
+          </div>
+        </div>
+      )}
 
       {/* ✅ 主聊天区 */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* 顶部导航栏 */}
         <header className=" sticky top-0 z-10">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center sm:px-6">
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowMobileSidebar(true)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 mr-2"
+                title="打开会话列表"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
               <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">WA</span>
               </div>
@@ -508,17 +721,6 @@ function ChatPage() {
 
             <div className="flex items-center gap-2">
               <ThemeMuiToggle />
-
-              {/* 复制对话按钮 - 仅在有消息时显示 */}
-              {messages.length > 0 && (
-                <button
-                  onClick={copyConversation}
-                  className="px-3 py-1.5 text-sm text-gray-400 hover:text-gray-400 hover:bg-gray-800 rounded-lg transition-colors"
-                  title="复制对话"
-                >
-                  📋
-                </button>
-              )}
 
               {/* 登录状态按钮 */}
               {isAuthenticated ? (
@@ -556,38 +758,41 @@ function ChatPage() {
         </header>
 
         {/* 消息区域 */}
-        <div className="flex-1 overflow-y-auto custom-scroll">
-          <div className="max-w-3xl mx-auto px-4 py-6">
+        <div
+          className="flex-1 overflow-y-auto custom-scroll relative"
+          ref={messagesContainerRef}
+        >
+          <div className="max-w-3xl mx-auto px-2 py-6 sm:px-6">
             {messages.length === 0 ? (
               // 欢迎界面
-              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center w-full">
                 <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6">
                   <span className="text-3xl">🤖</span>
                 </div>
                 <h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
                   World AI
                 </h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                <p className="text-gray-500 dark:text-gray-400 mb-6 px-4 w-full">
                   由AI创造World，随时为您解答问题
                 </p>
 
                 {/* 未登录时显示轻量引导，非强制 */}
                 {!isAuthenticated && (
-                  <div className="flex items-center gap-3 mb-6">
+                  <div className="flex flex-col items-center gap-3 mb-6 w-full max-w-[90%] sm:max-w-max sm:flex-row">
                     <button
                       onClick={() => setShowLoginModal(true)}
-                      className="px-5 py-2 bg-sky-500 hover:bg-sky-300 text-white rounded-xl text-sm font-medium transition-colors"
+                      className="px-5 py-2 bg-sky-500 hover:bg-sky-300 text-white rounded-xl text-sm font-medium transition-colors w-full sm:w-auto"
                     >
                       🔐 登录
                     </button>
-                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-500 text-center sm:text-left">
                       或直接在下方开始对话
                     </span>
                   </div>
                 )}
 
                 {/* 建议问题 - 匿名用户可直接点击使用 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg">
+                <div className="grid grid-cols-1 gap-2 w-full max-w-[90%] sm:max-w-lg sm:gap-3 sm:grid-cols-2">
                   {[
                     "帮我解释量子计算的基本原理",
                     "写一篇关于人工智能的短文",
@@ -603,7 +808,7 @@ function ChatPage() {
                           handleSubmit(new Event("submit") as any);
                         }, 0);
                       }}
-                      className="text-left px-4 py-3 rounded-xl text-sm transition-colors border bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700"
+                      className="text-left px-3 py-2.5 rounded-lg text-xs sm:text-sm sm:px-4 sm:py-3 transition-colors border bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 w-full"
                     >
                       {suggestion}
                     </button>
@@ -619,43 +824,12 @@ function ChatPage() {
                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} relative group/message`}
                   >
                     <div
-                      className={`max-w-[85%] ${
+                      className={`inline-block relative max-w-[90%] sm:max-w-[75%] ${
                         msg.role === "user"
                           ? "bg-[#99b1dd] text-[#0f1115]  backdrop-blur-sm rounded-2xl rounded-br-md"
                           : " dark:bg-gray-800/90 dark:text-slate-50 backdrop-blur-sm rounded-2xl rounded-tl-md shadow-sm"
-                      } px-4 py-3`}
+                      } px-3 py-2 sm:px-4 sm:py-3 ${msg.role === "user" ? "ml-auto mr-0" : "mr-auto ml-0"}`}
                     >
-                      {/* 消息操作按钮 - 仅在悬停时显示 */}
-                      <div className="absolute -top-6 right-2 opacity-0 group-hover/message:opacity-100 transition-opacity flex gap-1">
-                        <button
-                          onClick={() => copyMessage(msg.content)}
-                          className="p-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-md text-xs transition-colors"
-                          title="复制消息"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect
-                              x="9"
-                              y="9"
-                              width="13"
-                              height="13"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                          </svg>
-                        </button>
-                      </div>
-
                       {/* 思考过程 */}
                       {msg.role === "assistant" &&
                         msg.reasoningContent &&
@@ -683,6 +857,44 @@ function ChatPage() {
                           {msg.content}
                         </p>
                       )}
+
+                      {/* 悬浮显示复制按钮 - 仅在悬浮时可见，放置在消息底部 */}
+                      <div
+                        className={`absolute bottom-2 ${
+                          msg.role === "user"
+                            ? "-left-8 sm:-left-10"
+                            : "-right-8 sm:-right-10"
+                        } opacity-0 group-hover/message:opacity-100 transition-opacity duration-200 z-10`}
+                      >
+                        <button
+                          onClick={() => copyMessage(msg.content)}
+                          className="p-1.5 bg-gray-200/80 dark:bg-gray-700/80 backdrop-blur-sm hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors shadow-md"
+                          title="复制消息"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="text-gray-600 dark:text-gray-300 sm:w-4 sm:h-4"
+                          >
+                            <rect
+                              x="9"
+                              y="9"
+                              width="13"
+                              height="13"
+                              rx="2"
+                              ry="2"
+                            ></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -690,13 +902,13 @@ function ChatPage() {
                 {/* 打字指示器 */}
                 {isLoading &&
                   messages[messages.length - 1]?.role === "assistant" && (
-                    <div className="flex justify-start">
-                      <div className="  backdrop-blur-sm rounded-2xl rounded-tl-md px-4 py-3">
+                    <div className="flex justify-start w-full">
+                      <div className="w-full max-w-[90%] sm:max-w-[75%] backdrop-blur-sm rounded-2xl rounded-tl-md px-3 py-2 sm:px-4 sm:py-3 ml-0 mr-auto">
                         <div className="flex gap-1">
                           {[0, 150, 300].map((delay) => (
                             <span
                               key={delay}
-                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce sm:w-2 sm:h-2"
                               style={{ animationDelay: `${delay}ms` }}
                             />
                           ))}
@@ -707,7 +919,7 @@ function ChatPage() {
 
                 {/* 错误提示 */}
                 {error && (
-                  <div className=" border border-red-200 dark:border-red-500/30 rounded-xl p-4 text-center">
+                  <div className="w-full max-w-[90%] sm:max-w-[75%] mx-auto border border-red-200 dark:border-red-500/30 rounded-xl p-4 text-center">
                     <p className=" dark:text-red-400 text-sm">
                       ⚠️ {error.message}
                     </p>
@@ -724,6 +936,24 @@ function ChatPage() {
               </div>
             )}
           </div>
+
+          {/* 滚动到顶部按钮 - 仅在滚动一定距离后显示 */}
+          {showScrollTop && (
+            <div className="fixed bottom-20 right-4 z-50 sm:bottom-24 sm:right-8">
+              <Fab
+                onClick={scrollToTop}
+                color="primary"
+                aria-label="滚动到顶部"
+                title="回到顶部"
+                size="small"
+              >
+                <IoArrowUpCircleOutline
+                  style={{ fontSize: "1.4rem" }}
+                  className="sm:text-xl"
+                />
+              </Fab>
+            </div>
+          )}
         </div>
 
         {/* 输入区域 */}
@@ -746,7 +976,7 @@ function ChatPage() {
         {/* 底部匿名提示 */}
         {!isAuthenticated && messages.length > 0 && (
           <div className="px-4 py-2 text-center">
-            <span className="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800/50 px-3 py-1 rounded-full">
+            <span className="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800/50 px-2.5 py-1 rounded-full sm:px-3 sm:py-1">
               💡 未登录状态下，对话记录仅保存在当前设备，刷新页面后可能丢失
             </span>
           </div>
