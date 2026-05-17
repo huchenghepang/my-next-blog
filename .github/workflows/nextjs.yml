@@ -104,20 +104,27 @@ jobs:
           if [ -L ".next" ]; then
             echo "⚠️ .next is a symlink to: $(readlink .next)"
           fi
-      - name: 📤 上传构建产物与配置
+      - name: 📦 打包部署文件
+        run: |
+          tar -czf deploy-assets.tar.gz \
+            .next \
+            public \
+            src/prisma \
+            .env \
+            .env.production \
+            deploy.sh \
+            ecosystem.config.js \
+            package.json \
+            pnpm-lock.yaml
+          
+          echo "Package size: $(du -sh deploy-assets.tar.gz)"
+          echo "Files in package: $(tar -tzf deploy-assets.tar.gz | wc -l)"
+
+      - name: 📤 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: deploy-assets
-          path: |
-            .next/
-            public/
-            src/prisma/
-            .env
-            .env.production
-            deploy.sh
-            ecosystem.config.js
-            package.json
-            pnpm-lock.yaml
+          path: deploy-assets.tar.gz
           if-no-files-found: error
 
   deploy:
