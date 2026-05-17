@@ -1,6 +1,6 @@
 import { getArticleDetailBySlug } from "@/api/article";
+import DynamicContentRenderer from "@/components/Article/DynamicContentRenderer";
 import JsonLd from "@/components/JsonLid/JsonLd";
-import PreViewArticle from "@/components/MyEditor/PreViewArticle";
 import TocWrapper from "@/components/MyEditor/TocWithContent/TocWrapper";
 import config from "@/config/config";
 import { generateArticleStructuredData } from "@/lib/structuredData";
@@ -177,13 +177,23 @@ export default async function PostPage({ params }: PostPageProps) {
       <>
         {/* 添加 JSON-LD 结构化数据 */}
         <JsonLd data={structuredData}></JsonLd>
+        {/* 居中 */}
+        {article.content_type === "richtext" && (
+          <h1 className="text-3xl font-bold text-center text-black dark:text-[#c9d1d9]">
+            {article.title}
+          </h1>
+        )}
         <div className="flex">
-          <TocWrapper containerId={slug} />
+          {article.content_type === "markdown" && (
+            <TocWrapper containerId={slug} />
+          )}
           <div className="w-full flex">
-            <PreViewArticle
+            <DynamicContentRenderer
+              content={content || ""}
+              contentType={article.content_type || "markdown"}
               slug={String(article.slug)}
-              text={content || ""}
               title={article.title}
+              toc={toc}
             />
           </div>
         </div>
