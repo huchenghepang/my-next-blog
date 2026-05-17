@@ -82,6 +82,28 @@ jobs:
         run: pnpm prisma:generate
       - name: 构建项目
         run: pnpm build
+      - name: 🔍 验证 .next 目录
+        run: |
+          echo "=== Current directory contents ==="
+          ls -la
+          
+          echo "=== Check .next ==="
+          if [ -d ".next" ]; then
+            echo "✅ .next directory found!"
+            echo "Number of files: $(find .next -type f | wc -l)"
+            echo "Size: $(du -sh .next)"
+            echo "Top 20 files:"
+            find .next -type f | head -20
+          else
+            echo "❌ .next directory NOT found!"
+            echo "Searching for any build output:"
+            find . -maxdepth 2 -type d \( -name ".next" -o -name "out" -o -name "dist" -o -name "build" \)
+          fi
+          
+          echo "=== Check if .next is a symlink ==="
+          if [ -L ".next" ]; then
+            echo "⚠️ .next is a symlink to: $(readlink .next)"
+          fi
       - name: 📤 上传构建产物与配置
         uses: actions/upload-artifact@v4
         with:
