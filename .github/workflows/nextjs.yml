@@ -155,17 +155,37 @@ jobs:
           path: . # 解压到当前目录
       - name: 📦 解压部署文件
         run: |
-          # 找到 zip 文件
-          ZIP_FILE=$(ls deploy-assets.zip  | head -1)
-          echo "Extracting: $ZIP_FILE"
+          # 找到 tar.gz 文件
+          TAR_FILE=$(ls deploy-assets.tar.gz 2>/dev/null | head -1)
           
-          # 解压
-          unzip -q "$ZIP_FILE"
-          rm "$ZIP_FILE"
+          if [ -z "$TAR_FILE" ]; then
+            echo "❌ deploy-assets.tar.gz not found!"
+            echo "Current directory contents:"
+            ls -la
+            exit 1
+          fi
           
-          # 验证
-          ls -la .next/ | head -10
-          echo "✅ Deployment files extracted"
+          echo "Extracting: $TAR_FILE"
+          
+          # 解压 tar.gz
+          tar -xzf "$TAR_FILE"
+          
+          # 删除压缩包
+          rm "$TAR_FILE"
+          
+          # 验证解压结果
+          if [ -d ".next" ]; then
+            echo "✅ .next directory found!"
+            echo "Number of files in .next: $(find .next -type f | wc -l)"
+            ls -la .next/ | head -10
+          else
+            echo "❌ .next directory not found after extraction!"
+            echo "Extracted contents:"
+            ls -la
+            exit 1
+          fi
+          
+          echo "✅ Deployment files extracted successfully"
       - name: 🔐 还原环境变量文件（多环境）
         run: |
           # Step 1: 还原通用 .env
