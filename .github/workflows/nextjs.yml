@@ -110,6 +110,7 @@ jobs:
             .next \
             public \
             src/prisma \
+            prisma.config.ts\
             .env \
             .env.production \
             deploy.sh \
@@ -233,6 +234,7 @@ jobs:
             public/ \
             src/ \
             deploy.sh \
+            prisma.config.ts\
             ecosystem.config.js \
             .env \
             .env.production \
