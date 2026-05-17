@@ -1,0 +1,303 @@
+name: Next.js Blog Auto-Build-Deploy
+
+# 触发条件：推送到主分支、发布分支或标签
+on:
+  push:
+    branches:
+      - "main"
+      - "release/**"
+    tags:
+      - "v*" # 版本标签
+      - "release/*" # 发布分支
+
+jobs:
+  pnpm-build:
+    if: |
+      github.event_name == 'push' &&
+      github.actor == 'huchenghepang' &&
+      (
+        startsWith(github.ref, 'refs/tags/v') ||
+         startsWith(github.ref, 'refs/heads/release/') ||
+        (startsWith(github.ref, 'refs/heads/main') && contains(github.event.head_commit.message, '[build]'))
+      )
+    name: 打包编译
+    runs-on: ubuntu-latest
+    steps:
+      - name: 打印当前时间
+        run: |
+          echo "当前时间: $(date +'%Y-%m-%d %H:%M:%S %Z')"
+      - name: 🔍 调试上下文
+        run: |
+          echo "REF: ${{ github.ref }}"
+          echo "EVENT: ${{ github.event_name }}"
+          echo "COMMIT MSG: ${{ github.event.head_commit.message }}"
+      - name: 读取仓库内容📚
+        uses: actions/checkout@v4
+      - name: 安装pnpm🔧
+        run: npx corepack enable
+      - name: 安装依赖
+        run: pnpm install
+      - name: 🔐 还原环境变量文件（多环境）
+        run: |
+          # Step 1: 还原通用 .env
+          if [[ -n "${{ secrets.ENV_COMMON }}" ]]; then
+            echo "${{ secrets.ENV_COMMON }}" | base64 -d > .env
+            echo "✅ 通用配置 .env 已生成"
+          else
+            echo "⚠️  Secret ENV_COMMON 未设置"
+            touch .env
+            echo "📄 已创建空 .env 文件（作为占位符）"
+          fi
+
+          # Step 2: 还原各环境专属文件
+          declare -A ENV_MAP=(
+            ["production"]="${{ secrets.ENVPRODUCTION }}"
+            ["test"]="${{ secrets.ENVTEST }}"
+            ["development"]="${{ secrets.ENVDEVELOPMENT }}"
+          )
+
+          for env_name in "${!ENV_MAP[@]}"; do
+            secret_value="${ENV_MAP[$env_name]}"
+            if [[ -n "$secret_value" ]]; then
+              echo "$secret_value" | base64 -d > ".env.$env_name"
+              echo "✅ 已生成 .env.$env_name"
+            else
+              echo "ℹ️  Secret ENV_${env_name^^} 未设置，创建空文件"
+              touch ".env.$env_name"
+            fi
+          done
+
+          # 显示文件状态用于调试
+          echo "📁 生成的环境文件："
+          ls -la .env*
+
+          # 验证关键文件是否存在（可选）
+          if [[ -f ".env.production" ]]; then
+            echo "📋 .env.production 前几行内容："
+            head -10 .env.production
+          fi
+      - name: 🧬 生成 Prisma Client
+        run: pnpm prisma:generate
+      - name: 构建项目
+        run: pnpm build
+      - name: 📤 上传构建产物与配置
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-assets
+          path: |
+            .next/
+            public/
+            src/prisma/
+            .env
+            .env.production
+            deploy.sh
+            ecosystem.config.js
+            package.json
+            pnpm-lock.yaml
+          if-no-files-found: error
+
+  deploy:
+    name: 🚀 部署到服务器
+    needs: pnpm-build # 依赖构建成功
+    runs-on: ubuntu-latest
+
+    if: |
+      github.event_name == 'push' &&
+      github.actor == 'huchenghepang' &&
+      (
+        startsWith(github.ref, 'refs/tags/v') ||
+        startsWith(github.ref, 'refs/heads/release/')
+      )
+    env:
+      APP_NAME: sky_blog
+
+    steps:
+      - name: 🔐 设置 SSH 私钥（从 GitHub Secrets 读取）
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 📥 下载构建产物
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-assets
+          path: . # 解压到当前目录
+      - name: 🔐 还原环境变量文件（多环境）
+        run: |
+          # Step 1: 还原通用 .env
+          if [[ -n "${{ secrets.ENV_COMMON }}" ]]; then
+            echo "${{ secrets.ENV_COMMON }}" | base64 -d > .env
+            echo "✅ 通用配置 .env 已生成"
+          else
+            echo "⚠️  Secret ENV_COMMON 未设置"
+            touch .env
+            echo "📄 已创建空 .env 文件（作为占位符）"
+          fi
+
+          # Step 2: 还原各环境专属文件
+          declare -A ENV_MAP=(
+            ["production"]="${{ secrets.ENVPRODUCTION }}"
+            ["test"]="${{ secrets.ENVTEST }}"
+            ["development"]="${{ secrets.ENVDEVELOPMENT }}"
+          )
+
+          for env_name in "${!ENV_MAP[@]}"; do
+            secret_value="${ENV_MAP[$env_name]}"
+            if [[ -n "$secret_value" ]]; then
+              echo "$secret_value" | base64 -d > ".env.$env_name"
+              echo "✅ 已生成 .env.$env_name"
+            else
+              echo "ℹ️  Secret ENV_${env_name^^} 未设置，创建空文件"
+              touch ".env.$env_name"
+            fi
+          done
+
+          # 显示文件状态用于调试
+          echo "📁 生成的环境文件："
+          ls -la .env*
+
+          # 验证关键文件是否存在（可选）
+          if [[ -f ".env.production" ]]; then
+            echo "📋 .env.production 前几行内容："
+            head -10 .env.production
+          fi
+
+      - name: 🎁 打包部署文件
+        run: |
+          tar -czf deploy.tar.gz \
+            .next/ \
+            public/ \
+            src/ \
+            deploy.sh \
+            ecosystem.config.js \
+            .env \
+            .env.production \
+            package.json \
+            pnpm-lock.yaml
+
+      - name: 📤 上传到服务器并执行部署脚本
+        id: remote_deploy
+        run: |
+          # 从 Secrets 获取服务器信息
+          SERVER_HOST="${{ secrets.SERVER_HOST }}"
+          SERVER_USER="${{ secrets.SERVER_USER }}"
+          REMOTE_PATH="/home/${SERVER_USER}/apps/${{ env.APP_NAME }}"
+
+          # 1. 创建目录（加 set -e 保证失败退出）
+          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" << EOF
+            set -e
+            echo "🏠 Creating remote dir: $REMOTE_PATH"
+            mkdir -p "$REMOTE_PATH"
+            ls -ld "$REMOTE_PATH"
+          EOF
+
+          # 2. 上传
+          echo "📤 Uploading deploy.tar.gz..."
+          scp -o StrictHostKeyChecking=no deploy.tar.gz "$SERVER_USER@$SERVER_HOST:$REMOTE_PATH/"
+
+
+          # 3. 验证上传成功
+          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" << EOF
+            set -e
+            cd "$REMOTE_PATH"
+            echo "🔍 Checking file:"
+            ls -lh deploy.tar.gz
+            if [ ! -f deploy.tar.gz ]; then
+              echo "❌ deploy.tar.gz not found!" >&2
+              exit 1
+            fi
+            
+            echo "📦 Extracting..."
+            tar -xzf deploy.tar.gz
+
+            echo "✅ Running deploy.sh..."
+            chmod +x deploy.sh
+            ./deploy.sh production
+          EOF
+
+      - name: 🩺 服务健康检查（HTTP）
+        id: health_check
+        if: ${{ env.ENABLE_HEALTH_CHECK == 'true' }} # 只有为 true 时才执行
+        env:
+          ENABLE_HEALTH_CHECK: ${{ vars.ENABLE_HEALTH_CHECK || 'false' }} # 默认 false
+        run: |
+          HEALTH_CHECK_URL="${{ secrets.HEALTH_CHECK_URL }}"
+          # HOST="${{ secrets.SERVER_HOST }}"
+          # PORT="${{ secrets.SERVER_PORT || '3006' }}"
+          # URL="https://$HOST:$PORT/api/health"
+          # 检查URL是否配置
+          if [ -z "$HEALTH_CHECK_URL" ]; then
+            echo "❌ 错误：HEALTH_CHECK_URL 未配置"
+            echo "💡 请在 GitHub Secrets 中设置 HEALTH_CHECK_URL"
+            echo "deploy_success=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          echo "🔍 开始健康检查: $HEALTH_CHECK_URL"
+
+          MAX_RETRIES=5
+          RETRY_DELAY=5
+          CONNECT_TIMEOUT=5
+          MAX_TIME=10
+
+          for ((i=1; i<=MAX_RETRIES; i++)); do
+            echo "⏳ 尝试 $i/$MAX_RETRIES"
+            
+            # 执行curl请求，捕获详细输出
+            RESPONSE=$(curl -v \
+              --max-time $MAX_TIME \
+              --connect-timeout $CONNECT_TIMEOUT \
+              -o /dev/null \
+              -w "%{http_code} %{time_total}s" \
+              "$HEALTH_CHECK_URL" 2>&1)
+            
+            # 提取HTTP状态码
+            HTTP_CODE=$(echo "$RESPONSE" | grep -oP '^[0-9]{3}' | head -1)
+            
+            if [[ -z "$HTTP_CODE" ]]; then
+              HTTP_CODE="000"
+            fi
+            
+            echo "📊 HTTP状态码: $HTTP_CODE"
+            
+            # 检查是否是连接/超时错误
+            if [[ "$HTTP_CODE" == "000" ]]; then
+              echo "⚠️  连接失败或超时"
+              
+              # 提取错误信息
+              if echo "$RESPONSE" | grep -q "Connection timed out"; then
+                echo "  原因: 连接超时"
+              elif echo "$RESPONSE" | grep -q "Operation timed out"; then
+                echo "  原因: 操作超时"
+              elif echo "$RESPONSE" | grep -q "Connection refused"; then
+                echo "  原因: 连接被拒绝"
+              fi
+            fi
+            
+            # 成功判断
+            if [[ "$HTTP_CODE" =~ ^[2-3][0-9][0-9]$ ]]; then
+              echo "✅ 健康检查通过 (HTTP $HTTP_CODE)"
+              echo "deploy_success=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            
+            # 如果是403错误（比如备案问题），直接失败，不需要重试
+            if [[ "$HTTP_CODE" == "403" ]]; then
+              echo "❌ HTTP 403错误（可能服务器配置问题或备案问题）"
+              echo "💡 建议检查:"
+              echo "   1. 服务器是否正常运行"
+              echo "   2. 防火墙/安全组配置"
+              echo "   3. 如果是国内服务器，检查ICP备案"
+              echo "deploy_success=false" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+            
+            # 如果不是最后一次尝试，等待后继续
+            if [ $i -lt $MAX_RETRIES ]; then
+              echo "⏸️  等待 ${RETRY_DELAY}秒后重试..."
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          echo "❌ 健康检查失败：$MAX_RETRIES次尝试均未成功"
+          echo "deploy_success=false" >> "$GITHUB_OUTPUT"
+          exit 1
