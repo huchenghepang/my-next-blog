@@ -153,6 +153,19 @@ jobs:
         with:
           name: deploy-assets
           path: . # 解压到当前目录
+      - name: 📦 解压部署文件
+        run: |
+          # 找到 zip 文件
+          ZIP_FILE=$(ls dist-*.zip | head -1)
+          echo "Extracting: $ZIP_FILE"
+          
+          # 解压
+          unzip -q "$ZIP_FILE"
+          rm "$ZIP_FILE"
+          
+          # 验证
+          ls -la .next/ | head -10
+          echo "✅ Deployment files extracted"
       - name: 🔐 还原环境变量文件（多环境）
         run: |
           # Step 1: 还原通用 .env
