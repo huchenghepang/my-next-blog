@@ -79,10 +79,41 @@ export default async function Header() {
               <Box sx={navItemStyle}>
                 <Link href="/post/category">分 类</Link>
               </Box>
+              <Box sx={navItemStyle}>
+                <Link href="/chat">AI</Link>
+              </Box>
+            </Stack>
+
+            {/* 移动端导航 - 只保留Logo、Chat和主题切换按钮 */}
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                maxWidth: "sm",
+                mx: "auto",
+              }}
+            >
+              <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <Box sx={navItemStyle}>
+                  <Link href="/chat">AI</Link>
+                </Box>
+              </Box>
+
+              <ThemeMuiToggle />
             </Stack>
 
             {/* 右侧功能区 - 服务端渲染 */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               <ThemeMuiToggle />
               {/* 移动端搜索按钮和桌面端搜索框通过客户端组件处理 */}
             </Box>

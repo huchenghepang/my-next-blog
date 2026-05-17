@@ -794,10 +794,10 @@ function ChatPage() {
                 {/* 建议问题 - 匿名用户可直接点击使用 */}
                 <div className="grid grid-cols-1 gap-2 w-full max-w-[90%] sm:max-w-lg sm:gap-3 sm:grid-cols-2">
                   {[
-                    "帮我解释量子计算的基本原理",
-                    "写一篇关于人工智能的短文",
-                    "分析这段代码的性能问题",
-                    "推荐几本经典的技术书籍",
+                    "今天我吃什么好？",
+                    "每天我应该穿什么？",
+                    "昨天我这样做可以吗？",
+                    "下周的天气怎么样？",
                   ].map((suggestion) => (
                     <button
                       key={suggestion}
