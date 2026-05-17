@@ -154,92 +154,92 @@ jobs:
         with:
           name: deploy-assets
           path: . # 解压到当前目录
-      - name: 📦 解压部署文件
-        run: |
-          # 找到 tar.gz 文件
-          TAR_FILE=$(ls deploy-assets.tar.gz 2>/dev/null | head -1)
+      # - name: 📦 解压部署文件
+      #   run: |
+      #     # 找到 tar.gz 文件
+      #     TAR_FILE=$(ls deploy-assets.tar.gz 2>/dev/null | head -1)
           
-          if [ -z "$TAR_FILE" ]; then
-            echo "❌ deploy-assets.tar.gz not found!"
-            echo "Current directory contents:"
-            ls -la
-            exit 1
-          fi
+      #     if [ -z "$TAR_FILE" ]; then
+      #       echo "❌ deploy-assets.tar.gz not found!"
+      #       echo "Current directory contents:"
+      #       ls -la
+      #       exit 1
+      #     fi
           
-          echo "Extracting: $TAR_FILE"
+      #     echo "Extracting: $TAR_FILE"
           
-          # 解压 tar.gz
-          tar -xzf "$TAR_FILE"
+      #     # 解压 tar.gz
+      #     tar -xzf "$TAR_FILE"
           
-          # 删除压缩包
-          rm "$TAR_FILE"
+      #     # 删除压缩包
+      #     rm "$TAR_FILE"
           
-          # 验证解压结果
-          if [ -d ".next" ]; then
-            echo "✅ .next directory found!"
-            echo "Number of files in .next: $(find .next -type f | wc -l)"
-            ls -la .next/ | head -10
-          else
-            echo "❌ .next directory not found after extraction!"
-            echo "Extracted contents:"
-            ls -la
-            exit 1
-          fi
+      #     # 验证解压结果
+      #     if [ -d ".next" ]; then
+      #       echo "✅ .next directory found!"
+      #       echo "Number of files in .next: $(find .next -type f | wc -l)"
+      #       ls -la .next/ | head -10
+      #     else
+      #       echo "❌ .next directory not found after extraction!"
+      #       echo "Extracted contents:"
+      #       ls -la
+      #       exit 1
+      #     fi
           
-          echo "✅ Deployment files extracted successfully"
-      - name: 🔐 还原环境变量文件（多环境）
-        run: |
-          # Step 1: 还原通用 .env
-          if [[ -n "${{ secrets.ENV_COMMON }}" ]]; then
-            echo "${{ secrets.ENV_COMMON }}" | base64 -d > .env
-            echo "✅ 通用配置 .env 已生成"
-          else
-            echo "⚠️  Secret ENV_COMMON 未设置"
-            touch .env
-            echo "📄 已创建空 .env 文件（作为占位符）"
-          fi
+      #     echo "✅ Deployment files extracted successfully"
+      # - name: 🔐 还原环境变量文件（多环境）
+      #   run: |
+      #     # Step 1: 还原通用 .env
+      #     if [[ -n "${{ secrets.ENV_COMMON }}" ]]; then
+      #       echo "${{ secrets.ENV_COMMON }}" | base64 -d > .env
+      #       echo "✅ 通用配置 .env 已生成"
+      #     else
+      #       echo "⚠️  Secret ENV_COMMON 未设置"
+      #       touch .env
+      #       echo "📄 已创建空 .env 文件（作为占位符）"
+      #     fi
 
-          # Step 2: 还原各环境专属文件
-          declare -A ENV_MAP=(
-            ["production"]="${{ secrets.ENVPRODUCTION }}"
-            ["test"]="${{ secrets.ENVTEST }}"
-            ["development"]="${{ secrets.ENVDEVELOPMENT }}"
-          )
+      #     # Step 2: 还原各环境专属文件
+      #     declare -A ENV_MAP=(
+      #       ["production"]="${{ secrets.ENVPRODUCTION }}"
+      #       ["test"]="${{ secrets.ENVTEST }}"
+      #       ["development"]="${{ secrets.ENVDEVELOPMENT }}"
+      #     )
 
-          for env_name in "${!ENV_MAP[@]}"; do
-            secret_value="${ENV_MAP[$env_name]}"
-            if [[ -n "$secret_value" ]]; then
-              echo "$secret_value" | base64 -d > ".env.$env_name"
-              echo "✅ 已生成 .env.$env_name"
-            else
-              echo "ℹ️  Secret ENV_${env_name^^} 未设置，创建空文件"
-              touch ".env.$env_name"
-            fi
-          done
+      #     for env_name in "${!ENV_MAP[@]}"; do
+      #       secret_value="${ENV_MAP[$env_name]}"
+      #       if [[ -n "$secret_value" ]]; then
+      #         echo "$secret_value" | base64 -d > ".env.$env_name"
+      #         echo "✅ 已生成 .env.$env_name"
+      #       else
+      #         echo "ℹ️  Secret ENV_${env_name^^} 未设置，创建空文件"
+      #         touch ".env.$env_name"
+      #       fi
+      #     done
 
-          # 显示文件状态用于调试
-          echo "📁 生成的环境文件："
-          ls -la .env*
+      #     # 显示文件状态用于调试
+      #     echo "📁 生成的环境文件："
+      #     ls -la .env*
 
-          # 验证关键文件是否存在（可选）
-          if [[ -f ".env.production" ]]; then
-            echo "📋 .env.production 前几行内容："
-            head -10 .env.production
-          fi
+      #     # 验证关键文件是否存在（可选）
+      #     if [[ -f ".env.production" ]]; then
+      #       echo "📋 .env.production 前几行内容："
+      #       head -10 .env.production
+      #     fi
 
-      - name: 🎁 打包部署文件
-        run: |
-          tar -czf deploy.tar.gz \
-            .next/ \
-            public/ \
-            src/ \
-            deploy.sh \
-            prisma.config.ts\
-            ecosystem.config.js \
-            .env \
-            .env.production \
-            package.json \
-            pnpm-lock.yaml
+      # - name: 🎁 打包部署文件
+      #   run: |
+      #     tar -czf deploy.tar.gz \
+      #       .next/ \
+      #       public/ \
+      #       src/ \
+      #       deploy.sh \
+      #       prisma.config.ts\
+      #       ecosystem.config.js \
+      #       .env \
+      #       .env.production \
+      #       package.json \
+      #       pnpm-lock.yaml
 
       - name: 📤 上传到服务器并执行部署脚本
         id: remote_deploy
@@ -258,8 +258,8 @@ jobs:
           EOF
 
           # 2. 上传
-          echo "📤 Uploading deploy.tar.gz..."
-          scp -o StrictHostKeyChecking=no deploy.tar.gz "$SERVER_USER@$SERVER_HOST:$REMOTE_PATH/"
+          echo "📤 Uploading deploy-assets.tar.gz ..."
+          scp -o StrictHostKeyChecking=no deploy-assets.tar.gz  "$SERVER_USER@$SERVER_HOST:$REMOTE_PATH/"
 
 
           # 3. 验证上传成功
@@ -267,15 +267,15 @@ jobs:
             set -e
             cd "$REMOTE_PATH"
             echo "🔍 Checking file:"
-            ls -lh deploy.tar.gz
-            if [ ! -f deploy.tar.gz ]; then
-              echo "❌ deploy.tar.gz not found!" >&2
+            ls -lh deploy-assets.tar.gz 
+            if [ ! -f deploy-assets.tar.gz ]; then
+              echo "❌ deploy-assets.tar.gz not found!" >&2
               exit 1
             fi
             
             echo "📦 Extracting..."
-            tar -xzf deploy.tar.gz
-
+            tar -xzf deploy-assets.tar.gz
+            
             echo "✅ Running deploy.sh..."
             chmod +x deploy.sh
             ./deploy.sh production
