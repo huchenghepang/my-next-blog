@@ -46,3 +46,12 @@ next-env.d.ts
 /logs/
 /logs/exceptions/*
 src/prisma/generated/*
+
+
+# 忽视打包文件
+dist*.zip
+dist*.tar.gz
+dist*.tar.bz2
+dist*.tar.xz
+dist*.tar
+dist*.7z

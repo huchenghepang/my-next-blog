@@ -16,7 +16,8 @@
     "prepare": "husky",
     "commit": "git-cz",
     "precommit": "lint-staged",
-    "sitemap": "tsx ./src/scripts/generate-sitemap.ts"
+    "sitemap": "tsx ./src/scripts/generate-sitemap.ts",
+    "zip-dist": "VERSION=$(jq -r '.version' package.json) && zip -r dist-$VERSION.zip .next public package.json pnpm-lock.yaml"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.176",

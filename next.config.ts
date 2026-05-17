@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 
 // 目标后端 API 地址
 const API_TARGET = process.env.API_TARGET;
+console.log("代理地址是:" + API_TARGET);
 
 const nextConfig: NextConfig = {
   reactStrictMode: true, // 开发时暴露潜在问题
@@ -13,7 +14,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/chat/:path*",
-        destination: "http://localhost:13011/api/chat/:path*",
+        destination: `${API_TARGET}/api/chat/:path*`,
       },
       {
         source: "/api/proxy/:path*",
