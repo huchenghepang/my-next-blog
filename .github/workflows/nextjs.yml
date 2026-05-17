@@ -110,6 +110,7 @@ jobs:
             .next \
             public \
             src/prisma \
+            next.config.ts\
             prisma.config.ts\
             .env \
             .env.production \
