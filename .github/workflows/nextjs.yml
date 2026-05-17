@@ -156,7 +156,7 @@ jobs:
       - name: 📦 解压部署文件
         run: |
           # 找到 zip 文件
-          ZIP_FILE=$(ls dist-*.zip | head -1)
+          ZIP_FILE=$(ls deploy-assets.zip  | head -1)
           echo "Extracting: $ZIP_FILE"
           
           # 解压
