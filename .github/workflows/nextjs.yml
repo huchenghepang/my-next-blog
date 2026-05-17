@@ -76,7 +76,9 @@ jobs:
             echo "📋 .env.production 前几行内容："
             head -10 .env.production
           fi
-      - name: 🧬 生成 Prisma Client
+      - name: 🧬 清理 Prisma 生成目录 
+        run: rm -rf ./src/prisma/generated/
+      - name: 🧬 生成 Prisma Client 
         run: pnpm prisma:generate
       - name: 构建项目
         run: pnpm build
