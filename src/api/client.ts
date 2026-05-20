@@ -56,12 +56,15 @@ configureRefreshToken(async () => {
 })
 
 // 3. 初始化客户端
-export const clientAPI = initClient("https://api.huchenghe.site", {
-  timeout: 10000,
-  headers: {
-    "X-App-Version": "1.0.0",
+export const clientAPI = initClient(
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.huchenghe.site",
+  {
+    timeout: 10000,
+    headers: {
+      "X-App-Version": "1.0.0",
+    },
   },
-});
+);
 
 clientAPI.addResponseInterceptor(async response => {
   const json = await response.json()
