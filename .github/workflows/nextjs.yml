@@ -248,10 +248,11 @@ jobs:
           # 从 Secrets 获取服务器信息
           SERVER_HOST="${{ secrets.SERVER_HOST }}"
           SERVER_USER="${{ secrets.SERVER_USER }}"
+          SERVER_PORT="${{ secrets.SERVER_PORT }}"
           REMOTE_PATH="/home/${SERVER_USER}/apps/${{ env.APP_NAME }}"
 
           # 1. 创建目录（加 set -e 保证失败退出）
-          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" << EOF
+          ssh -o StrictHostKeyChecking=no -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" << EOF
             set -e
             echo "🏠 Creating remote dir: $REMOTE_PATH"
             mkdir -p "$REMOTE_PATH"
@@ -260,11 +261,11 @@ jobs:
 
           # 2. 上传
           echo "📤 Uploading deploy-assets.tar.gz ..."
-          scp -o StrictHostKeyChecking=no deploy-assets.tar.gz  "$SERVER_USER@$SERVER_HOST:$REMOTE_PATH/"
+          scp -o StrictHostKeyChecking=no -P "$SERVER_PORT" deploy-assets.tar.gz  "$SERVER_USER@$SERVER_HOST:$REMOTE_PATH/"
 
 
           # 3. 验证上传成功
-          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" << EOF
+          ssh -o StrictHostKeyChecking=no -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" << EOF
             set -e
             cd "$REMOTE_PATH"
             echo "🔍 Checking file:"
