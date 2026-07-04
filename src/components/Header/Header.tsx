@@ -68,15 +68,6 @@ export default async function Header() {
                 <Link href={slug}>文 章</Link>
               </Box>
               <Box sx={navItemStyle}>
-                <Link
-                  href="https://huchenghe.site"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  主 站
-                </Link>
-              </Box>
-              <Box sx={navItemStyle}>
                 <Link href="/post/category">分 类</Link>
               </Box>
               <Box sx={navItemStyle}>

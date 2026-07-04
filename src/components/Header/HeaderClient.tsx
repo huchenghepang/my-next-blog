@@ -158,13 +158,6 @@ export default function HeaderClient({children}: HeaderClientProps) {
               <ListItemText primary="文 章" />
             </ListItem>
             <ListItem
-              component="a"
-              href="https://huchenghe.site"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <ListItemText primary="主 站" />
-            </ListItem>
-            <ListItem
               component={Link}
               href="/post/category"
               onClick={() => setMobileMenuOpen(false)}
